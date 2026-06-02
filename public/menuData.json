@@ -1,0 +1,171 @@
+{
+  "restaurantName": "Bizim çimərlik",
+  "restaurantSubtitle": "Restaurant & Lounge",
+  "currency": "₼",
+  "contact": {
+    "phone": "+994 (50) 123-45-67",
+    "address": "Bakı bulvarı, Dənizkənarı Milli Park, No: 12",
+    "wifi": "DenizGiragi_Guest",
+    "wifiPassword": "welcome_to_deniz"
+  },
+  "categories": [
+    { "id": "mains", "name": "İsti Yeməklər", "icon": "Utensils", "description": "Ənənəvi və Avropa mətbəxinin seçilmiş isti təamları" },
+    { "id": "grill", "name": "Manqal & Kabablar", "icon": "Flame", "description": "Köz üzərində bişən dadlı kabab və ızqaralar" },
+    { "id": "starters", "name": "Soyuq Qəlyanaltılar", "icon": "Salad", "description": "Təzə tərəvəzlər və xüsusi qəlyanaltı çeşidləri" },
+    { "id": "soups", "name": "Şorbalar", "icon": "Soup", "description": "Hər gün təzə bişən isti və ləziz şorbalar" },
+    { "id": "drinks", "name": "İçkilər", "icon": "Coffee", "description": "Sərinləşdirici kokteyllər, limonadlar və isti içkilər" },
+    { "id": "desserts", "name": "Şirniyyatlar", "icon": "Cake", "description": "Şefimizin xüsusi əl işi olan şirniyyat növləri" }
+  ],
+  "items": [
+    {
+      "id": "main-1",
+      "categoryId": "mains",
+      "name": "Sacüstü Quzu Əti",
+      "price": 24.50,
+      "ingredients": "Zərif quzu əti, kartof, badımcan, bibər, göbələk, pomidor, quyruq və xüsusi Sac ədviyyatları",
+      "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Şefin Seçimi", "Populyar"],
+      "isChefSpecial": true
+    },
+    {
+      "id": "main-2",
+      "categoryId": "mains",
+      "name": "Nərə Balığı Sırdağı",
+      "price": 32.00,
+      "ingredients": "Xəzər nərə balığı filəsi, sarımsaq, limon suyu, reyhan, pomidor və zəfəranlı sous",
+      "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Premium", "Yerli Ləzzət"],
+      "isChefSpecial": true
+    },
+    {
+      "id": "main-3",
+      "categoryId": "mains",
+      "name": "Zəfəranlı Plov",
+      "price": 18.00,
+      "ingredients": "Xüsusi basmati düyüsü, zəfəran, kərə yağı, qaysı, albuxara, şabalıd və quzu əti qovurması",
+      "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Milli"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "grill-1",
+      "categoryId": "grill",
+      "name": "Quzu Tikə Kababı",
+      "price": 14.00,
+      "ingredients": "Quzu bel hissəsi, soğan, nar turşusu və lavaş ilə manqalda bişirilmiş tikələr",
+      "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Közdə"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "grill-2",
+      "categoryId": "grill",
+      "name": "Lülə Kabab",
+      "price": 12.00,
+      "ingredients": "Quzu əti və quyruğun çəkilmiş qarışığı, soğan, sumax və lavaş ilə təqdim olunur",
+      "image": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Populyar"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "grill-3",
+      "categoryId": "grill",
+      "name": "Qarışıq Kabab Platter",
+      "price": 45.00,
+      "ingredients": "Tikə kabab, lülə kabab, toyuq kababı, antrikot, tərəvəz kababları, xüsusi souslar və sumax",
+      "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Böyük Porsiya", "Premium"],
+      "isChefSpecial": true
+    },
+    {
+      "id": "starter-1",
+      "categoryId": "starters",
+      "name": "Manqal Salatı",
+      "price": 7.00,
+      "ingredients": "Közdə bişmiş badımcan, pomidor, bolqar bibəri, sarımsaq, göyərti və zeytun yağı",
+      "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Populyar", "Vegetarian"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "starter-2",
+      "categoryId": "starters",
+      "name": "Yerli Pendir Çeşidləri",
+      "price": 9.50,
+      "ingredients": "Motal pendiri, şor pendir, ağ pendir, qoyun pendiri, qoz ləpəsi və təzə tərxun",
+      "image": "https://images.unsplash.com/photo-1486299267070-8382e214434b?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Milli"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "starter-3",
+      "categoryId": "starters",
+      "name": "Tərəvəz Buketi",
+      "price": 6.00,
+      "ingredients": "Təzə xiyar, pomidor, turp, reyhan, keşniş, şüyüd və yaşıl soğan",
+      "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Təzə", "Vegetarian"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "soup-1",
+      "categoryId": "soups",
+      "name": "Mərci Şorbası",
+      "price": 5.00,
+      "ingredients": "Qırmızı mərci, soğan, yerkökü, limon, nanəli kərə yağı sousu və qurudulmuş çörək (suxari)",
+      "image": "https://images.unsplash.com/photo-1547592165-e1d17fed6006?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Hər gün təzə"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "soup-2",
+      "categoryId": "soups",
+      "name": "Milli Düşbərə",
+      "price": 6.50,
+      "ingredients": "Əl ilə bükülmüş xırda xəmir düşbərələri quzu bulyonunda, nanə qurusu və sirkə-sarımsaq ilə",
+      "image": "https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Məşhur", "Milli"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "drink-1",
+      "categoryId": "drinks",
+      "name": "Ev Üsulu Reyhan Limonadı",
+      "price": 6.00,
+      "ingredients": "Təzə reyhan, təzə sıxılmış limon şirəsi, şəkər, buz və mineral su",
+      "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Sərinləşdirici", "Yeni"],
+      "isChefSpecial": true
+    },
+    {
+      "id": "drink-2",
+      "categoryId": "drinks",
+      "name": "Çay Dəsgahı (Böyük)",
+      "price": 20.00,
+      "ingredients": "Gözəl dəmlənmiş Lənkəran çayı (böyük çaynik), 2 növ mürəbbə, kəklikotu, limon və paxlava",
+      "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Milli", "Birlikdə"],
+      "isChefSpecial": true
+    },
+    {
+      "id": "dessert-1",
+      "categoryId": "desserts",
+      "name": "Bakı Paxlavası",
+      "price": 6.00,
+      "ingredients": "Qoz ləpəsi, zəfəran, şərbət və kərə yağı ilə hazırlanan 36 qatlı əsl Bakı paxlavası (2 ədəd)",
+      "image": "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Milli", "Məşhur"],
+      "isChefSpecial": false
+    },
+    {
+      "id": "dessert-2",
+      "categoryId": "desserts",
+      "name": "Dondurmalı İsti Şokoladlı Suffle",
+      "price": 8.00,
+      "ingredients": "İsti axıcı şokoladlı suffle, yanında Vanna dondurması və təzə çiyələk dilimləri",
+      "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80",
+      "tags": ["Şirin"],
+      "isChefSpecial": false
+    }
+  ]
+}

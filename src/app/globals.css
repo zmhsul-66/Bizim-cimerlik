@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  --font-playfair: var(--font-playfair), Georgia, serif;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    /* İşıqlı, xoş qumlu çimərlik mövzusu (Standart!) */
+    --background: #faf8f5;
+    --foreground: #111e29;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(13, 148, 136, 0.08);
+    --primary: #0d9488;
+    /* Fresh Sea Teal */
+    --primary-hover: #0f766e;
+    --secondary: #f97316;
+    /* Cheerful Sunset Orange */
+    --accent: #f59e0b;
+    /* Sunshine Gold */
+    --muted: #4a5d6e;
+    --muted-bg: rgba(13, 148, 136, 0.05);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --shadow-color: rgba(13, 148, 136, 0.06);
+    --glow-opacity: 0.2;
+  }
+
+  :root.dark {
+    /* İsti romantik qürub okeanı gecə mövzusu - Heç bir qara/boz yoxdur, tam dərin göy/okean çalarları və rahat oxunma! */
+    --background: #06152d; /* Dərin safir göyü - Qara və ya boz deyil! */
+    --foreground: #f8fafc;
+    --card-bg: rgba(14, 34, 69, 0.92); /* Parlaq dəniz göyü kart fonu */
+    --card-border: rgba(56, 189, 248, 0.28); /* Parlaq mavi çərçivə */
+    --primary: #2dd4bf; /* Parlaq Firuzəyi */
+    --primary-hover: #14b8a6;
+    --secondary: #ff7824; /* Parlaq Qürub Narıncısı */
+    --accent: #fbbf24; /* Parlaq Qızılı */
+    --muted: #e2f1ff; /* Çox parlaq mavi-ağ rəng - rahat oxunması üçün! */
+    --muted-bg: rgba(56, 189, 248, 0.16);
+    --glass-bg: rgba(10, 26, 56, 0.96);
+    --glass-border: rgba(56, 189, 248, 0.28);
+    --shadow-color: rgba(6, 21, 45, 0.65);
+    --glow-opacity: 0.6;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Premium xüsusi siniflər */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 var(--shadow-color);
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 6px 24px 0 var(--shadow-color);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-5px) scale(1.01);
+  border-color: rgba(249, 115, 22, 0.25);
+  /* Hover edildikdə Qürub Narıncısı işıqlanma */
+  box-shadow: 0 16px 32px 0 rgba(249, 115, 22, 0.1);
+}
+
+/* Zərif Mətn və Parıltı Alətləri */
+.text-glow {
+  text-shadow: 0 0 12px rgba(13, 148, 136, var(--glow-opacity));
+}
+
+.gold-glow {
+  text-shadow: 0 0 10px rgba(249, 115, 22, var(--glow-opacity));
+}
+
+/* Kənarlarda kateqoriyaların sürüşdürülməsi üçün zərif solğun maska */
+.mask-gradient {
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+/* Gizli scrollbar ilə lakin sürüşdürülə bilən xüsusi üfüqi sürüşmə */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Xüsusi premium nazik scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Animasiyalar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 4px rgba(249, 115, 22, 0.2);
+    border-color: rgba(249, 115, 22, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(249, 115, 22, 0.6);
+    border-color: rgba(249, 115, 22, 0.6);
+  }
+}
+
+.chef-badge {
+  animation: pulse-glow 2.5s infinite ease-in-out;
+}
+
+/* Günəş mövzusu ikonu üçün xüsusi yavaş fırlanma animasiyası */
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Qaranlıq rejim üçün zəmanətli yüksək kontrastlı və rahat oxunma üslubları */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Light moddakı tünd yazıları qaranlıqda parlaq ağ rəngə çevirir */
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #ffffff !important;
+}
+
+/* Yemək tərkibləri və alt mətnləri çox parlaq və rahat oxunan mavi-ağ edir */
+.dark .text-slate-700,
+.dark .text-slate-600,
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: var(--muted) !important;
+}
+
+/* Linklər və keçid oxları */
+.dark .text-teal-600,
+.dark .text-teal-700,
+.dark .dark\:text-teal-400 {
+  color: var(--primary) !important;
+}
+
+/* Axtarış panelindəki mətnlər */
+.dark input {
+  background-color: rgba(15, 45, 89, 0.9) !important;
+  color: #ffffff !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.dark input::placeholder {
+  color: #93c5fd !important;
+}
+
+/* Kateqoriya sürüşdürücüsünün passiv düymələri */
+.dark button.whitespace-nowrap:not([class*="bg-gradient"]) {
+  background-color: rgba(15, 45, 89, 0.9) !important;
+  color: var(--muted) !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+}
+
+.dark button.whitespace-nowrap:not([class*="bg-gradient"]):hover {
+  background-color: rgba(28, 64, 120, 0.9) !important;
+  color: #ffffff !important;
+}
+
+/* Alt hissədəki (Footer) mətnlər */
+.dark footer p,
+.dark footer span {
+  color: #cbd5e1 !important;
+}

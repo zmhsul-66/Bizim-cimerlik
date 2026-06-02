@@ -1,0 +1,1320 @@
+'use client';
+
+import { useState, useEffect, useRef } from "react";
+import * as Icons from "lucide-react";
+import menuData from "../../../public/menuData.json";
+
+export default function AdminPanel() {
+  // Giriş Vəziyyətləri (Auth States)
+  const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  // Menyu Məlumatları (Data States)
+  const [items, setItems] = useState([]);
+  const [isDatabase, setIsDatabase] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Restoran Sazlamaları (Restaurant Settings States)
+  const [settingsName, setSettingsName] = useState("Bizim çimərlik");
+  const [settingsSubtitle, setSettingsSubtitle] = useState("Restaurant & Lounge");
+  const [settingsPhone, setSettingsPhone] = useState("");
+  const [settingsAddress, setSettingsAddress] = useState("");
+  const [settingsWifi, setSettingsWifi] = useState("");
+  const [settingsWifiPassword, setSettingsWifiPassword] = useState("");
+  const [settingsCurrency, setSettingsCurrency] = useState("₼");
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+  // Aktiv Tab (Active Tab): "items" və ya "settings"
+  const [activeTab, setActiveTab] = useState("items");
+
+  // Modallar və Forma Vəziyyətləri (CRUD Modals)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  
+  // Forma sahələri (Form Fields)
+  const [formName, setFormName] = useState("");
+  const [formPrice, setFormPrice] = useState("");
+  const [formCategory, setFormCategory] = useState("mains");
+  const [formIngredients, setFormIngredients] = useState("");
+  const [formImage, setFormImage] = useState("");
+  const [formTags, setFormTags] = useState("");
+  const [formChefSpecial, setFormChefSpecial] = useState(false);
+
+  // Şəkil yükləmə vəziyyəti (Image Upload States)
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Bildirişlər (Notification Toast)
+  const [toast, setToast] = useState(null);
+
+  // Mövzunu yoxla və tətbiq et (Initialize theme)
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem("deniz_theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      
+      if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add("dark");
+        setIsDarkMode(true);
+      } else {
+        document.documentElement.classList.remove("dark");
+        setIsDarkMode(false);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    // LocalStorage-dən şifrəni yoxlayıb daxil olmaq
+    const savedPassword = localStorage.getItem("deniz_admin_pass");
+    if (savedPassword) {
+      setPassword(savedPassword);
+      testAuth(savedPassword);
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Mövzu Dəyişdiricisi (Theme Toggler)
+  const toggleTheme = () => {
+    if (isDarkMode) {
+      document.documentElement.classList.remove("dark");
+      setIsDarkMode(false);
+      localStorage.setItem("deniz_theme", "light");
+    } else {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+      localStorage.setItem("deniz_theme", "dark");
+    }
+  };
+
+  // Toast bildiriş funksiyası
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 4000);
+  };
+
+  // Şifrə ilə qoşulmanı yoxlamaq
+  const testAuth = async (passToTest) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/items", {
+        headers: { "x-admin-password": passToTest }
+      });
+      
+      if (res.status === 401) {
+        setLoginError("Daxil etdiyiniz şifrə yanlışdır!");
+        setIsLoggedIn(false);
+        localStorage.removeItem("deniz_admin_pass");
+      } else {
+        const data = await res.json();
+        setIsLoggedIn(true);
+        setItems(data.items || []);
+        setIsDatabase(data.isDatabase);
+        localStorage.setItem("deniz_admin_pass", passToTest);
+        
+        // Giriş uğurludursa sazlamaları da çəkirik
+        await loadSettings(passToTest);
+      }
+    } catch (e) {
+      console.error(e);
+      setErrorMessage("Qoşulma zamanı xəta baş verdi.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Sazlamaları verilənlər bazasından və ya lokal JSON-dan çəkir
+  const loadSettings = async (pass = password) => {
+    try {
+      const res = await fetch("/api/settings", {
+        headers: { "x-admin-password": pass }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.settings) {
+          setSettingsName(data.settings.restaurantName || "Bizim çimərlik");
+          setSettingsSubtitle(data.settings.restaurantSubtitle || "Restaurant & Lounge");
+          setSettingsCurrency(data.settings.currency || "₼");
+          setSettingsPhone(data.settings.contact?.phone || "");
+          setSettingsAddress(data.settings.contact?.address || "");
+          setSettingsWifi(data.settings.contact?.wifi || "");
+          setSettingsWifiPassword(data.settings.contact?.wifiPassword || "");
+        }
+      }
+    } catch (err) {
+      console.error("Settings yüklənərkən xəta:", err);
+    }
+  };
+
+  // Login düyməsi sıxıldıqda
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (!password.trim()) {
+      setLoginError("Şifrə boş ola bilməz!");
+      return;
+    }
+    testAuth(password);
+  };
+
+  // Menyu siyahısını yeniləyən GET sorğusu
+  const refreshItems = async () => {
+    try {
+      const res = await fetch("/api/items", {
+        headers: { "x-admin-password": password }
+      });
+      const data = await res.json();
+      setItems(data.items || []);
+      setIsDatabase(data.isDatabase);
+    } catch (e) {
+      console.error(e);
+      showToast("Menyu yüklənərkən xəta yarandı", "error");
+    }
+  };
+
+  // Məlumatları JSON-dan Baza Köçürmə (Migration)
+  const handleMigration = async () => {
+    if (!confirm("Bütün mövcud yeməkləri və restoran məlumatlarını Supabase verilənlər bazasına köçürmək istəyirsiniz?")) return;
+
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/migrate", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "x-admin-password": password 
+        }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast(data.message, "success");
+        await refreshItems();
+        await loadSettings();
+      } else {
+        showToast(data.error || "Köçürmə zamanı xəta baş verdi", "error");
+      }
+    } catch (e) {
+      showToast("Serverlə əlaqə kəsildi", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Restoran Sazlamalarını Yadda Saxlama (Save Settings to DB)
+  const handleSaveSettings = async (e) => {
+    e.preventDefault();
+    if (!settingsName.trim()) {
+      showToast("Restoran adı boş ola bilməz!", "error");
+      return;
+    }
+
+    setIsSavingSettings(true);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({
+          restaurantName: settingsName,
+          restaurantSubtitle: settingsSubtitle,
+          currency: settingsCurrency,
+          contact: {
+            phone: settingsPhone,
+            address: settingsAddress,
+            wifi: settingsWifi,
+            wifiPassword: settingsWifiPassword
+          }
+        })
+      });
+
+      if (res.ok) {
+        showToast("Restoran məlumatları uğurla yadda saxlanıldı!", "success");
+        await loadSettings();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Dəyişikliklər qeyd edilmədi", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə əlaqəsi xətası", "error");
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
+  // Çıxış etmək (Logout)
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setPassword("");
+    localStorage.removeItem("deniz_admin_pass");
+  };
+
+  // Modal üçün formanı sıfırlayır
+  const resetForm = () => {
+    setFormName("");
+    setFormPrice("");
+    setFormCategory("mains");
+    setFormIngredients("");
+    setFormImage("");
+    setFormTags("");
+    setFormChefSpecial(false);
+  };
+
+  // Əlavə et Modalını Açır
+  const openAddModal = () => {
+    resetForm();
+    setIsAddModalOpen(true);
+  };
+
+  // Redaktə Modalını Açır
+  const openEditModal = (item) => {
+    setSelectedItem(item);
+    setFormName(item.name);
+    setFormPrice(item.price.toString());
+    setFormCategory(item.categoryId);
+    setFormIngredients(item.ingredients);
+    setFormImage(item.image);
+    setFormTags(item.tags ? item.tags.join(", ") : "");
+    setFormChefSpecial(!!item.isChefSpecial);
+    setIsEditModalOpen(true);
+  };
+
+  // Birbaşa Şəkil Yükləmə Funksiyası
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "x-admin-password": password
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setFormImage(data.url);
+        showToast("Şəkil uğurla yükləndi!", "success");
+      } else {
+        showToast(data.error || "Şəkil yüklənərkən xəta baş verdi", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Şəbəkə əlaqəsi xətası", "error");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // 1. Yeni yemək yaratma (Create)
+  const handleAddItem = async (e) => {
+    e.preventDefault();
+    if (!formName || !formPrice || !formIngredients) {
+      showToast("Zəhmət olmasa ulduzlu (*) sahələri doldurun", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/items", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({
+          categoryId: formCategory,
+          name: formName,
+          price: parseFloat(formPrice),
+          ingredients: formIngredients,
+          image: formImage,
+          tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
+          isChefSpecial: formChefSpecial
+        })
+      });
+
+      if (res.ok) {
+        showToast("Yeni yemək menyuya əlavə edildi!", "success");
+        setIsAddModalOpen(false);
+        refreshItems();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Xəta yarandı", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
+    }
+  };
+
+  // 2. Yeməyi Yeniləmə (Update)
+  const handleEditItem = async (e) => {
+    e.preventDefault();
+    if (!formName || !formPrice || !formIngredients) {
+      showToast("Zəhmət olmasa vacib sahələri doldurun", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/items", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({
+          id: selectedItem.id,
+          categoryId: formCategory,
+          name: formName,
+          price: parseFloat(formPrice),
+          ingredients: formIngredients,
+          image: formImage,
+          tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
+          isChefSpecial: formChefSpecial
+        })
+      });
+
+      if (res.ok) {
+        showToast("Yemək uğurla yeniləndi!", "success");
+        setIsEditModalOpen(false);
+        refreshItems();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Yenilənmə zamanı xəta yarandı", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
+    }
+  };
+
+  // 3. Yeməyi Silmə (Delete)
+  const handleDeleteItem = async (id, name) => {
+    if (!confirm(`"${name}" menyudan silinsin? Bu əməliyyat geri qaytarıla bilməz!`)) return;
+
+    try {
+      const res = await fetch(`/api/items?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": password }
+      });
+
+      if (res.ok) {
+        showToast("Yemək menyudan silindi!", "success");
+        refreshItems();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Silinmə zamanı xəta yarandı", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
+    }
+  };
+
+  // Dinamik ikon renderi
+  const renderIcon = (iconName, className = "w-5 h-5") => {
+    const IconComponent = Icons[iconName];
+    if (!IconComponent) return <Icons.HelpCircle className={className} />;
+    return <IconComponent className={className} />;
+  };
+
+  // ----------------------------------------------------
+  // GÖZLƏMƏ EKRANI
+  // ----------------------------------------------------
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-100/50 dark:from-[#06152d] dark:to-[#081a38] text-slate-800 dark:text-white flex flex-col items-center justify-center space-y-4">
+        <Icons.Sparkles className="w-12 h-12 text-teal-600 dark:text-orange-500 animate-spin" />
+        <p className="text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-sky-200">Admin Panel yüklənir...</p>
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // GİRİŞ EKRANI
+  // ----------------------------------------------------
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen relative flex items-center justify-center p-4 bg-gradient-to-br from-amber-50 via-slate-50 to-teal-50 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white overflow-hidden transition-colors duration-500">
+        <button
+          onClick={toggleTheme}
+          className="absolute top-5 right-5 p-3 rounded-full bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-md text-slate-600 dark:text-amber-400 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+        >
+          {isDarkMode ? <Icons.Sun className="w-5 h-5" /> : <Icons.Moon className="w-5 h-5 text-teal-800" />}
+        </button>
+
+        <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-orange-400/10 dark:bg-orange-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-teal-400/10 dark:bg-teal-500/5 rounded-full blur-3xl"></div>
+
+        <div className="w-full max-w-md bg-white/90 dark:bg-[#0e2245]/90 border border-slate-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-8 backdrop-blur-xl relative z-10 space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="font-playfair text-3xl font-extrabold tracking-wider bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center justify-center gap-2">
+              <span>{settingsName || "Bizim çimərlik"}</span>
+              <Icons.Sparkles className="w-6 h-6 text-orange-500 fill-orange-500 animate-pulse" />
+            </h1>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-sky-200 font-extrabold">Admin İdarəetmə Paneli</p>
+          </div>
+
+          <form onSubmit={handleLoginSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 dark:text-sky-200 uppercase tracking-wider block">Giriş Şifrəsi</label>
+              <div className="relative">
+                <Icons.Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-sky-300/60" />
+                <input
+                  type="password"
+                  placeholder="Şifrəni daxil edin"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-slate-200 dark:border-sky-400/25 bg-slate-50 dark:bg-[#0c2447]/80 backdrop-blur-md outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 dark:focus:ring-orange-500/20 dark:focus:border-orange-500 text-slate-800 dark:text-white transition-all font-medium placeholder-slate-400 dark:placeholder-slate-500"
+                />
+              </div>
+              {loginError && (
+                <p className="text-xs font-semibold text-rose-500 dark:text-rose-400 flex items-center gap-1.5 mt-1.5">
+                  <Icons.AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{loginError}</span>
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-4 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 dark:from-teal-500 dark:to-emerald-600 dark:hover:from-teal-600 dark:hover:to-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-teal-500/10 dark:shadow-teal-500/20 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Icons.LogIn className="w-5 h-5" />
+              <span>Giriş et</span>
+            </button>
+          </form>
+
+          <div className="text-center text-[10px] text-slate-400 dark:text-slate-500">
+            Bizim çimərlik Onlayn Rəqəmsal Menyu Admin Panel
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ----------------------------------------------------
+  // İDARƏETMƏ PANELI (MAIN PANEL)
+  // ----------------------------------------------------
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/60 via-slate-50 to-orange-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white pb-24 relative overflow-x-clip transition-colors duration-500">
+      
+      {/* Toast Bildiriş */}
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 p-4 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in border ${
+          toast.type === "error" 
+            ? "bg-rose-50 dark:bg-rose-950/95 border-rose-200 dark:border-rose-500/30 text-rose-800 dark:text-rose-200" 
+            : "bg-emerald-50 dark:bg-emerald-950/95 border-emerald-200 dark:border-emerald-500/30 text-emerald-800 dark:text-emerald-200"
+        }`}>
+          {toast.type === "error" ? <Icons.XCircle className="w-5 h-5 text-rose-500" /> : <Icons.CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+          <span className="text-xs md:text-sm font-bold">{toast.message}</span>
+        </div>
+      )}
+
+      {/* Üst Naviqasiya Paneli */}
+      <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-[#06152d]/80 border-b border-slate-200/80 dark:border-white/10 backdrop-blur-md shadow-sm transition-all duration-300">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div>
+            <h1 className="font-playfair text-xl md:text-2xl font-extrabold tracking-wider bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center gap-1.5">
+              <span>{settingsName || "Bizim çimərlik"}</span>
+              <span className="text-[10px] bg-teal-600/10 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">ADMIN</span>
+            </h1>
+            <p className="text-[9px] uppercase tracking-widest text-slate-500 dark:text-sky-200 font-extrabold mt-0.5">
+              {settingsSubtitle || "Restaurant & Lounge"}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-600 dark:text-amber-400 transition-colors cursor-pointer"
+              title="Mövzunu dəyiş"
+            >
+              {isDarkMode ? <Icons.Sun className="w-4.5 h-4.5" /> : <Icons.Moon className="w-4.5 h-4.5 text-teal-800" />}
+            </button>
+
+            <button
+              onClick={() => window.open("/", "_blank")}
+              className="px-3.5 py-2.5 bg-sky-500/10 hover:bg-sky-500/20 dark:bg-sky-500/10 dark:hover:bg-sky-500/20 border border-sky-200 dark:border-sky-500/20 rounded-xl text-xs font-bold transition-all text-sky-700 dark:text-sky-300 flex items-center gap-1.5 cursor-pointer"
+            >
+              <Icons.ExternalLink className="w-4 h-4" />
+              <span className="hidden sm:inline">Menyuya Bax</span>
+            </button>
+
+            <button
+              onClick={handleLogout}
+              className="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/20 rounded-xl text-xs font-bold transition-all text-rose-700 dark:text-rose-400 flex items-center gap-1.5 cursor-pointer"
+            >
+              <Icons.LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Çıxış</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        
+        {/* BAZA KONFİQURASİYA BANNERİ */}
+        {!isDatabase ? (
+          <div className="bg-amber-500/5 border-2 border-amber-300 dark:border-amber-500/30 p-6 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm animate-fade-in">
+            <div className="space-y-2 z-10 max-w-3xl">
+              <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                <Icons.AlertTriangle className="w-6 h-6 shrink-0 text-amber-500" />
+                <h2 className="text-lg font-bold">Verilənlər Bazası Sazlanmayıb!</h2>
+              </div>
+              <p className="text-xs md:text-sm text-slate-600 dark:text-sky-100/80 leading-relaxed font-medium">
+                Tətbiq hazırda **Lokal JSON** rejimində işləyir. Restoran adını və menyunu tam idarə edə bilmək üçün verilənlər bazasını bağlamalısınız. 
+                Layihənizin `.env.local` faylına məlumatları yazın və serveri yenidən başladın.
+              </p>
+            </div>
+            <div className="shrink-0 flex gap-2">
+              <button 
+                onClick={() => alert(`Sazlama Addımları:\n1. Supabase.com-da qeydiyyatdan keçin və layihə yaradın.\n2. schema.sql faylındakı kodları Supabase SQL Editor bölməsinə yapışdırıb işə salın.\n3. .env.local faylındakı URL və Anon Key sahələrini doldurun.\n4. Serveri söndürüb yenidən yandırın!`)}
+                className="px-4.5 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-amber-500/10 cursor-pointer"
+              >
+                Necə etməli?
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/30 p-4 px-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs animate-fade-in">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-xl shrink-0 shadow-xs">
+                <Icons.Database className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-emerald-800 dark:text-emerald-400">Supabase qoşulması aktivdir! ✅</p>
+                <p className="text-[11px] text-slate-500 dark:text-sky-200/60 mt-0.5 font-medium">Dəyişikliklər dərhal bulud bazasında qeyd edilir və müştərilərə göstərilir.</p>
+              </div>
+            </div>
+
+            {items.length === 0 && (
+              <button
+                onClick={handleMigration}
+                className="w-full sm:w-auto px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm animate-pulse"
+              >
+                <Icons.UploadCloud className="w-4.5 h-4.5" />
+                <span>Köhnə məlumatları bazaya köçür (1-kliklə)</span>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* TAB MENYUSU (TAB NAVIGATION - Dynamic Settings and Items switcher) */}
+        {isDatabase && (
+          <div className="flex border-b border-slate-200 dark:border-white/10 gap-6">
+            <button
+              onClick={() => setActiveTab("items")}
+              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "items"
+                  ? "text-teal-600 dark:text-teal-400"
+                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              <Icons.Utensils className="w-4.5 h-4.5" />
+              <span>Yeməklər Menyusu</span>
+              {activeTab === "items" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("settings")}
+              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "settings"
+                  ? "text-teal-600 dark:text-teal-400"
+                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              <Icons.Sliders className="w-4.5 h-4.5" />
+              <span>Restoran Ümumi Məlumatları (Mentions)</span>
+              {activeTab === "settings" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
+              )}
+            </button>
+          </div>
+        )}
+
+        {/* ----------------------------------------------------
+        TAB 1: YEMƏKLƏRİN İDARƏ EDİLMƏSİ
+        ---------------------------------------------------- */}
+        {activeTab === "items" && (
+          <>
+            {/* ÜST PANEL ALƏTLƏRİ */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 dark:bg-[#0c2447]/40 p-5 rounded-2xl border border-slate-200/80 dark:border-white/5 shadow-xs">
+              <div>
+                <h3 className="text-base font-bold text-slate-800 dark:text-white">Bütün Yeməklərin Siyahısı</h3>
+                <p className="text-[11px] text-slate-400 dark:text-sky-200/50 mt-0.5 font-semibold">Ümumi: {items.length} məhsul menyuda mövcuddur</p>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                {isDatabase && (
+                  <button
+                    onClick={openAddModal}
+                    className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-600/10 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <Icons.Plus className="w-4.5 h-4.5" />
+                    <span>Yeni Yemək Əlavə Et</span>
+                  </button>
+                )}
+                {!isDatabase && (
+                  <span className="w-full sm:w-auto text-center px-4 py-3 bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-300/50 dark:border-amber-500/20 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5">
+                    <Icons.Lock className="w-3.5 h-3.5" />
+                    Dəyişiklik üçün Bazanı qoşun
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* YEMƏKLƏRİN SİYAHISI */}
+            {items.length === 0 ? (
+              <div className="bg-white/80 dark:bg-[#0c2447]/40 py-16 px-6 text-center rounded-2xl border border-slate-200/60 dark:border-white/5 flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto shadow-sm">
+                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-[#0c2447] flex items-center justify-center text-slate-400 dark:text-sky-300 border border-slate-200 dark:border-transparent">
+                  <Icons.Inbox className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">Heç bir təam yoxdur</h3>
+                  <p className="text-xs text-slate-500 dark:text-sky-200/60 mt-1.5 max-w-xs leading-relaxed font-medium">
+                    Verilənlər bazanız boşdur. Əgər hər şey sazlanıbsa, köhnə hazır menyu məlumatlarını miqrasiya düyməsi ilə 1-saniyədə bura köçürə bilərsiniz.
+                  </p>
+                </div>
+                {isDatabase && (
+                  <button 
+                    onClick={handleMigration}
+                    className="px-5 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-teal-500/10 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Icons.UploadCloud className="w-4.5 h-4.5" />
+                    Köhnə Menyunun Məlumatlarını Yüklə
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                
+                {/* MOBİL RESPONSIVE SİYAHI */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {items.map((item) => (
+                    <div key={item.id} className="bg-white dark:bg-[#0c2447]/60 rounded-2xl border border-slate-200/80 dark:border-white/10 p-4 flex flex-col gap-3 shadow-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shrink-0">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600&auto=format&fit=crop&q=80"; }}
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-playfair font-bold text-base text-slate-800 dark:text-white flex items-center flex-wrap gap-1.5 leading-snug">
+                            {item.name}
+                            {item.isChefSpecial && (
+                              <span className="text-[7px] font-extrabold uppercase px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded text-white shadow-2xs shrink-0">Şef</span>
+                            )}
+                          </p>
+                          
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-200/40 dark:border-teal-400/10">
+                              {menuData.categories.find(c => c.id === item.categoryId)?.name || item.categoryId}
+                            </span>
+                            <span className="font-playfair font-extrabold text-orange-600 dark:text-amber-400 text-sm">
+                              {Number(item.price).toFixed(2)} {settingsCurrency}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-slate-500 dark:text-sky-200/70 line-clamp-2 leading-relaxed bg-slate-50/50 dark:bg-slate-900/10 p-2 rounded-lg border border-slate-100 dark:border-transparent font-medium">
+                        {item.ingredients}
+                      </p>
+
+                      <div className="flex justify-between items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5">
+                        <div className="flex gap-1">
+                          {item.tags && item.tags.slice(0, 2).map(t => (
+                            <span key={t} className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {isDatabase ? (
+                            <>
+                              <button
+                                onClick={() => openEditModal(item)}
+                                className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 dark:bg-teal-500/10 dark:hover:bg-teal-500/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                              >
+                                <Icons.Edit3 className="w-3.5 h-3.5" />
+                                <span>Düzəliş</span>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteItem(item.id, item.name)}
+                                className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                              >
+                                <Icons.Trash2 className="w-3.5 h-3.5" />
+                                <span>Sil</span>
+                              </button>
+                            </>
+                          ) : (
+                            <span className="text-[10px] text-slate-400 font-bold italic">Lokal Rejim</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* DESKTOP CƏDVƏL GÖRÜNÜŞÜ */}
+                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-hidden shadow-md">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50/80 dark:bg-[#0b1d38]/80 text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-sky-300/80 border-b border-slate-200 dark:border-white/10">
+                        <th className="py-4 px-5">Şəkil & Ad</th>
+                        <th className="py-4 px-5">Kateqoriya</th>
+                        <th className="py-4 px-5">Qiymət</th>
+                        <th className="py-4 px-5">Tərkibi</th>
+                        <th className="py-4 px-5 text-right">Əməliyyatlar</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-sm font-medium">
+                      {items.map((item) => (
+                        <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-[#0c2447]/20 transition-colors">
+                          <td className="py-4 px-5 flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shrink-0 shadow-xs">
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600&auto=format&fit=crop&q=80"; }}
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-playfair font-bold text-base text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                                {item.name}
+                                {item.isChefSpecial && (
+                                  <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded text-white shrink-0 shadow-xs">Şef</span>
+                                )}
+                              </p>
+                              <div className="flex gap-1 mt-1 flex-wrap">
+                                {item.tags && item.tags.slice(0, 2).map(t => (
+                                  <span key={t} className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
+                                ))}
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="py-4 px-5">
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-200/50 dark:border-teal-400/10 shadow-2xs">
+                              {renderIcon(menuData.categories.find(c => c.id === item.categoryId)?.icon || "HelpCircle", "w-3.5 h-3.5")}
+                              <span>{menuData.categories.find(c => c.id === item.categoryId)?.name || item.categoryId}</span>
+                            </span>
+                          </td>
+
+                          <td className="py-4 px-5 font-playfair font-extrabold text-orange-600 dark:text-amber-400 text-base">
+                            {Number(item.price).toFixed(2)} {settingsCurrency}
+                          </td>
+
+                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
+                            {item.ingredients}
+                          </td>
+
+                          <td className="py-4 px-5 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {isDatabase && (
+                                <>
+                                  <button
+                                    onClick={() => openEditModal(item)}
+                                    className="p-2 bg-teal-50 hover:bg-teal-100 dark:bg-teal-500/5 dark:hover:bg-teal-500/20 border border-teal-200 dark:border-transparent rounded-xl text-teal-600 dark:text-teal-400 transition-all cursor-pointer"
+                                    title="Redaktə et"
+                                  >
+                                    <Icons.Edit3 className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteItem(item.id, item.name)}
+                                    className="p-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/5 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-transparent rounded-xl text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
+                                    title="Sil"
+                                  >
+                                    <Icons.Trash2 className="w-4 h-4" />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ----------------------------------------------------
+        TAB 2: RESTORAN SAZLAMALARI (EDIT GENERAL TEXTS / MENTIONS)
+        ---------------------------------------------------- */}
+        {activeTab === "settings" && isDatabase && (
+          <form onSubmit={handleSaveSettings} className="bg-white/80 dark:bg-[#0c2447]/40 p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-white/10 shadow-md space-y-6 animate-fade-in text-sm">
+            <div>
+              <h3 className="text-base font-bold text-slate-800 dark:text-white">Restoran Ümumi Məlumatlarının Sazlanması</h3>
+              <p className="text-xs text-slate-400 dark:text-sky-200/50 mt-0.5 font-medium">Bu bölmədən menyunun yuxarı hissəsində, hero bannerdə və footer-də olan bütün brend adlarını, telefon nömrəsini, ünvanı və wi-fi məlumatlarını canlı redaktə edə bilərsiniz.</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Restoran Adı */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Restoranın Adı *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Məsələn: Bizim çimərlik"
+                  value={settingsName}
+                  onChange={(e) => setSettingsName(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* Alt Başlıq */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Restoranın Alt Başlığı (Subtitle)</label>
+                <input
+                  type="text"
+                  placeholder="Məsələn: Restaurant & Lounge"
+                  value={settingsSubtitle}
+                  onChange={(e) => setSettingsSubtitle(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* Telefon Nömrəsi */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Əlaqə Telefonu</label>
+                <input
+                  type="text"
+                  placeholder="Məsələn: +994 (50) 123-45-67"
+                  value={settingsPhone}
+                  onChange={(e) => setSettingsPhone(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* Pul Nişanı */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Valyuta Simvolu (Currency)</label>
+                <input
+                  type="text"
+                  placeholder="Məsələn: ₼, $, AZN"
+                  value={settingsCurrency}
+                  onChange={(e) => setSettingsCurrency(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* Wi-Fi Adı */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Wi-Fi Şəbəkəsinin Adı (SSID)</label>
+                <input
+                  type="text"
+                  placeholder="Məsələn: BizimCimerlik_Guest"
+                  value={settingsWifi}
+                  onChange={(e) => setSettingsWifi(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* Wi-Fi Şifrəsi */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Wi-Fi Şəbəkəsinin Şifrəsi</label>
+                <input
+                  type="text"
+                  placeholder="Məsələn: welcome2026"
+                  value={settingsWifiPassword}
+                  onChange={(e) => setSettingsWifiPassword(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+            </div>
+
+            {/* Ünvan (Böyük mətn sahəsi) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Restoranın Ünvanı</label>
+              <textarea
+                rows="2"
+                placeholder="Məsələn: Bakı bulvarı, Bizim Çimərlik kompleksi, No: 1"
+                value={settingsAddress}
+                onChange={(e) => setSettingsAddress(e.target.value)}
+                className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 resize-none font-medium"
+              />
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 dark:border-white/10 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSavingSettings}
+                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                {isSavingSettings ? (
+                  <>
+                    <Icons.Sparkles className="w-4 h-4 animate-spin" />
+                    <span>Saxlanılır...</span>
+                  </>
+                ) : (
+                  <>
+                    <Icons.Save className="w-4 h-4" />
+                    <span>Restoran Məlumatlarını Yadda Saxla</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        )}
+      </main>
+
+      {/* ----------------------------------------------------
+      YENİ YEMƏK ƏLAVƏ ETMƏ MODALI
+      ---------------------------------------------------- */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-lg bg-white dark:bg-[#0c2447] rounded-2xl border border-slate-200 dark:border-white/20 overflow-hidden flex flex-col shadow-2xl max-h-[90vh]">
+            <header className="p-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-[#0b1d38]/85">
+              <h3 className="font-playfair text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                <Icons.Plus className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <span>Yeni Yemək Əlavə Et</span>
+              </h3>
+              <button onClick={() => setIsAddModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                <Icons.X className="w-5 h-5" />
+              </button>
+            </header>
+
+            <form onSubmit={handleAddItem} className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Adı *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Məsələn: Sacüstü Quzu"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qiyməti ({settingsCurrency}) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="Məsələn: 24.50"
+                    value={formPrice}
+                    onChange={(e) => setFormPrice(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Kateqoriyası *</label>
+                <select
+                  value={formCategory}
+                  onChange={(e) => setFormCategory(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                >
+                  {menuData.categories.map(cat => (
+                    <option key={cat.id} value={cat.id} className="bg-white dark:bg-[#06152d] text-slate-800 dark:text-white">{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Şəkli *</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                
+                {formImage ? (
+                  <div className="relative h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 group shadow-xs">
+                    <img
+                      src={formImage}
+                      alt="Yüklənən Yemək"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-3.5 py-2 bg-white text-slate-800 text-xs font-bold rounded-xl shadow-md transition-all hover:scale-105"
+                      >
+                        Şəkli Dəyiş
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormImage("")}
+                        className="px-3.5 py-2 bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all hover:scale-105 hover:bg-rose-700"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full h-36 rounded-xl border-2 border-dashed border-slate-300 hover:border-teal-500 dark:border-sky-400/20 dark:hover:border-teal-500 bg-slate-50 hover:bg-slate-100/50 dark:bg-[#0c2447]/40 dark:hover:bg-[#0c2447]/60 transition-all flex flex-col items-center justify-center space-y-2 cursor-pointer shadow-2xs"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Icons.Sparkles className="w-8 h-8 text-teal-600 dark:text-orange-500 animate-spin" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/70">Şəkil buluda yüklənir...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icons.UploadCloud className="w-8 h-8 text-slate-400 dark:text-sky-300/60" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/80">Telefondan və ya Kompüterdən Şəkil Yüklə</span>
+                        <span className="text-[10px] text-slate-400 dark:text-sky-200/40">PNG, JPG, WEBP (Maks. 5MB)</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi *</label>
+                <textarea
+                  rows="3"
+                  required
+                  placeholder="Yeməyin inqrediyentləri, hazırlanma üsulu..."
+                  value={formIngredients}
+                  onChange={(e) => setFormIngredients(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Etiketlər (Vergüllə ayırın)</label>
+                  <input
+                    type="text"
+                    placeholder="Məsələn: Populyar, Milli"
+                    value={formTags}
+                    onChange={(e) => setFormTags(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+                <div className="flex items-center gap-2.5 h-full pt-6">
+                  <input
+                    type="checkbox"
+                    id="add-chef"
+                    checked={formChefSpecial}
+                    onChange={(e) => setFormChefSpecial(e.target.checked)}
+                    className="w-4.5 h-4.5 text-teal-600 border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 rounded focus:ring-4 focus:ring-teal-500/10 shrink-0 cursor-pointer"
+                  />
+                  <label htmlFor="add-chef" className="text-xs font-bold text-slate-600 dark:text-sky-200 select-none cursor-pointer">Şefin Seçimidir</label>
+                </div>
+              </div>
+
+              <footer className="pt-5 flex gap-3 border-t border-slate-100 dark:border-white/10 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+                >
+                  İmtina
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer"
+                >
+                  Əlavə Et
+                </button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------
+      REDAKTƏ ETMƏ MODALI
+      ---------------------------------------------------- */}
+      {isEditModalOpen && selectedItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-lg bg-white dark:bg-[#0c2447] rounded-2xl border border-slate-200 dark:border-white/20 overflow-hidden flex flex-col shadow-2xl max-h-[90vh]">
+            <header className="p-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-[#0b1d38]/85">
+              <h3 className="font-playfair text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                <Icons.Edit className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <span>Yeməyi Redaktə Et</span>
+              </h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                <Icons.X className="w-5 h-5" />
+              </button>
+            </header>
+
+            <form onSubmit={handleEditItem} className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Adı *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Sacüstü Quzu"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qiyməti ({settingsCurrency}) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    placeholder="24.50"
+                    value={formPrice}
+                    onChange={(e) => setFormPrice(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Kateqoriyası *</label>
+                <select
+                  value={formCategory}
+                  onChange={(e) => setFormCategory(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                >
+                  {menuData.categories.map(cat => (
+                    <option key={cat.id} value={cat.id} className="bg-white dark:bg-[#06152d] text-slate-800 dark:text-white">{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Şəkli *</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                
+                {formImage ? (
+                  <div className="relative h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 group shadow-xs">
+                    <img
+                      src={formImage}
+                      alt="Yüklənən Yemək"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-3.5 py-2 bg-white text-slate-800 text-xs font-bold rounded-xl shadow-md transition-all hover:scale-105"
+                      >
+                        Şəkli Dəyiş
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormImage("")}
+                        className="px-3.5 py-2 bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all hover:scale-105 hover:bg-rose-700"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full h-36 rounded-xl border-2 border-dashed border-slate-300 hover:border-teal-500 dark:border-sky-400/20 dark:hover:border-teal-500 bg-slate-50 hover:bg-slate-100/50 dark:bg-[#0c2447]/40 dark:hover:bg-[#0c2447]/60 transition-all flex flex-col items-center justify-center space-y-2 cursor-pointer shadow-2xs"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Icons.Sparkles className="w-8 h-8 text-teal-600 dark:text-orange-500 animate-spin" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/70">Şəkil buluda yüklənir...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icons.UploadCloud className="w-8 h-8 text-slate-400 dark:text-sky-300/60" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/80">Telefondan və ya Kompüterdən Şəkil Yüklə</span>
+                        <span className="text-[10px] text-slate-400 dark:text-sky-200/40">PNG, JPG, WEBP (Maks. 5MB)</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi *</label>
+                <textarea
+                  rows="3"
+                  required
+                  placeholder="Yeməyin inqrediyentləri, hazırlanıb təqdim olunması..."
+                  value={formIngredients}
+                  onChange={(e) => setFormIngredients(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 resize-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Etiketlər (Vergüllə ayırın)</label>
+                  <input
+                    type="text"
+                    placeholder="Populyar, Şefin Seçimi"
+                    value={formTags}
+                    onChange={(e) => setFormTags(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
+                  />
+                </div>
+                <div className="flex items-center gap-2.5 h-full pt-6">
+                  <input
+                    type="checkbox"
+                    id="edit-chef"
+                    checked={formChefSpecial}
+                    onChange={(e) => setFormChefSpecial(e.target.checked)}
+                    className="w-4.5 h-4.5 text-teal-600 border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 rounded focus:ring-4 focus:ring-teal-500/10 shrink-0 cursor-pointer"
+                  />
+                  <label htmlFor="edit-chef" className="text-xs font-bold text-slate-600 dark:text-sky-200 select-none cursor-pointer">Şefin Seçimidir</label>
+                </div>
+              </div>
+
+              <footer className="pt-5 flex gap-3 border-t border-slate-100 dark:border-white/10 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+                >
+                  İmtina
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer"
+                >
+                  Yadda Saxla
+                </button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Zərif Qorunma Footer-i */}
+      <footer className="mt-16 text-center text-xs text-slate-400 dark:text-slate-500 py-6 border-t border-slate-200/80 dark:border-white/5">
+        🔒 {settingsName || "Bizim çimərlik"} Admin Paneli. Zəmanətli şifrə sistemi.
+      </footer>
+    </div>
+  );
+}

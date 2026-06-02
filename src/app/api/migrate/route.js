@@ -58,6 +58,35 @@ export async function POST(request) {
       }
     }
 
+    // 2.5. Kateqoriyaları miqrasiya edirik
+    if (localData.categories && localData.categories.length > 0) {
+      // Dublikat olmaması üçün köhnə kateqoriyaları silirik
+      await supabase
+        .from("menu_categories")
+        .delete()
+        .neq("id", "dummy-prevent-empty-error");
+
+      const categoriesToInsert = localData.categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        icon: cat.icon || "Utensils",
+        description: cat.description || ""
+      }));
+
+      const { error: catsError } = await supabase
+        .from("menu_categories")
+        .insert(categoriesToInsert);
+
+      if (catsError) {
+        if (catsError.message?.includes("Could not find the table") || catsError.code === "PGRST116" || catsError.message?.includes("relation") && catsError.message?.includes("does not exist")) {
+          return NextResponse.json({ 
+            error: "Supabase-də 'menu_categories' cədvəli tapılmadı! Zəhmət olmasa, layihə qovluğundakı 'schema.sql' faylının sonuna əlavə edilmiş SQL kodlarını Supabase Dashboard-da SQL Editor-da işə salın." 
+          }, { status: 400 });
+        }
+        throw catsError;
+      }
+    }
+
     // 3. Restoran ümumi məlumatlarını miqrasiya edirik (settings)
     const dbSettings = {
       id: "main",

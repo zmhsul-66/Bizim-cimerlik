@@ -46,3 +46,25 @@ CREATE POLICY "Allow public settings read access" ON restaurant_settings
 -- Admin tərəfindən idarəetmə izni
 CREATE POLICY "Allow all settings access with service role/anon" ON restaurant_settings
   FOR ALL USING (true);
+
+
+-- Kateqoriyalar cədvəli
+CREATE TABLE IF NOT EXISTS menu_categories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  icon TEXT DEFAULT 'Utensils',
+  description TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- RLS aktiv edirik
+ALTER TABLE menu_categories ENABLE ROW LEVEL SECURITY;
+
+-- Hər kəs üçün oxuma izni
+CREATE POLICY "Allow public categories read access" ON menu_categories
+  FOR SELECT USING (true);
+
+-- Admin tərəfindən idarəetmə izni
+CREATE POLICY "Allow all categories access with service role/anon" ON menu_categories
+  FOR ALL USING (true);
+

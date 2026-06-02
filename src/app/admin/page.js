@@ -27,8 +27,16 @@ export default function AdminPanel() {
   const [settingsCurrency, setSettingsCurrency] = useState("₼");
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 
-  // Aktiv Tab (Active Tab): "items" və ya "settings"
+  // Aktiv Tab (Active Tab): "items", "settings" və ya "categories"
   const [activeTab, setActiveTab] = useState("items");
+
+  // Kateqoriyalar Vəziyyəti (Category States)
+  const [categories, setCategories] = useState(menuData.categories);
+  const [isSavingCategory, setIsSavingCategory] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [catFormName, setCatFormName] = useState("");
+  const [catFormIcon, setCatFormIcon] = useState("Utensils");
+  const [catFormDescription, setCatFormDescription] = useState("");
 
   // Modallar və Forma Vəziyyətləri (CRUD Modals)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -120,6 +128,7 @@ export default function AdminPanel() {
         
         // Giriş uğurludursa sazlamaları da çəkirik
         await loadSettings(passToTest);
+        await loadCategories(passToTest);
       }
     } catch (e) {
       console.error(e);
@@ -149,6 +158,86 @@ export default function AdminPanel() {
       }
     } catch (err) {
       console.error("Settings yüklənərkən xəta:", err);
+    }
+  };
+
+  // Kateqoriyaları verilənlər bazasından və ya lokal JSON-dan çəkir
+  const loadCategories = async (pass = password) => {
+    try {
+      const res = await fetch("/api/categories", {
+        headers: { "x-admin-password": pass }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.categories) {
+          setCategories(data.categories);
+        }
+      }
+    } catch (err) {
+      console.error("Categories yüklənərkən xəta:", err);
+    }
+  };
+
+  // Yeni kateqoriya əlavə et (Create Category)
+  const handleAddCategory = async (e) => {
+    e.preventDefault();
+    if (!catFormName.trim()) {
+      showToast("Kateqoriya adı boş ola bilməz!", "error");
+      return;
+    }
+
+    setIsSavingCategory(true);
+    try {
+      const res = await fetch("/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({
+          name: catFormName,
+          icon: catFormIcon,
+          description: catFormDescription
+        })
+      });
+
+      if (res.ok) {
+        showToast("Yeni kateqoriya uğurla əlavə edildi!", "success");
+        setIsCategoryModalOpen(false);
+        setCatFormName("");
+        setCatFormDescription("");
+        setCatFormIcon("Utensils");
+        await loadCategories();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Xəta yarandı", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
+    } finally {
+      setIsSavingCategory(false);
+    }
+  };
+
+  // Kateqoriyanı sil (Delete Category)
+  const handleDeleteCategory = async (id, name) => {
+    if (!confirm(`"${name}" kateqoriyası silinsin? Bu kateqoriyaya aid yeməklər silinməyəcək, lakin kateqoriyasız qala bilərlər.`)) return;
+
+    try {
+      const res = await fetch(`/api/categories?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": password }
+      });
+
+      if (res.ok) {
+        showToast("Kateqoriya uğurla silindi!", "success");
+        await loadCategories();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Xəta yarandı", "error");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
     }
   };
 
@@ -640,6 +729,20 @@ export default function AdminPanel() {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
               )}
             </button>
+            <button
+              onClick={() => setActiveTab("categories")}
+              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "categories"
+                  ? "text-teal-600 dark:text-teal-400"
+                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              <Icons.FolderOpen className="w-4.5 h-4.5" />
+              <span>Kateqoriyalar</span>
+              {activeTab === "categories" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
+              )}
+            </button>
           </div>
         )}
 
@@ -722,7 +825,7 @@ export default function AdminPanel() {
                           
                           <div className="flex items-center justify-between mt-2">
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-200/40 dark:border-teal-400/10">
-                              {menuData.categories.find(c => c.id === item.categoryId)?.name || item.categoryId}
+                              {categories.find(c => c.id === item.categoryId)?.name || item.categoryId}
                             </span>
                             <span className="font-playfair font-extrabold text-orange-600 dark:text-amber-400 text-sm">
                               {Number(item.price).toFixed(2)} {settingsCurrency}
@@ -810,8 +913,8 @@ export default function AdminPanel() {
 
                           <td className="py-4 px-5">
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-200/50 dark:border-teal-400/10 shadow-2xs">
-                              {renderIcon(menuData.categories.find(c => c.id === item.categoryId)?.icon || "HelpCircle", "w-3.5 h-3.5")}
-                              <span>{menuData.categories.find(c => c.id === item.categoryId)?.name || item.categoryId}</span>
+                              {renderIcon(categories.find(c => c.id === item.categoryId)?.icon || "HelpCircle", "w-3.5 h-3.5")}
+                              <span>{categories.find(c => c.id === item.categoryId)?.name || item.categoryId}</span>
                             </span>
                           </td>
 
@@ -973,6 +1076,132 @@ export default function AdminPanel() {
             </div>
           </form>
         )}
+
+        {/* ----------------------------------------------------
+        TAB 3: KATEQORİYALARIN İDARƏ EDİLMƏSİ (CRUD CATEGORIES)
+        ---------------------------------------------------- */}
+        {activeTab === "categories" && isDatabase && (
+          <div className="space-y-6 animate-fade-in text-sm animate-fade-in">
+            {/* ÜST PANEL ALƏTLƏRİ */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/60 dark:bg-[#0c2447]/40 p-5 rounded-2xl border border-slate-200/80 dark:border-white/5 shadow-xs">
+              <div>
+                <h3 className="text-base font-bold text-slate-800 dark:text-white">Bütün Kateqoriyaların Siyahısı</h3>
+                <p className="text-[11px] text-slate-400 dark:text-sky-200/50 mt-0.5 font-semibold">Ümumi: {categories.length} kateqoriya menyuda mövcuddur</p>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  onClick={() => {
+                    setCatFormName("");
+                    setCatFormDescription("");
+                    setCatFormIcon("Utensils");
+                    setIsCategoryModalOpen(true);
+                  }}
+                  className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-600/10 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Icons.Plus className="w-4.5 h-4.5" />
+                  <span>Yeni Kateqoriya Əlavə Et</span>
+                </button>
+              </div>
+            </div>
+
+            {/* KATEQORİYALARIN SİYAHISI */}
+            {categories.length === 0 ? (
+              <div className="bg-white/80 dark:bg-[#0c2447]/40 py-16 px-6 text-center rounded-2xl border border-slate-200/60 dark:border-white/5 flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto shadow-sm">
+                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-[#0c2447] flex items-center justify-center text-slate-400 dark:text-sky-300 border border-slate-200 dark:border-transparent animate-pulse">
+                  <Icons.FolderOpen className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">Heç bir kateqoriya yoxdur</h3>
+                  <p className="text-xs text-slate-500 dark:text-sky-200/60 mt-1.5 max-w-xs leading-relaxed font-medium">
+                    Hazırda kateqoriya siyahısı boşdur.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {/* MOBİL RESPONSIVE SİYAHI */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {categories.map((cat) => (
+                    <div key={cat.id} className="bg-white dark:bg-[#0c2447]/60 rounded-2xl border border-slate-200/80 dark:border-white/10 p-4 flex flex-col gap-3 shadow-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200/20 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                          {renderIcon(cat.icon, "w-5 h-5")}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-playfair font-bold text-base text-slate-800 dark:text-white leading-snug">
+                            {cat.name}
+                          </p>
+                          <p className="text-[10px] font-mono text-slate-400 dark:text-sky-200/40">ID: {cat.id}</p>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-slate-500 dark:text-sky-200/70 leading-relaxed font-medium">
+                        {cat.description || "Təsvir yazılmayıb."}
+                      </p>
+
+                      <div className="flex justify-end items-center pt-2 border-t border-slate-100 dark:border-white/5">
+                        <button
+                          onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                          className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <Icons.Trash2 className="w-3.5 h-3.5" />
+                          <span>Sil</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* DESKTOP CƏDVƏL GÖRÜNÜŞÜ */}
+                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-hidden shadow-md">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-slate-50/80 dark:bg-[#0b1d38]/80 text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-sky-300/80 border-b border-slate-200 dark:border-white/10">
+                        <th className="py-4 px-5 w-20 text-center">İkon</th>
+                        <th className="py-4 px-5">Kateqoriya Adı</th>
+                        <th className="py-4 px-5">Sistem ID-si</th>
+                        <th className="py-4 px-5">Təsviri (Açıqlaması)</th>
+                        <th className="py-4 px-5 text-right w-24">Əməliyyat</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-sm font-medium">
+                      {categories.map((cat) => (
+                        <tr key={cat.id} className="hover:bg-slate-50/50 dark:hover:bg-[#0c2447]/20 transition-colors">
+                          <td className="py-4 px-5 text-center">
+                            <div className="w-10 h-10 mx-auto rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200/20 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-2xs">
+                              {renderIcon(cat.icon, "w-5 h-5")}
+                            </div>
+                          </td>
+                          <td className="py-4 px-5 text-slate-800 dark:text-white font-bold font-playfair text-base">
+                            {cat.name}
+                          </td>
+                          <td className="py-4 px-5 font-mono text-xs text-slate-400 dark:text-sky-200/40">
+                            {cat.id}
+                          </td>
+                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
+                            {cat.description || <span className="italic opacity-60">Yazılmayıb</span>}
+                          </td>
+                          <td className="py-4 px-5 text-right">
+                            <div className="flex items-center justify-end">
+                              <button
+                                onClick={() => handleDeleteCategory(cat.id, cat.name)}
+                                className="p-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/5 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-transparent rounded-xl text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
+                                title="Sil"
+                              >
+                                <Icons.Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       {/* ----------------------------------------------------
@@ -1025,7 +1254,7 @@ export default function AdminPanel() {
                   onChange={(e) => setFormCategory(e.target.value)}
                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
                 >
-                  {menuData.categories.map(cat => (
+                  {categories.map(cat => (
                     <option key={cat.id} value={cat.id} className="bg-white dark:bg-[#06152d] text-slate-800 dark:text-white">{cat.name}</option>
                   ))}
                 </select>
@@ -1193,7 +1422,7 @@ export default function AdminPanel() {
                   onChange={(e) => setFormCategory(e.target.value)}
                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
                 >
-                  {menuData.categories.map(cat => (
+                  {categories.map(cat => (
                     <option key={cat.id} value={cat.id} className="bg-white dark:bg-[#06152d] text-slate-800 dark:text-white">{cat.name}</option>
                   ))}
                 </select>
@@ -1304,6 +1533,105 @@ export default function AdminPanel() {
                   className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer"
                 >
                   Yadda Saxla
+                </button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------
+      YENİ KATEQORİYA ƏLAVƏ ETMƏ MODALI (ADD CATEGORY MODAL)
+      ---------------------------------------------------- */}
+      {isCategoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#0c2447] rounded-2xl border border-slate-200 dark:border-white/20 overflow-hidden flex flex-col shadow-2xl max-h-[90vh]">
+            <header className="p-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-[#0b1d38]/85">
+              <h3 className="font-playfair text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                <Icons.FolderPlus className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <span>Yeni Kateqoriya Əlavə Et</span>
+              </h3>
+              <button onClick={() => setIsCategoryModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:white p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                <Icons.X className="w-5 h-5" />
+              </button>
+            </header>
+
+            <form onSubmit={handleAddCategory} className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300">
+              {/* Kateqoriya Adı */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Kateqoriya Adı *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Məsələn: Fast Food, Salatlar"
+                  value={catFormName}
+                  onChange={(e) => setCatFormName(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* İkon Seçimi */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Uyğun İkon *</label>
+                <div className="relative">
+                  <select
+                    value={catFormIcon}
+                    onChange={(e) => setCatFormIcon(e.target.value)}
+                    className="w-full p-3 pl-12 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                  >
+                    <option value="Utensils">Utensils (Çəngəl-Bıçaq - Yeməklər)</option>
+                    <option value="Flame">Flame (Alov - Manqal/Kabablar)</option>
+                    <option value="Salad">Salad (Salat - Soyuq Qəlyanaltılar)</option>
+                    <option value="Soup">Soup (Şorba - İsti Şorbalar)</option>
+                    <option value="Coffee">Coffee (Qəhvə - İsti İçkilər/Çay)</option>
+                    <option value="Cake">Cake (Tort - Şirniyyatlar)</option>
+                    <option value="Pizza">Pizza (Pizza - Fast Food)</option>
+                    <option value="Fish">Fish (Balıq - Balıq Yeməkləri)</option>
+                    <option value="IceCream">IceCream (Dondurma - Sərin Desertlər)</option>
+                    <option value="Cookie">Cookie (Kek/Kruasan - Desertlər)</option>
+                    <option value="GlassWater">GlassWater (Stəkan - Soyuq İçkilər/Limonadlar)</option>
+                    <option value="Wine">Wine (Şərab stəkanı - Bar)</option>
+                    <option value="Apple">Apple (Alma - Sağlam qidalar)</option>
+                  </select>
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 pointer-events-none">
+                    {renderIcon(catFormIcon, "w-5 h-5")}
+                  </div>
+                </div>
+              </div>
+
+              {/* Təsviri */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qısa Təsviri (Description)</label>
+                <textarea
+                  rows="3"
+                  placeholder="Müştərilərin kateqoriya altında görəcəyi qısa açıqlama..."
+                  value={catFormDescription}
+                  onChange={(e) => setCatFormDescription(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 resize-none font-medium"
+                />
+              </div>
+
+              <footer className="pt-5 flex gap-3 border-t border-slate-100 dark:border-white/10 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(false)}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+                >
+                  İmtina
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingCategory}
+                  className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  {isSavingCategory ? (
+                    <>
+                      <Icons.Sparkles className="w-4 h-4 animate-spin" />
+                      <span>Saxlanılır...</span>
+                    </>
+                  ) : (
+                    <span>Kateqoriya Əlavə Et</span>
+                  )}
                 </button>
               </footer>
             </form>

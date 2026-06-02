@@ -13,6 +13,7 @@ export default function Home() {
     currency: menuData.currency,
     contact: menuData.contact
   }); // Standart olaraq JSON konfiqurasiyası
+  const [categories, setCategories] = useState(menuData.categories);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -82,8 +83,24 @@ export default function Home() {
       }
     };
 
+    // Dinamik kateqoriyaları çəkirik (Live Database Categories)
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.categories && data.categories.length > 0) {
+            setCategories(data.categories);
+          }
+        }
+      } catch (err) {
+        console.warn("Kateqoriyalar yüklənmədi, lokal şablon istifadə olunur:", err);
+      }
+    };
+
     fetchLiveItems();
     fetchSettings();
+    fetchCategories();
   }, []);
 
   // Mövzu Dəyişdiricisi (Theme Toggler)
@@ -315,8 +332,8 @@ export default function Home() {
 
             <div className="w-[1px] h-6 bg-slate-300 dark:bg-slate-700 mx-1 shrink-0"></div>
 
-            {/* JSON-dan gələn kateqoriya düymələri */}
-            {menuData.categories.map((cat) => (
+            {/* Dinamik kateqoriya düymələri */}
+            {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
@@ -368,7 +385,7 @@ export default function Home() {
                 <h3 className="text-base md:text-lg font-extrabold tracking-tight uppercase text-teal-700 dark:text-teal-400 font-playfair border-b-2 border-orange-400 pb-1 inline-block">
                   {selectedCategory === "all" ? "Bütün Menyu" : 
                    selectedCategory === "favs" ? "Sevimli Təamlarınız" :
-                   menuData.categories.find(c => c.id === selectedCategory)?.name}
+                   categories.find(c => c.id === selectedCategory)?.name}
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-1.5 font-medium">
                   {filteredItems.length} məhsul təqdim olunur

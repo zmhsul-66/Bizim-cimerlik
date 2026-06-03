@@ -183,11 +183,11 @@ export default function Home() {
       <header className="sticky top-0 z-40 w-full glass-panel border-b border-orange-200/20 dark:border-white/10 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex flex-col">
-            <h1 className="font-playfair text-2xl md:text-3xl font-extrabold tracking-wider bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 bg-clip-text text-transparent dark:from-teal-400 dark:via-amber-400 dark:to-orange-400 flex items-center gap-1.5 cursor-pointer">
+            <h1 className="brand-title-premium text-2xl md:text-3xl bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 bg-clip-text text-transparent flex items-center gap-1.5 cursor-pointer">
               <span>{settings.restaurantName}</span>
-              <Icons.Sparkles className="w-5 h-5 text-orange-500 fill-orange-500 animate-pulse shrink-0" />
+              <Icons.Sparkles className="w-4 h-4 text-orange-500 fill-orange-500 animate-pulse shrink-0" />
             </h1>
-            <p className="text-[9px] md:text-[10px] uppercase tracking-widest text-slate-500 dark:text-sky-200 font-semibold mt-0.5">
+            <p className="text-[8px] md:text-[9px] uppercase tracking-[0.25em] text-slate-500 dark:text-sky-200 font-extrabold mt-0.5 opacity-90">
               {settings.restaurantSubtitle}
             </p>
           </div>
@@ -226,10 +226,10 @@ export default function Home() {
       <section className="max-w-6xl mx-auto px-4 pt-6 pb-2">
         <div className="glass-card p-6 rounded-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-orange-200/20 dark:border-white/10 bg-gradient-to-r from-white/95 to-orange-50/60 dark:from-slate-900/80 dark:to-slate-900/40">
           <div className="space-y-2.5 z-10 max-w-2xl">
-            <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl font-playfair bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 bg-clip-text text-transparent dark:from-white dark:to-sky-100">
-              Dəniz Qoxulu Möhtəşəm Ləzzətlər 🌊
+            <h2 className="text-2xl font-normal tracking-tight md:text-3xl font-playfair bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 bg-clip-text text-transparent dark:from-white dark:to-sky-100">
+              Dəniz Qoxulu <span className="serif-italic font-normal text-teal-600 dark:text-teal-400">Möhtəşəm Ləzzətlər</span> 🌊
             </h2>
-            <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-sky-100">
+            <p className="text-xs md:text-sm leading-relaxed text-slate-500 dark:text-sky-200/90 font-light max-w-xl">
               Süfrəmizdəki hər bir təam təmiz Xəzər mehi və usta şeflərimizin sevgisi ilə hazırlanır. Hər bir tikədə zəngin Azərbaycan qonaqpərvərliyini dadın.
             </p>
             <div className="flex flex-wrap gap-4 pt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
@@ -382,7 +382,7 @@ export default function Home() {
             {/* Kateqoriya başlığı və məlumatları */}
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-base md:text-lg font-extrabold tracking-tight uppercase text-teal-700 dark:text-teal-400 font-playfair border-b-2 border-orange-400 pb-1 inline-block">
+                <h3 className="text-sm md:text-base font-bold tracking-[0.15em] uppercase text-teal-700 dark:text-teal-400 font-playfair border-b-2 border-orange-400 pb-1 inline-block">
                   {selectedCategory === "all" ? "Bütün Menyu" : 
                    selectedCategory === "favs" ? "Sevimli Təamlarınız" :
                    categories.find(c => c.id === selectedCategory)?.name}
@@ -436,7 +436,7 @@ export default function Home() {
                           {item.tags.map((tag) => (
                             <span
                               key={tag}
-                              className={`text-[9px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider text-white shadow-xs backdrop-blur-md ${
+                              className={`tag-badge-premium text-[8px] px-2.5 py-0.5 rounded-full text-white shadow-xs backdrop-blur-md ${
                                 tag.toLowerCase().includes("şef") || tag.toLowerCase().includes("chef") || tag.toLowerCase().includes("seçimi")
                                   ? "bg-gradient-to-r from-amber-500 to-orange-500 chef-badge"
                                   : "bg-teal-600/80"
@@ -456,11 +456,11 @@ export default function Home() {
                           <h4 className="font-playfair text-lg font-bold text-slate-800 dark:text-white group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors leading-snug">
                             {item.name}
                           </h4>
-                          <span className="font-playfair text-base font-extrabold text-orange-600 dark:text-amber-400 whitespace-nowrap bg-orange-50 dark:bg-amber-400/5 px-2.5 py-0.5 rounded-lg border border-orange-200/50 dark:border-amber-400/10 shrink-0">
-                            {item.price.toFixed(2)} {settings.currency}
+                          <span className="price-text-premium text-base text-orange-600 dark:text-amber-400 whitespace-nowrap bg-orange-50/70 dark:bg-amber-400/5 px-2.5 py-0.5 rounded-lg border border-orange-200/50 dark:border-amber-400/10 shrink-0">
+                            {item.price.toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settings.currency}</span>
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-sky-100 line-clamp-3 leading-relaxed">
+                        <p className="text-xs text-slate-500 dark:text-sky-200/95 line-clamp-3 leading-relaxed font-light">
                           {item.ingredients}
                         </p>
                       </div>
@@ -503,17 +503,17 @@ export default function Home() {
                         <h4 className="font-playfair font-bold text-sm md:text-base text-slate-800 dark:text-white group-hover:text-orange-500 dark:group-hover:text-orange-400 transition-colors truncate">
                           {item.name}
                         </h4>
-                        <span className="font-playfair font-extrabold text-sm md:text-base text-orange-600 dark:text-amber-400 whitespace-nowrap shrink-0">
-                          {item.price.toFixed(2)} {settings.currency}
+                        <span className="price-text-premium text-sm md:text-base text-orange-600 dark:text-amber-400 whitespace-nowrap shrink-0">
+                          {item.price.toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settings.currency}</span>
                         </span>
                       </div>
-                      <p className="text-[11px] md:text-xs text-slate-500 dark:text-sky-100 truncate mt-0.5 leading-relaxed">
+                      <p className="text-[11px] md:text-xs text-slate-500 dark:text-sky-200/90 truncate mt-0.5 leading-relaxed font-light">
                         {item.ingredients}
                       </p>
                       
                       <div className="flex items-center gap-1.5 mt-1.5">
                         {item.tags && item.tags.slice(0, 1).map(tag => (
-                          <span key={tag} className="text-[8px] font-extrabold uppercase px-2 py-0.5 bg-orange-500/10 text-orange-600 dark:bg-amber-400/10 dark:text-amber-400 border border-orange-500/10 dark:border-amber-400/10 rounded">
+                          <span key={tag} className="tag-badge-premium text-[7px] px-2 py-0.5 bg-orange-500/10 text-orange-600 dark:bg-amber-400/10 dark:text-amber-400 border border-orange-500/10 dark:border-amber-400/10 rounded">
                             {tag}
                           </span>
                         ))}
@@ -579,8 +579,8 @@ export default function Home() {
               <div className="space-y-2">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-playfair text-2xl font-bold text-slate-900 dark:text-white leading-tight">{selectedItem.name}</h3>
-                  <span className="font-playfair text-xl font-extrabold text-orange-600 dark:text-amber-400 bg-orange-50 dark:bg-amber-400/5 px-3.5 py-1 rounded-xl border border-orange-200/50 dark:border-amber-400/10 shrink-0">
-                    {selectedItem.price.toFixed(2)} {settings.currency}
+                  <span className="price-text-premium text-xl text-orange-600 dark:text-amber-400 bg-orange-50/70 dark:bg-amber-400/5 px-3.5 py-1 rounded-xl border border-orange-200/50 dark:border-amber-400/10 shrink-0">
+                    {selectedItem.price.toFixed(2)} <span className="text-xs font-bold opacity-80 ml-0.5">{settings.currency}</span>
                   </span>
                 </div>
                 
@@ -590,7 +590,7 @@ export default function Home() {
                     {selectedItem.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:bg-amber-400/10 dark:text-amber-400 border border-orange-500/10 dark:border-amber-400/10"
+                        className="tag-badge-premium text-[8px] px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-600 dark:bg-amber-400/10 dark:text-amber-400 border border-orange-500/10 dark:border-amber-400/10"
                       >
                         {tag}
                       </span>
@@ -601,11 +601,11 @@ export default function Home() {
 
               {/* Tərkib və Ətraflı Məlumatlar */}
               <div className="space-y-3.5 border-t border-slate-200/60 dark:border-slate-800 pt-5">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-sky-300 flex items-center gap-1.5">
+                <h4 className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-slate-400 dark:text-sky-300 flex items-center gap-1.5">
                   <Icons.Info className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   <span>Yeməyin Tərkibi və Hazırlanması</span>
                 </h4>
-                <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-sky-100">
+                <p className="text-sm md:text-base leading-relaxed text-slate-600 dark:text-sky-100 font-light">
                   {selectedItem.ingredients}
                 </p>
               </div>
@@ -626,13 +626,13 @@ export default function Home() {
 
       {/* ALT HİSSƏ (FOOTER) METADATALARI */}
       <footer className="mt-16 border-t border-orange-200/20 dark:border-white/10 py-10 text-center text-xs text-slate-400 dark:text-slate-500 space-y-3">
-        <p className="font-playfair text-sm font-bold text-slate-700 dark:text-slate-300">
-          {settings.restaurantName} — Hər anı ləzzət 🍽️
+        <p className="font-playfair text-sm font-semibold text-slate-700 dark:text-slate-300">
+          {settings.restaurantName} — <span className="serif-italic text-teal-700 dark:text-teal-400 font-normal">Hər anı ləzzət</span> 🍽️
         </p>
-        <p className="max-w-xs mx-auto px-4 leading-relaxed text-slate-500">
+        <p className="max-w-xs mx-auto px-4 leading-relaxed text-slate-500 font-light">
           {settings.contact.address}
         </p>
-        <p>© 2026 {settings.restaurantName}. Bütün hüquqlar qorunur.</p>
+        <p className="font-light">© 2026 {settings.restaurantName}. Bütün hüquqlar qorunur.</p>
       </footer>
     </div>
   );

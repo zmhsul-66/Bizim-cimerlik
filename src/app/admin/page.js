@@ -546,11 +546,11 @@ export default function AdminPanel() {
 
         <div className="w-full max-w-md bg-white/90 dark:bg-[#0e2245]/90 border border-slate-200/80 dark:border-white/10 shadow-2xl rounded-3xl p-8 backdrop-blur-xl relative z-10 space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="font-playfair text-3xl font-extrabold tracking-wider bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center justify-center gap-2">
+            <h1 className="brand-title-premium text-3xl bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center justify-center gap-2">
               <span>{settingsName || "Bizim çimərlik"}</span>
-              <Icons.Sparkles className="w-6 h-6 text-orange-500 fill-orange-500 animate-pulse" />
+              <Icons.Sparkles className="w-5 h-5 text-orange-500 fill-orange-500 animate-pulse" />
             </h1>
-            <p className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-sky-200 font-extrabold">Admin İdarəetmə Paneli</p>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-sky-200 font-extrabold">Admin İdarəetmə Paneli</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -613,11 +613,11 @@ export default function AdminPanel() {
       <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-[#06152d]/80 border-b border-slate-200/80 dark:border-white/10 backdrop-blur-md shadow-sm transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="font-playfair text-xl md:text-2xl font-extrabold tracking-wider bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center gap-1.5">
+            <h1 className="brand-title-premium text-xl md:text-2xl bg-gradient-to-r from-teal-700 via-orange-600 to-amber-600 dark:from-teal-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent flex items-center gap-1.5">
               <span>{settingsName || "Bizim çimərlik"}</span>
-              <span className="text-[10px] bg-teal-600/10 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">ADMIN</span>
+              <span className="text-[9px] bg-teal-600/10 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">ADMIN</span>
             </h1>
-            <p className="text-[9px] uppercase tracking-widest text-slate-500 dark:text-sky-200 font-extrabold mt-0.5">
+            <p className="text-[8px] uppercase tracking-[0.2em] text-slate-500 dark:text-sky-200 font-extrabold mt-0.5">
               {settingsSubtitle || "Restaurant & Lounge"}
             </p>
           </div>
@@ -827,21 +827,21 @@ export default function AdminPanel() {
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 dark:bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-200/40 dark:border-teal-400/10">
                               {categories.find(c => c.id === item.categoryId)?.name || item.categoryId}
                             </span>
-                            <span className="font-playfair font-extrabold text-orange-600 dark:text-amber-400 text-sm">
-                              {Number(item.price).toFixed(2)} {settingsCurrency}
+                            <span className="price-text-premium text-orange-600 dark:text-amber-400 text-sm">
+                              {Number(item.price).toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settingsCurrency}</span>
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <p className="text-xs text-slate-500 dark:text-sky-200/70 line-clamp-2 leading-relaxed bg-slate-50/50 dark:bg-slate-900/10 p-2 rounded-lg border border-slate-100 dark:border-transparent font-medium">
+                      <p className="text-xs text-slate-500 dark:text-sky-200/70 line-clamp-2 leading-relaxed bg-slate-50/50 dark:bg-slate-900/10 p-2 rounded-lg border border-slate-100 dark:border-transparent font-light">
                         {item.ingredients}
                       </p>
 
                       <div className="flex justify-between items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/5">
                         <div className="flex gap-1">
                           {item.tags && item.tags.slice(0, 2).map(t => (
-                            <span key={t} className="text-[8px] font-extrabold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
+                            <span key={t} className="tag-badge-premium text-[7px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
                           ))}
                         </div>
 
@@ -905,7 +905,7 @@ export default function AdminPanel() {
                               </p>
                               <div className="flex gap-1 mt-1 flex-wrap">
                                 {item.tags && item.tags.slice(0, 2).map(t => (
-                                  <span key={t} className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
+                                  <span key={t} className="tag-badge-premium text-[7px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#0c2447] text-slate-500 dark:text-sky-300 border border-slate-200 dark:border-sky-400/10 uppercase tracking-wider">{t}</span>
                                 ))}
                               </div>
                             </div>
@@ -918,11 +918,11 @@ export default function AdminPanel() {
                             </span>
                           </td>
 
-                          <td className="py-4 px-5 font-playfair font-extrabold text-orange-600 dark:text-amber-400 text-base">
-                            {Number(item.price).toFixed(2)} {settingsCurrency}
+                          <td className="py-4 px-5 price-text-premium text-orange-600 dark:text-amber-400 text-base">
+                            {Number(item.price).toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settingsCurrency}</span>
                           </td>
 
-                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
+                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70 font-light">
                             {item.ingredients}
                           </td>
 

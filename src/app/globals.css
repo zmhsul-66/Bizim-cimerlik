@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-playfair: var(--font-playfair), Georgia, serif;
 }
 
@@ -53,7 +53,10 @@
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     min-height: 100vh;
     overflow-x: hidden;
-    font-family: var(--font-outfit), system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
 
@@ -82,9 +85,38 @@
   box-shadow: 0 16px 32px 0 rgba(249, 115, 22, 0.1);
 }
 
-/* Zərif Mətn və Parıltı Alətləri */
+/* Zərif Mətn, Tipoqrafiya və Parıltı Alətləri */
+.serif-italic {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-style: italic;
+}
+
+.brand-title-premium {
+  font-family: var(--font-playfair), Georgia, serif;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.price-text-premium {
+  font-family: var(--font-sans), sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+}
+
+.tag-badge-premium {
+  font-family: var(--font-sans), sans-serif;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .text-glow {
   text-shadow: 0 0 12px rgba(13, 148, 136, var(--glow-opacity));
+}
+
+.text-glow-premium {
+  text-shadow: 0 0 18px rgba(13, 148, 136, calc(var(--glow-opacity) * 1.5));
 }
 
 .gold-glow {

@@ -1,16 +1,19 @@
-import { Outfit, Playfair_Display } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
   display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 const playfair = Playfair_Display({
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
   variable: "--font-playfair",
   display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 // 1. Viewport-u buradan ayırırıq
@@ -32,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="az"
-      className={`${outfit.variable} ${playfair.variable} antialiased`}
+      className={`${inter.variable} ${playfair.variable} antialiased`}
       suppressHydrationWarning
     >
       <body className="font-sans min-h-screen" suppressHydrationWarning>

@@ -1582,16 +1582,20 @@ export default function AdminPanel() {
                     <option value="Utensils">Utensils (Çəngəl-Bıçaq - Yeməklər)</option>
                     <option value="Flame">Flame (Alov - Manqal/Kabablar)</option>
                     <option value="Salad">Salad (Salat - Soyuq Qəlyanaltılar)</option>
-                    <option value="Soup">Soup (Şorba - İsti Şorbalar)</option>
+                    <option value="Soup">Soup (Şorba - Şorbalar)</option>
                     <option value="Coffee">Coffee (Qəhvə - İsti İçkilər/Çay)</option>
                     <option value="Cake">Cake (Tort - Şirniyyatlar)</option>
                     <option value="Pizza">Pizza (Pizza - Fast Food)</option>
                     <option value="Fish">Fish (Balıq - Balıq Yeməkləri)</option>
                     <option value="IceCream">IceCream (Dondurma - Sərin Desertlər)</option>
-                    <option value="Cookie">Cookie (Kek/Kruasan - Desertlər)</option>
+                    <option value="Cookie">Cookie (Çərəz / Desertlər)</option>
                     <option value="GlassWater">GlassWater (Stəkan - Soyuq İçkilər/Limonadlar)</option>
                     <option value="Wine">Wine (Şərab stəkanı - Bar)</option>
                     <option value="Apple">Apple (Alma - Sağlam qidalar)</option>
+                    <option value="CookingPot">CookingPot (Qazan - Qazan Yeməkləri)</option>
+                    <option value="Disc">Disc (Sac / Dairə - Sac Yeməkləri)</option>
+                    <option value="ChefHat">ChefHat (Şef papağı - Tava Yeməkləri)</option>
+                    <option value="Candy">Candy (Konfet - Şirniyyat / Çərəz)</option>
                   </select>
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 pointer-events-none">
                     {renderIcon(catFormIcon, "w-5 h-5")}

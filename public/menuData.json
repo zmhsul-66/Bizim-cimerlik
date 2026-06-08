@@ -9,162 +9,879 @@
     "wifiPassword": "welcome_to_deniz"
   },
   "categories": [
-    { "id": "mains", "name": "İsti Yeməklər", "icon": "Utensils", "description": "Ənənəvi və Avropa mətbəxinin seçilmiş isti təamları" },
-    { "id": "grill", "name": "Manqal & Kabablar", "icon": "Flame", "description": "Köz üzərində bişən dadlı kabab və ızqaralar" },
-    { "id": "starters", "name": "Soyuq Qəlyanaltılar", "icon": "Salad", "description": "Təzə tərəvəzlər və xüsusi qəlyanaltı çeşidləri" },
-    { "id": "soups", "name": "Şorbalar", "icon": "Soup", "description": "Hər gün təzə bişən isti və ləziz şorbalar" },
-    { "id": "drinks", "name": "İçkilər", "icon": "Coffee", "description": "Sərinləşdirici kokteyllər, limonadlar və isti içkilər" },
-    { "id": "desserts", "name": "Şirniyyatlar", "icon": "Cake", "description": "Şefimizin xüsusi əl işi olan şirniyyat növləri" }
+    {
+      "id": "mains",
+      "name": "İsti Yeməklər",
+      "icon": "Utensils",
+      "description": "Ənənəvi və Avropa mətbəxinin seçilmiş isti təamları"
+    },
+    {
+      "id": "grill",
+      "name": "Manqal & Kabablar",
+      "icon": "Flame",
+      "description": "Köz üzərində bişən dadlı kabab və ızqaralar"
+    },
+    {
+      "id": "starters",
+      "name": "Soyuq Qəlyanaltılar",
+      "icon": "Salad",
+      "description": "Təzə tərəvəzlər və xüsusi qəlyanaltı çeşidləri"
+    },
+    {
+      "id": "soups",
+      "name": "Şorbalar",
+      "icon": "Soup",
+      "description": "Hər gün təzə bişən isti və ləziz şorbalar"
+    },
+    {
+      "id": "drinks",
+      "name": "İçkilər",
+      "icon": "Coffee",
+      "description": "Sərinləşdirici kokteyllər, limonadlar və isti içkilər"
+    },
+    {
+      "id": "desserts",
+      "name": "Şirniyyatlar",
+      "icon": "Cake",
+      "description": "Şefimizin xüsusi əl işi olan şirniyyat növləri"
+    },
+    {
+      "id": "suplar-2026",
+      "name": "Suplar",
+      "icon": "Soup",
+      "description": "İsti və ləziz suplar"
+    },
+    {
+      "id": "alkoqolsuzikilr-1595",
+      "name": "Alkoqolsuz İçkilər",
+      "icon": "GlassWater",
+      "description": "Maden suları, şirələr və sərinləşdirici içkilər"
+    },
+    {
+      "id": "alkoqolluikilr-0561",
+      "name": "Alkoqollu İçkilər",
+      "icon": "Wine",
+      "description": "Premium pivə, araq, çaxır və viski çeşidləri"
+    },
+    {
+      "id": "rzlr-6753",
+      "name": "Çərəzlər",
+      "icon": "Cookie",
+      "description": "Çərəzlər, suxarilər, çipslər və şirniyyatlar"
+    },
+    {
+      "id": "kabablar-3265",
+      "name": "Kabablar",
+      "icon": "Flame",
+      "description": "Köz üzərində ləziz kabab çeşidləri"
+    },
+    {
+      "id": "tavayemklri-1427",
+      "name": "Tava Yeməkləri",
+      "icon": "ChefHat",
+      "description": "Tava və kartof yeməkləri, qızartmalar"
+    },
+    {
+      "id": "sac-3032",
+      "name": "Sac",
+      "icon": "Disc",
+      "description": "Ənənəvi sac yeməkləri"
+    },
+    {
+      "id": "qazanyemklri-3951",
+      "name": "Qazan Yeməkləri",
+      "icon": "CookingPot",
+      "description": "Ləziz qazan yeməkləri və dolma"
+    }
   ],
   "items": [
     {
       "id": "main-1",
       "categoryId": "mains",
       "name": "Sacüstü Quzu Əti",
-      "price": 24.50,
+      "price": 24.5,
       "ingredients": "Zərif quzu əti, kartof, badımcan, bibər, göbələk, pomidor, quyruq və xüsusi Sac ədviyyatları",
       "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Şefin Seçimi", "Populyar"],
+      "tags": [
+        "Şefin Seçimi",
+        "Populyar"
+      ],
       "isChefSpecial": true
     },
     {
       "id": "main-2",
       "categoryId": "mains",
       "name": "Nərə Balığı Sırdağı",
-      "price": 32.00,
+      "price": 32,
       "ingredients": "Xəzər nərə balığı filəsi, sarımsaq, limon suyu, reyhan, pomidor və zəfəranlı sous",
       "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Premium", "Yerli Ləzzət"],
+      "tags": [
+        "Premium",
+        "Yerli Ləzzət"
+      ],
       "isChefSpecial": true
     },
     {
       "id": "main-3",
       "categoryId": "mains",
       "name": "Zəfəranlı Plov",
-      "price": 18.00,
+      "price": 18,
       "ingredients": "Xüsusi basmati düyüsü, zəfəran, kərə yağı, qaysı, albuxara, şabalıd və quzu əti qovurması",
       "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Milli"],
+      "tags": [
+        "Milli"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "grill-1",
       "categoryId": "grill",
       "name": "Quzu Tikə Kababı",
-      "price": 14.00,
+      "price": 14,
       "ingredients": "Quzu bel hissəsi, soğan, nar turşusu və lavaş ilə manqalda bişirilmiş tikələr",
       "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Közdə"],
+      "tags": [
+        "Közdə"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "grill-2",
       "categoryId": "grill",
       "name": "Lülə Kabab",
-      "price": 12.00,
+      "price": 12,
       "ingredients": "Quzu əti və quyruğun çəkilmiş qarışığı, soğan, sumax və lavaş ilə təqdim olunur",
       "image": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Populyar"],
+      "tags": [
+        "Populyar"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "grill-3",
       "categoryId": "grill",
       "name": "Qarışıq Kabab Platter",
-      "price": 45.00,
+      "price": 45,
       "ingredients": "Tikə kabab, lülə kabab, toyuq kababı, antrikot, tərəvəz kababları, xüsusi souslar və sumax",
       "image": "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Böyük Porsiya", "Premium"],
+      "tags": [
+        "Böyük Porsiya",
+        "Premium"
+      ],
       "isChefSpecial": true
     },
     {
       "id": "starter-1",
       "categoryId": "starters",
       "name": "Manqal Salatı",
-      "price": 7.00,
+      "price": 7,
       "ingredients": "Közdə bişmiş badımcan, pomidor, bolqar bibəri, sarımsaq, göyərti və zeytun yağı",
       "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Populyar", "Vegetarian"],
+      "tags": [
+        "Populyar",
+        "Vegetarian"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "starter-2",
       "categoryId": "starters",
       "name": "Yerli Pendir Çeşidləri",
-      "price": 9.50,
+      "price": 9.5,
       "ingredients": "Motal pendiri, şor pendir, ağ pendir, qoyun pendiri, qoz ləpəsi və təzə tərxun",
       "image": "https://images.unsplash.com/photo-1486299267070-8382e214434b?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Milli"],
+      "tags": [
+        "Milli"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "starter-3",
       "categoryId": "starters",
       "name": "Tərəvəz Buketi",
-      "price": 6.00,
+      "price": 6,
       "ingredients": "Təzə xiyar, pomidor, turp, reyhan, keşniş, şüyüd və yaşıl soğan",
       "image": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Təzə", "Vegetarian"],
+      "tags": [
+        "Təzə",
+        "Vegetarian"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "soup-1",
       "categoryId": "soups",
       "name": "Mərci Şorbası",
-      "price": 5.00,
+      "price": 5,
       "ingredients": "Qırmızı mərci, soğan, yerkökü, limon, nanəli kərə yağı sousu və qurudulmuş çörək (suxari)",
       "image": "https://images.unsplash.com/photo-1547592165-e1d17fed6006?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Hər gün təzə"],
+      "tags": [
+        "Hər gün təzə"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "soup-2",
       "categoryId": "soups",
       "name": "Milli Düşbərə",
-      "price": 6.50,
+      "price": 6.5,
       "ingredients": "Əl ilə bükülmüş xırda xəmir düşbərələri quzu bulyonunda, nanə qurusu və sirkə-sarımsaq ilə",
       "image": "https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Məşhur", "Milli"],
+      "tags": [
+        "Məşhur",
+        "Milli"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "drink-1",
       "categoryId": "drinks",
       "name": "Ev Üsulu Reyhan Limonadı",
-      "price": 6.00,
+      "price": 6,
       "ingredients": "Təzə reyhan, təzə sıxılmış limon şirəsi, şəkər, buz və mineral su",
       "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Sərinləşdirici", "Yeni"],
+      "tags": [
+        "Sərinləşdirici",
+        "Yeni"
+      ],
       "isChefSpecial": true
     },
     {
       "id": "drink-2",
       "categoryId": "drinks",
       "name": "Çay Dəsgahı (Böyük)",
-      "price": 20.00,
+      "price": 20,
       "ingredients": "Gözəl dəmlənmiş Lənkəran çayı (böyük çaynik), 2 növ mürəbbə, kəklikotu, limon və paxlava",
       "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Milli", "Birlikdə"],
+      "tags": [
+        "Milli",
+        "Birlikdə"
+      ],
       "isChefSpecial": true
     },
     {
       "id": "dessert-1",
       "categoryId": "desserts",
       "name": "Bakı Paxlavası",
-      "price": 6.00,
+      "price": 6,
       "ingredients": "Qoz ləpəsi, zəfəran, şərbət və kərə yağı ilə hazırlanan 36 qatlı əsl Bakı paxlavası (2 ədəd)",
       "image": "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Milli", "Məşhur"],
+      "tags": [
+        "Milli",
+        "Məşhur"
+      ],
       "isChefSpecial": false
     },
     {
       "id": "dessert-2",
       "categoryId": "desserts",
       "name": "Dondurmalı İsti Şokoladlı Suffle",
-      "price": 8.00,
+      "price": 8,
       "ingredients": "İsti axıcı şokoladlı suffle, yanında Vanna dondurması və təzə çiyələk dilimləri",
       "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&auto=format&fit=crop&q=80",
-      "tags": ["Şirin"],
+      "tags": [
+        "Şirin"
+      ],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-1",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Uludağ maden suyu / Минеральная вода",
+      "price": 1,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1608885898957-a599fb15ec36?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-2",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Nektarin meyvə şirələri / Фруктовый сок",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-3",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Dilimli meyvə şirəsi / Фруктовый сок с ломтиками",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-4",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Buzz tea / Холодный чай",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-5",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Fanta, Cola / Фанта, Кола",
+      "price": 2,
+      "ingredients": "Həmçinin 3 AZN qiymətində variantı mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-6",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Çay / Чай",
+      "price": 1,
+      "ingredients": "1 AZN - 5 AZN aralığında variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-7",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Sirab / Сираб",
+      "price": 1,
+      "ingredients": "1 AZN / 2 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1608885898957-a599fb15ec36?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-8",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Borjomi / Боржоми",
+      "price": 1,
+      "ingredients": "1 AZN / 2 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1608885898957-a599fb15ec36?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-9",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Kəhriz / Кехриз",
+      "price": 1,
+      "ingredients": "1 AZN - 3 AZN aralığında variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1608885898957-a599fb15ec36?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-10",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Düşeş, Tərxun / Лимоnad",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alk-11",
+      "categoryId": "alkoqolsuzikilr-1595",
+      "name": "Kompot / Компот",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1589733901241-5e519fc9d4df?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-1",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Piva (bakal) / Пиво",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-2",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Piva (Salyan, Jiqulevskaya) / Пиво (Сальян, Жигулевская)",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-3",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Araq (Çarskaya çeşidləri) / Водка (Царская)",
+      "price": 25,
+      "ingredients": "25 AZN / 30 AZN çeşidləri mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1569585155455-ab5141065166?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-4",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Araq (Çetkaya, Ruskiy Dar, Delikat) / Водка (Четкая, Русский Дар, Деликат)",
+      "price": 15,
+      "ingredients": "15 AZN / 20 AZN çeşidləri mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1569585155455-ab5141065166?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-5",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Çaxır (Merlot, Mədrəsə, Chardonnay, Cabernet Sauvignon) / Вино (Мерло, Мадраса, Шардоне, Каберне Совиньон)",
+      "price": 12,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-6",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Viski (Richman) / Виски (Richman)",
+      "price": 14,
+      "ingredients": "14 AZN / 18 AZN çeşidləri mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1527269537047-40fbe50b59cd?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "alc-7",
+      "categoryId": "alkoqolluikilr-0561",
+      "name": "Viski (Highgarden) / Виски (Highgarden)",
+      "price": 28,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1527269537047-40fbe50b59cd?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-1",
+      "categoryId": "rzlr-6753",
+      "name": "Çərəz / Орехи",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-2",
+      "categoryId": "rzlr-6753",
+      "name": "Araxis / Арахис",
+      "price": 5,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a2877?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-3",
+      "categoryId": "rzlr-6753",
+      "name": "Suxari (böyük) / Сухари (большие)",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-4",
+      "categoryId": "rzlr-6753",
+      "name": "Suxari (balaca) / Сухари (маленькие)",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-5",
+      "categoryId": "rzlr-6753",
+      "name": "Çipsi (böyük) / Чипсы (большие)",
+      "price": 5,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1566478989037-eec170784d20?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-6",
+      "categoryId": "rzlr-6753",
+      "name": "Çipsi (orta) / Чипсы (средние)",
+      "price": 4,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1566478989037-eec170784d20?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-7",
+      "categoryId": "rzlr-6753",
+      "name": "Çipsi (balaca) / Чипсы (маленькие)",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1566478989037-eec170784d20?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-8",
+      "categoryId": "rzlr-6753",
+      "name": "Saçaq pendir/qızardılmış / Сыр косичка/жареный",
+      "price": 5,
+      "ingredients": "Qızardılmış variantı 6 AZN təşkil edir.",
+      "image": "https://images.unsplash.com/photo-1528256407894-4b5b4372eb40?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-9",
+      "categoryId": "rzlr-6753",
+      "name": "Noxud / Горох",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1592394533824-9440e5d68530?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-10",
+      "categoryId": "rzlr-6753",
+      "name": "Göbələk çipsi / Грибные чипсы",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1566478989037-eec170784d20?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-11",
+      "categoryId": "rzlr-6753",
+      "name": "Dondurma / Мороженое",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-12",
+      "categoryId": "rzlr-6753",
+      "name": "Mürəbbə / Варение",
+      "price": 6,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "cer-13",
+      "categoryId": "rzlr-6753",
+      "name": "Şirniyyat / Сладости",
+      "price": 2,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-1",
+      "categoryId": "kabablar-3265",
+      "name": "Antrikot / Шашлык из баranьих ребрышек",
+      "price": 15,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-2",
+      "categoryId": "kabablar-3265",
+      "name": "Tikə / Шашлык из мякоти",
+      "price": 14,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-3",
+      "categoryId": "kabablar-3265",
+      "name": "Lülə / Люля",
+      "price": 12,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-4",
+      "categoryId": "kabablar-3265",
+      "name": "Toyuq / Шашлык из курицы",
+      "price": 8,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1608500218890-c5f0d81162e9?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-5",
+      "categoryId": "kabablar-3265",
+      "name": "İçalat (quzu) / Шашлык ливер",
+      "price": 10,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1532636875304-0c8fe1197e1d?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-6",
+      "categoryId": "kabablar-3265",
+      "name": "Kartof lülə / Люля из картофеля",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-7",
+      "categoryId": "kabablar-3265",
+      "name": "Közləmə kartof / Картошка на углях",
+      "price": 4,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-8",
+      "categoryId": "kabablar-3265",
+      "name": "Tərəvəz / Овощи",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-9",
+      "categoryId": "kabablar-3265",
+      "name": "Farel (setka) / Фарель на решетке",
+      "price": 20,
+      "ingredients": "20 AZN - 50 AZN aralığında porsiyadan asılı olaraq dəyişir.",
+      "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-10",
+      "categoryId": "kabablar-3265",
+      "name": "Kefal (setka) / Кефаль на решетке",
+      "price": 15,
+      "ingredients": "15 AZN / 20 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "kab-11",
+      "categoryId": "kabablar-3265",
+      "name": "Kütüm (setka) / Кутум на решетке",
+      "price": 15,
+      "ingredients": "15 AZN / 20 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-1",
+      "categoryId": "tavayemklri-1427",
+      "name": "Tabaka / Табака",
+      "price": 30,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-2",
+      "categoryId": "tavayemklri-1427",
+      "name": "Toyuq çığırtma / Курица жареный",
+      "price": 30,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-3",
+      "categoryId": "tavayemklri-1427",
+      "name": "Toyuq langet / Куриный лангет",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1604909052743-94e838980264?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-4",
+      "categoryId": "tavayemklri-1427",
+      "name": "Göbələk qızartması / Жаренные грибы",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-5",
+      "categoryId": "tavayemklri-1427",
+      "name": "Qaymaqlı göbələk / Грибы со сливками",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-6",
+      "categoryId": "tavayemklri-1427",
+      "name": "Badımcan qızartması / Жареные баклажаны",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-7",
+      "categoryId": "tavayemklri-1427",
+      "name": "Kartof fri / Картошка фри",
+      "price": 3,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-8",
+      "categoryId": "tavayemklri-1427",
+      "name": "Ev sayağı kartof / Картогель домашний",
+      "price": 4,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1518013006309-17c49f80a8e0?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-9",
+      "categoryId": "tavayemklri-1427",
+      "name": "Farel qızartma / Жарка фареля",
+      "price": 20,
+      "ingredients": "20 AZN - 50 AZN aralığında porsiyadan asılı olaraq dəyişir.",
+      "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-10",
+      "categoryId": "tavayemklri-1427",
+      "name": "Kefal qızartma / Жареная кефаль",
+      "price": 15,
+      "ingredients": "15 AZN / 20 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-11",
+      "categoryId": "tavayemklri-1427",
+      "name": "Kütüm qızartma / Жареный кутум",
+      "price": 15,
+      "ingredients": "15 AZN / 20 AZN variantları mövcuddur.",
+      "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "tav-12",
+      "categoryId": "tavayemklri-1427",
+      "name": "Naggets / Нагетсы",
+      "price": 7,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "sac-item-1",
+      "categoryId": "sac-3032",
+      "name": "Quzu sac / Садж баранина",
+      "price": 20,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "sac-item-2",
+      "categoryId": "sac-3032",
+      "name": "Toyuq sac / Садж курица",
+      "price": 13,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "qaz-1",
+      "categoryId": "qazanyemklri-3951",
+      "name": "Dolma (yarpaq) / Долма из виноградных листев",
+      "price": 10,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "sup-1",
+      "categoryId": "suplar-2026",
+      "name": "Düşbərə / Душбара",
+      "price": 10,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "sup-2",
+      "categoryId": "suplar-2026",
+      "name": "Toyuq (çolpa) supu / Куриный суп (чолпа)",
+      "price": 6,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1547592165-e1d17fed6006?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
+      "isChefSpecial": false
+    },
+    {
+      "id": "sup-3",
+      "categoryId": "suplar-2026",
+      "name": "Dovğa / Довга",
+      "price": 5,
+      "ingredients": "",
+      "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80",
+      "tags": [],
       "isChefSpecial": false
     }
   ]

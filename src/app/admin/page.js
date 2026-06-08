@@ -46,7 +46,7 @@ export default function AdminPanel() {
   // Forma sahələri (Form Fields)
   const [formName, setFormName] = useState("");
   const [formPrice, setFormPrice] = useState("");
-  const [formCategory, setFormCategory] = useState("mains");
+  const [formCategory, setFormCategory] = useState("");
   const [formIngredients, setFormIngredients] = useState("");
   const [formImage, setFormImage] = useState("");
   const [formTags, setFormTags] = useState("");
@@ -241,6 +241,54 @@ export default function AdminPanel() {
     }
   };
 
+  // Kateqoriyanı yuxarı və ya aşağı daşımaq (Reorder Category)
+  const handleMoveCategory = async (index, direction) => {
+    const newCategories = [...categories];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    
+    if (targetIndex < 0 || targetIndex >= categories.length) return;
+
+    // Mövqeləri dəyişirik
+    const temp = newCategories[index];
+    newCategories[index] = newCategories[targetIndex];
+    newCategories[targetIndex] = temp;
+
+    // Yeni sıralamanı təyin edirik
+    const orders = newCategories.map((cat, idx) => ({
+      id: cat.id,
+      sort_order: idx
+    }));
+
+    // Local state-i dərhal yeniləyirik ki, sürətli olsun (Optimistik yenilənmə)
+    setCategories(newCategories);
+
+    try {
+      const res = await fetch("/api/categories", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({ orders })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        showToast(errData.error || "Sıralama yadda saxlanılmadı", "error");
+        await loadCategories(); // Geri qaytarırıq
+
+        if (errData.needsMigration) {
+          alert(`Sıralamanı idarə edə bilmək üçün verilənlər bazasında sort_order sütunu yaradılmalıdır.\n\nZəhmət olmasa Supabase Dashboard-da SQL Editor bölməsinə daxil olub aşağıdakı kodu 'Run' edin:\n\nALTER TABLE menu_categories ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;`);
+        }
+      } else {
+        showToast("Sıralama uğurla yeniləndi!", "success");
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası, sıralama yenilənmədi", "error");
+      await loadCategories();
+    }
+  };
+
   // Login düyməsi sıxıldıqda
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -348,7 +396,7 @@ export default function AdminPanel() {
   const resetForm = () => {
     setFormName("");
     setFormPrice("");
-    setFormCategory("mains");
+    setFormCategory(categories[0]?.id || "");
     setFormIngredients("");
     setFormImage("");
     setFormTags("");
@@ -366,7 +414,8 @@ export default function AdminPanel() {
     setSelectedItem(item);
     setFormName(item.name);
     setFormPrice(item.price.toString());
-    setFormCategory(item.categoryId);
+    const hasCategory = categories.some(c => c.id === item.categoryId);
+    setFormCategory(hasCategory ? item.categoryId : (categories[0]?.id || ""));
     setFormIngredients(item.ingredients);
     setFormImage(item.image);
     setFormTags(item.tags ? item.tags.join(", ") : "");
@@ -411,7 +460,7 @@ export default function AdminPanel() {
   // 1. Yeni yemək yaratma (Create)
   const handleAddItem = async (e) => {
     e.preventDefault();
-    if (!formName || !formPrice || !formIngredients) {
+    if (!formName || !formPrice) {
       showToast("Zəhmət olmasa ulduzlu (*) sahələri doldurun", "error");
       return;
     }
@@ -427,7 +476,7 @@ export default function AdminPanel() {
           categoryId: formCategory,
           name: formName,
           price: parseFloat(formPrice),
-          ingredients: formIngredients,
+          ingredients: formIngredients || "",
           image: formImage,
           tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
           isChefSpecial: formChefSpecial
@@ -450,7 +499,7 @@ export default function AdminPanel() {
   // 2. Yeməyi Yeniləmə (Update)
   const handleEditItem = async (e) => {
     e.preventDefault();
-    if (!formName || !formPrice || !formIngredients) {
+    if (!formName || !formPrice) {
       showToast("Zəhmət olmasa vacib sahələri doldurun", "error");
       return;
     }
@@ -467,7 +516,7 @@ export default function AdminPanel() {
           categoryId: formCategory,
           name: formName,
           price: parseFloat(formPrice),
-          ingredients: formIngredients,
+          ingredients: formIngredients || "",
           image: formImage,
           tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
           isChefSpecial: formChefSpecial
@@ -873,7 +922,7 @@ export default function AdminPanel() {
                 </div>
 
                 {/* DESKTOP CƏDVƏL GÖRÜNÜŞÜ */}
-                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-hidden shadow-md">
+                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-x-auto shadow-md">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-50/80 dark:bg-[#0b1d38]/80 text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-sky-300/80 border-b border-slate-200 dark:border-white/10">
@@ -896,8 +945,8 @@ export default function AdminPanel() {
                                 onError={(e) => { e.currentTarget.src = "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600&auto=format&fit=crop&q=80"; }}
                               />
                             </div>
-                            <div className="min-w-0">
-                              <p className="font-playfair font-bold text-base text-slate-800 dark:text-white flex items-center gap-1.5 truncate">
+                            <div className="min-w-0 max-w-[200px] sm:max-w-[250px] md:max-w-[300px]">
+                              <p className="font-playfair font-bold text-base text-slate-800 dark:text-white flex items-center flex-wrap gap-1.5 leading-snug break-words">
                                 {item.name}
                                 {item.isChefSpecial && (
                                   <span className="text-[8px] font-extrabold uppercase px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded text-white shrink-0 shadow-xs">Şef</span>
@@ -922,8 +971,10 @@ export default function AdminPanel() {
                             {Number(item.price).toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settingsCurrency}</span>
                           </td>
 
-                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70 font-light">
-                            {item.ingredients}
+                          <td className="py-4 px-5 font-light">
+                            <div className="max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
+                              {item.ingredients || <span className="italic opacity-60">Tərkibi yoxdur</span>}
+                            </div>
                           </td>
 
                           <td className="py-4 px-5 text-right">
@@ -996,10 +1047,10 @@ export default function AdminPanel() {
 
               {/* Telefon Nömrəsi */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Əlaqə Telefonu</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Əlaqə Telefonu (Bir neçə dənə olduqda vergüllə ayırın)</label>
                 <input
                   type="text"
-                  placeholder="Məsələn: +994 (50) 123-45-67"
+                  placeholder="Məsələn: +994 (50) 123-45-67, +994 (55) 765-43-21"
                   value={settingsPhone}
                   onChange={(e) => setSettingsPhone(e.target.value)}
                   className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
@@ -1122,7 +1173,7 @@ export default function AdminPanel() {
               <div className="space-y-4">
                 {/* MOBİL RESPONSIVE SİYAHI */}
                 <div className="grid grid-cols-1 gap-4 md:hidden">
-                  {categories.map((cat) => (
+                  {categories.map((cat, idx) => (
                     <div key={cat.id} className="bg-white dark:bg-[#0c2447]/60 rounded-2xl border border-slate-200/80 dark:border-white/10 p-4 flex flex-col gap-3 shadow-xs">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200/20 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
@@ -1140,7 +1191,34 @@ export default function AdminPanel() {
                         {cat.description || "Təsvir yazılmayıb."}
                       </p>
 
-                      <div className="flex justify-end items-center pt-2 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-white/5">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleMoveCategory(idx, "up")}
+                            disabled={idx === 0}
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              idx === 0
+                                ? "opacity-30 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400"
+                                : "bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-teal-600 dark:text-teal-400 cursor-pointer"
+                            }`}
+                            title="Yuxarı daşı"
+                          >
+                            <Icons.ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleMoveCategory(idx, "down")}
+                            disabled={idx === categories.length - 1}
+                            className={`p-1.5 rounded-lg border transition-all ${
+                              idx === categories.length - 1
+                                ? "opacity-30 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400"
+                                : "bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-teal-600 dark:text-teal-400 cursor-pointer"
+                            }`}
+                            title="Aşağı daşı"
+                          >
+                            <Icons.ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
                         <button
                           onClick={() => handleDeleteCategory(cat.id, cat.name)}
                           className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
@@ -1154,7 +1232,7 @@ export default function AdminPanel() {
                 </div>
 
                 {/* DESKTOP CƏDVƏL GÖRÜNÜŞÜ */}
-                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-hidden shadow-md">
+                <div className="hidden md:block bg-white/80 dark:bg-[#0c2447]/40 rounded-2xl border border-slate-200/80 dark:border-white/10 overflow-x-auto shadow-md">
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-50/80 dark:bg-[#0b1d38]/80 text-xs font-bold tracking-wider uppercase text-slate-500 dark:text-sky-300/80 border-b border-slate-200 dark:border-white/10">
@@ -1162,11 +1240,12 @@ export default function AdminPanel() {
                         <th className="py-4 px-5">Kateqoriya Adı</th>
                         <th className="py-4 px-5">Sistem ID-si</th>
                         <th className="py-4 px-5">Təsviri (Açıqlaması)</th>
+                        <th className="py-4 px-5 text-center w-24">Sıralama</th>
                         <th className="py-4 px-5 text-right w-24">Əməliyyat</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-sm font-medium">
-                      {categories.map((cat) => (
+                      {categories.map((cat, idx) => (
                         <tr key={cat.id} className="hover:bg-slate-50/50 dark:hover:bg-[#0c2447]/20 transition-colors">
                           <td className="py-4 px-5 text-center">
                             <div className="w-10 h-10 mx-auto rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200/20 text-teal-600 dark:text-teal-400 flex items-center justify-center shadow-2xs">
@@ -1174,13 +1253,45 @@ export default function AdminPanel() {
                             </div>
                           </td>
                           <td className="py-4 px-5 text-slate-800 dark:text-white font-bold font-playfair text-base">
-                            {cat.name}
+                            <div className="max-w-[200px] break-words">
+                              {cat.name}
+                            </div>
                           </td>
                           <td className="py-4 px-5 font-mono text-xs text-slate-400 dark:text-sky-200/40">
                             {cat.id}
                           </td>
-                          <td className="py-4 px-5 max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
-                            {cat.description || <span className="italic opacity-60">Yazılmayıb</span>}
+                          <td className="py-4 px-5">
+                            <div className="max-w-xs truncate text-xs text-slate-500 dark:text-sky-100/70">
+                              {cat.description || <span className="italic opacity-60">Yazılmayıb</span>}
+                            </div>
+                          </td>
+                          <td className="py-4 px-5 text-center">
+                            <div className="flex items-center justify-center gap-1">
+                              <button
+                                onClick={() => handleMoveCategory(idx, "up")}
+                                disabled={idx === 0}
+                                className={`p-1.5 rounded-lg border transition-all ${
+                                  idx === 0
+                                    ? "opacity-30 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400"
+                                    : "bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-teal-600 dark:text-teal-400 cursor-pointer"
+                                }`}
+                                title="Yuxarı daşı"
+                              >
+                                <Icons.ArrowUp className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleMoveCategory(idx, "down")}
+                                disabled={idx === categories.length - 1}
+                                className={`p-1.5 rounded-lg border transition-all ${
+                                  idx === categories.length - 1
+                                    ? "opacity-30 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400"
+                                    : "bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 border-slate-200 dark:border-slate-700 text-teal-600 dark:text-teal-400 cursor-pointer"
+                                }`}
+                                title="Aşağı daşı"
+                              >
+                                <Icons.ArrowDown className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
                           </td>
                           <td className="py-4 px-5 text-right">
                             <div className="flex items-center justify-end">
@@ -1318,10 +1429,9 @@ export default function AdminPanel() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi *</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi</label>
                 <textarea
                   rows="3"
-                  required
                   placeholder="Yeməyin inqrediyentləri, hazırlanma üsulu..."
                   value={formIngredients}
                   onChange={(e) => setFormIngredients(e.target.value)}
@@ -1486,10 +1596,9 @@ export default function AdminPanel() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi *</label>
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Yeməyin Tərkibi</label>
                 <textarea
                   rows="3"
-                  required
                   placeholder="Yeməyin inqrediyentləri, hazırlanıb təqdim olunması..."
                   value={formIngredients}
                   onChange={(e) => setFormIngredients(e.target.value)}

@@ -18,9 +18,10 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false); // Set Light Mode as default for a bright, cheerful first impression!
-  const [favorites, setFavorites] = useState([]);
+  const [showPaymentAlert, setShowPaymentAlert] = useState(false);
   const [viewMode, setViewMode] = useState("grid"); // grid or list
   const [showWifiAlert, setShowWifiAlert] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Mövzunu ilkin olaraq sazla (Initialize theme)
   useEffect(() => {
@@ -43,14 +44,14 @@ export default function Home() {
       setIsDarkMode(false);
     }
     
-    // Əgər mövcuddursa, sevimli təamları local storage-dən yükləyirik
+    // Ödəniş xəbərdarlığı modalının yoxlanılması
     try {
-      const savedFavorites = localStorage.getItem("deniz_favorites");
-      if (savedFavorites) {
-        setFavorites(JSON.parse(savedFavorites));
+      const paymentAlertDismissed = localStorage.getItem("deniz_payment_alert_dismissed");
+      if (!paymentAlertDismissed) {
+        setShowPaymentAlert(true);
       }
     } catch (e) {
-      console.error("Sevimlilər yüklənərkən xəta baş verdi:", e);
+      console.error("Ödəniş xəbərdarlığı yoxlanılarkən xəta baş verdi:", e);
     }
 
     // Verilənlər bazasından dinamik yeməkləri çəkirik (Live Database Fetch)
@@ -98,9 +99,21 @@ export default function Home() {
       }
     };
 
-    fetchLiveItems();
-    fetchSettings();
-    fetchCategories();
+    const loadAllData = async () => {
+      try {
+        await Promise.all([
+          fetchLiveItems(),
+          fetchSettings(),
+          fetchCategories()
+        ]);
+      } catch (err) {
+        console.error("Məlumatlar yüklənərkən xəta:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadAllData();
   }, []);
 
   // Mövzu Dəyişdiricisi (Theme Toggler)
@@ -128,29 +141,12 @@ export default function Home() {
     }
   };
 
-  // Sevimlilər siyahısını yeniləyən funksiya (Favorites Toggler)
-  const toggleFavorite = (itemId, e) => {
-    e.stopPropagation();
-    let updated;
-    if (favorites.includes(itemId)) {
-      updated = favorites.filter(id => id !== itemId);
-    } else {
-      updated = [...favorites, itemId];
-    }
-    setFavorites(updated);
-    try {
-      localStorage.setItem("deniz_favorites", JSON.stringify(updated));
-    } catch (e) {
-      console.error("Sevimlilər yadda saxlanılarkən xəta baş verdi:", e);
-    }
-  };
 
   // Filterlənmiş menyu elementləri (Filtered menu items)
   const filteredItems = useMemo(() => {
     return items.filter(item => {
       // Kateqoriya filteri (Category filter)
       const matchesCategory = selectedCategory === "all" || 
-                              (selectedCategory === "favs" && favorites.includes(item.id)) ||
                               item.categoryId === selectedCategory;
       
       // Axtarış sorğusu filteri (Search query filter)
@@ -161,7 +157,7 @@ export default function Home() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [items, selectedCategory, searchQuery, favorites]);
+  }, [items, selectedCategory, searchQuery]);
 
   // Dinamik Lucide İkonlarının Render Edilməsi (Dynamic Lucide Icon Renderer)
   const renderIcon = (iconName, className = "w-5 h-5") => {
@@ -169,6 +165,15 @@ export default function Home() {
     if (!IconComponent) return <Icons.HelpCircle className={className} />;
     return <IconComponent className={className} />;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-amber-50/60 via-orange-50/40 to-emerald-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] flex flex-col items-center justify-center space-y-4">
+        <Icons.Sparkles className="w-12 h-12 text-teal-600 dark:text-orange-500 animate-spin" />
+        <p className="text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-sky-200">Menyu yüklənir...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen overflow-x-clip pb-24 transition-colors duration-500 bg-gradient-to-b from-amber-50/60 via-orange-50/40 to-emerald-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white">
@@ -233,10 +238,22 @@ export default function Home() {
               Süfrəmizdəki hər bir təam təmiz Xəzər mehi və usta şeflərimizin sevgisi ilə hazırlanır. Hər bir tikədə zəngin Azərbaycan qonaqpərvərliyini dadın.
             </p>
             <div className="flex flex-wrap gap-4 pt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-              <a href={`tel:${settings.contact.phone}`} className="flex items-center gap-1.5 hover:text-orange-500 dark:hover:text-orange-400 transition-colors">
-                <Icons.Phone className="w-4 h-4 text-orange-500" />
-                <span>{settings.contact.phone}</span>
-              </a>
+              {settings.contact?.phone ? (
+                settings.contact.phone.split(/[,;/]+/).map((num, idx) => {
+                  const cleanedNum = num.trim();
+                  if (!cleanedNum) return null;
+                  return (
+                    <a 
+                      key={idx} 
+                      href={`tel:${cleanedNum.replace(/[^+\d]/g, "")}`} 
+                      className="flex items-center gap-1.5 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
+                    >
+                      <Icons.Phone className="w-4 h-4 text-orange-500" />
+                      <span>{cleanedNum}</span>
+                    </a>
+                  );
+                })
+              ) : null}
               <button 
                 onClick={() => setShowWifiAlert(!showWifiAlert)}
                 className="flex items-center gap-1.5 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
@@ -317,20 +334,6 @@ export default function Home() {
               <span>Hamısı</span>
             </button>
 
-            {/* "Sevimlilər" düyməsi */}
-            <button
-              onClick={() => setSelectedCategory("favs")}
-              className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${
-                selectedCategory === "favs"
-                  ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-md shadow-rose-500/20 scale-105"
-                  : "bg-white/90 dark:bg-[#0c2447]/90 text-rose-500 dark:text-rose-300 border border-slate-200/60 dark:border-sky-400/20 hover:bg-rose-50 dark:hover:bg-[#12315c]/90"
-              }`}
-            >
-              <Icons.Heart className={`w-4 h-4 shrink-0 ${favorites.length > 0 ? "fill-white text-white" : ""}`} />
-              <span>Sevimlilər ({favorites.length})</span>
-            </button>
-
-            <div className="w-[1px] h-6 bg-slate-300 dark:bg-slate-700 mx-1 shrink-0"></div>
 
             {/* Dinamik kateqoriya düymələri */}
             {categories.map((cat) => (
@@ -362,9 +365,7 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-bold">Heç bir təam tapılmadı</h3>
               <p className="text-xs text-slate-500 dark:text-sky-200 mt-1 max-w-xs leading-relaxed">
-                {selectedCategory === "favs" 
-                  ? "Sevimlilər siyahınız hələ boşdur. Bəyəndiyiniz yeməklərin yanındakı ürək ikonu vasitəsilə bura təamlar əlavə edə bilərsiniz!"
-                  : "Daxil etdiyiniz axtarışa uyğun heç bir məhsul tapılmadı. Zəhmət olmasa digər açar sözləri sınayın."}
+                Daxil etdiyiniz axtarışa uyğun heç bir məhsul tapılmadı. Zəhmət olmasa digər açar sözləri sınayın.
               </p>
             </div>
             {searchQuery && (
@@ -384,7 +385,6 @@ export default function Home() {
               <div>
                 <h3 className="text-sm md:text-base font-bold tracking-[0.15em] uppercase text-teal-700 dark:text-teal-400 font-playfair border-b-2 border-orange-400 pb-1 inline-block">
                   {selectedCategory === "all" ? "Bütün Menyu" : 
-                   selectedCategory === "favs" ? "Sevimli Təamlarınız" :
                    categories.find(c => c.id === selectedCategory)?.name}
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-1.5 font-medium">
@@ -405,19 +405,6 @@ export default function Home() {
                   >
                     {/* Kartın Şəkil Başlığı */}
                     <div className="relative h-52 w-full overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0">
-                      {/* Sevimlilərə Əlavə Et Düyməsi */}
-                      <button
-                        onClick={(e) => toggleFavorite(item.id, e)}
-                        className="absolute right-3 top-3 z-10 p-2.5 rounded-full glass-panel hover:scale-110 active:scale-95 transition-all text-slate-700 dark:text-white"
-                      >
-                        <Icons.Heart
-                          className={`w-4 h-4 transition-all ${
-                            favorites.includes(item.id) 
-                              ? "fill-rose-500 text-rose-500 scale-110" 
-                              : "text-slate-500 dark:text-slate-300 hover:text-rose-500"
-                          }`}
-                        />
-                      </button>
 
                       {/* Yeməyin şəkli */}
                       <img
@@ -517,9 +504,6 @@ export default function Home() {
                             {tag}
                           </span>
                         ))}
-                        {favorites.includes(item.id) && (
-                          <Icons.Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500 shrink-0" />
-                        )}
                       </div>
                     </div>
                   </div>
@@ -559,19 +543,6 @@ export default function Home() {
                 <Icons.X className="w-5 h-5" />
               </button>
 
-              {/* Modalda Sevimlilərə Əlavə Et Düyməsi */}
-              <button
-                onClick={(e) => toggleFavorite(selectedItem.id, e)}
-                className="absolute left-4 top-4 p-2 rounded-full glass-panel hover:scale-105 active:scale-95 transition-all text-white"
-              >
-                <Icons.Heart
-                  className={`w-5 h-5 transition-all ${
-                    favorites.includes(selectedItem.id) 
-                      ? "fill-rose-500 text-rose-500 scale-110" 
-                      : "text-white"
-                  }`}
-                />
-              </button>
             </div>
 
             {/* Modal Gövdəsinin Məzmunu */}
@@ -620,6 +591,39 @@ export default function Home() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ÖDƏNİŞ XƏBƏRDARLIĞI MODALI */}
+      {showPaymentAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-md glass-panel rounded-2xl border border-red-500/20 dark:border-red-500/30 overflow-hidden flex flex-col shadow-2xl p-6 space-y-6 relative animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-col items-center text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-red-500/10 dark:bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400 animate-pulse">
+                <Icons.AlertTriangle className="w-8 h-8" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-playfair text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Diqqət!</h3>
+                <p className="text-sm md:text-base leading-relaxed text-slate-700 dark:text-sky-100 font-medium">
+                  Zəhmət olmasa, çeksiz ödəniş etməyin. Çeksiz olunan ödənişlərə müdiriyyət cavabdehlik daşımır.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setShowPaymentAlert(false);
+                try {
+                  localStorage.setItem("deniz_payment_alert_dismissed", "true");
+                } catch (e) {
+                  console.error(e);
+                }
+              }}
+              className="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-red-500/20 active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Icons.CheckCircle2 className="w-4 h-4" />
+              <span>Anladım</span>
+            </button>
           </div>
         </div>
       )}

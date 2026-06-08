@@ -40,8 +40,7 @@ export async function GET() {
     // Supabase-dən kateqoriyaları oxuyuruq
     const { data, error } = await supabase
       .from("menu_categories")
-      .select("*")
-      .order("created_at", { ascending: true });
+      .select("*");
 
     // Əgər cədvəl yoxdursa və ya digər xəta baş verərsə, lokal JSON-a fallback edirik
     if (error) {
@@ -51,6 +50,18 @@ export async function GET() {
         categories: localCategories, 
         isDatabase: false,
         error: error.message 
+      });
+    }
+
+    // JS-də sort_order sütununun olub-olmamasını xətasız yoxlayıb sıralayırıq (fallback)
+    if (data) {
+      data.sort((a, b) => {
+        const orderA = a.sort_order !== undefined && a.sort_order !== null ? a.sort_order : 0;
+        const orderB = b.sort_order !== undefined && b.sort_order !== null ? b.sort_order : 0;
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+        return new Date(a.created_at) - new Date(b.created_at);
       });
     }
 
@@ -164,6 +175,51 @@ export async function DELETE(request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+// ----------------------------------------------------
+// 4. PUT: Kateqoriyaların sırasını yeniləyir (Yalnız Admin)
+// ----------------------------------------------------
+export async function PUT(request) {
+  if (!verifyAdmin(request)) {
+    return NextResponse.json({ error: "İcazəsiz giriş. Şifrə səhvdir." }, { status: 401 });
+  }
+
+  if (!isDbReady) {
+    return NextResponse.json({ error: "Verilənlər bazası sazlanmayıb." }, { status: 400 });
+  }
+
+  try {
+    const body = await request.json();
+    const { orders } = body;
+
+    if (!orders || !Array.isArray(orders)) {
+      return NextResponse.json({ error: "Sıralama məlumatları düzgün daxil edilməyib." }, { status: 400 });
+    }
+
+    // Hər bir kateqoriyanın sort_order sütununu yeniləyirik
+    for (const item of orders) {
+      const { error } = await supabase
+        .from("menu_categories")
+        .update({ sort_order: item.sort_order })
+        .eq("id", item.id);
+
+      if (error) {
+        if (error.message?.includes("sort_order") || error.code === "PGRST116" || error.message?.includes("column") && error.message?.includes("does not exist")) {
+          return NextResponse.json({ 
+            error: "Supabase-də 'menu_categories' cədvəlində 'sort_order' sütunu tapılmadı! Sıralamanın yadda qalması üçün SQL Editor-da müvafiq sütunu yaratmalısınız.",
+            needsMigration: true
+          }, { status: 400 });
+        }
+        throw error;
+      }
+    }
+
+    return NextResponse.json({ success: true, message: "Sıralama uğurla yeniləndi!" });
+  } catch (error) {
+    console.error("Kateqoriyalar sıralanarkən xəta:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

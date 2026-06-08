@@ -66,11 +66,12 @@ export async function POST(request) {
         .delete()
         .neq("id", "dummy-prevent-empty-error");
 
-      const categoriesToInsert = localData.categories.map(cat => ({
+      const categoriesToInsert = localData.categories.map((cat, idx) => ({
         id: cat.id,
         name: cat.name,
         icon: cat.icon || "Utensils",
-        description: cat.description || ""
+        description: cat.description || "",
+        sort_order: cat.sort_order !== undefined ? cat.sort_order : idx
       }));
 
       const { error: catsError } = await supabase

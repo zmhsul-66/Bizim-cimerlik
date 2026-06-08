@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS menu_categories (
   name TEXT NOT NULL,
   icon TEXT DEFAULT 'Utensils',
   description TEXT,
+  sort_order INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

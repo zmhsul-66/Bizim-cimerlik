@@ -27,7 +27,7 @@ export default function PrintPage() {
   const [theme, setTheme] = useState("gold"); // "minimalist", "gold", "classic"
   const [showContactInfo, setShowContactInfo] = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
-  const [watermarkOpacity, setWatermarkOpacity] = useState(0.15); // Default 15% opacity
+  const [watermarkOpacity, setWatermarkOpacity] = useState(0.50); // Default 50% opacity
 
   // Səhifə yüklənəndə mövzunu və real məlumatları çəkirik
   useEffect(() => {
@@ -429,7 +429,7 @@ export default function PrintPage() {
                   <input
                     type="range"
                     min="0.02"
-                    max="0.30"
+                    max="1.00"
                     step="0.01"
                     value={watermarkOpacity}
                     onChange={(e) => setWatermarkOpacity(parseFloat(e.target.value))}

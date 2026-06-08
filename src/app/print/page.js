@@ -27,6 +27,7 @@ export default function PrintPage() {
   const [theme, setTheme] = useState("gold"); // "minimalist", "gold", "classic"
   const [showContactInfo, setShowContactInfo] = useState(true);
   const [showWatermark, setShowWatermark] = useState(true);
+  const [watermarkOpacity, setWatermarkOpacity] = useState(0.15); // Default 15% opacity
 
   // Səhifə yüklənəndə mövzunu və real məlumatları çəkirik
   useEffect(() => {
@@ -399,6 +400,24 @@ export default function PrintPage() {
                 <span className="text-xs font-bold text-slate-600 dark:text-sky-100">Arxa fon şəkli (Watermark) göstər</span>
               </label>
 
+              {showWatermark && (
+                <div className="space-y-1.5 pl-6">
+                  <div className="flex justify-between text-[11px] font-bold text-slate-500 dark:text-sky-200">
+                    <span>Şəffaflıq:</span>
+                    <span>{Math.round(watermarkOpacity * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.02"
+                    max="0.30"
+                    step="0.01"
+                    value={watermarkOpacity}
+                    onChange={(e) => setWatermarkOpacity(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                  />
+                </div>
+              )}
+
               {/* Tərkibləri Göstər */}
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
@@ -448,7 +467,8 @@ export default function PrintPage() {
                     <img 
                       src={getCategoryWatermark(cat.id)} 
                       alt="" 
-                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-[0.07] dark:opacity-[0.04] z-0 mix-blend-multiply" 
+                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none z-0 mix-blend-multiply" 
+                      style={{ opacity: watermarkOpacity }}
                     />
                   )}
                   <div className={`relative z-10 ${

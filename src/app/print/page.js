@@ -112,12 +112,13 @@ export default function PrintPage() {
     switch (catId) {
       case 'alkoqolsuzikilr-1595':
       case 'drinks':
-        return 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=1000&auto=format&fit=crop&q=40'; // Təzə soyuq içki/limonad
+      case 'istiikilr-2571':
+        return '/bg_isti_ickiler.jpg'; // Alkoqolsuz / İsti içkilər / Çay (İstifadəçi şəkli)
       case 'alkoqolluikilr-0561':
         return 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1000&auto=format&fit=crop&q=40'; // Premium şərab qədəhləri
       case 'rzlr-6753':
       case 'desserts':
-        return 'https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=1000&auto=format&fit=crop&q=40'; // Zəngin çərəz assortisi
+        return '/bg_cerezdeler.jpg'; // Zəngin çərəz assortisi (İstifadəçi şəkli)
       case 'kabablar-3265':
       case 'grill':
         return 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1000&auto=format&fit=crop&q=40'; // Köz üstündə kabab şişləri
@@ -125,14 +126,21 @@ export default function PrintPage() {
       case 'mains':
         return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1000&auto=format&fit=crop&q=40'; // İsti tava yeməkləri / Tabaka
       case 'sac-3032':
-        return 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=1000&auto=format&fit=crop&q=40'; // Sac üzərində qızmar təamlar
+        return '/bg_sac.jpg'; // Sac üzərində qızmar təamlar (İstifadəçi şəkli)
       case 'qazanyemklri-3951':
         return 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=1000&auto=format&fit=crop&q=40'; // Ənənəvi qazan yeməyi / Dolma
       case 'suplar-2026':
       case 'soups':
-        return 'https://images.unsplash.com/photo-1547592165-e1d17fed6006?w=1000&auto=format&fit=crop&q=40'; // İsti buxarlanan şorba piyaləsi
+        return '/bg_suplar.jpg'; // İsti buxarlanan şorba piyaləsi (İstifadəçi şəkli)
       case 'starters':
-        return 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&auto=format&fit=crop&q=40'; // Soyuq qəlyanaltılar / Təzə salat
+      case 'salatlar-3209':
+        return '/bg_salatlar.jpg'; // Soyuq qəlyanaltılar / Salatlar (İstifadəçi şəkli)
+      case 'breakfast':
+      case 'seheryemeyi':
+      case 'seher-yemeyi':
+      case 'shrymy':
+      case 'shryemklri-9374':
+        return '/bg_seher_yemeyi.jpg'; // Səhər yeməyi (İstifadəçi şəkli)
       default:
         return 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=1000&auto=format&fit=crop&q=40'; // Restoran dizaynlı default arxa fon
     }

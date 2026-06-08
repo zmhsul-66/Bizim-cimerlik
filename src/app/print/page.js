@@ -479,12 +479,15 @@ export default function PrintPage() {
                   className={`preview-sheet overflow-hidden ${isPageBreak ? "page-break-before" : ""}`}
                 >
                   {showWatermark && (
-                    <img 
-                      src={getCategoryWatermark(cat.id)} 
-                      alt="" 
-                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none z-0 mix-blend-multiply" 
-                      style={{ opacity: watermarkOpacity }}
-                    />
+                    <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
+                      <img 
+                        src={getCategoryWatermark(cat.id)} 
+                        alt="" 
+                        className="w-full h-full object-cover mix-blend-multiply" 
+                        style={{ imageRendering: 'high-quality' }}
+                      />
+                      <div className="absolute inset-0 bg-white" style={{ opacity: 1 - watermarkOpacity }}></div>
+                    </div>
                   )}
                   <div className={`relative z-10 ${
                     theme === "gold" ? "gold-double-border" : 

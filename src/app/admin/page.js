@@ -689,6 +689,15 @@ export default function AdminPanel() {
             </button>
 
             <button
+              onClick={() => window.open("/print", "_blank")}
+              className="px-3.5 py-2.5 bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-500/10 dark:hover:bg-amber-500/20 border border-amber-200 dark:border-amber-500/20 rounded-xl text-xs font-bold transition-all text-amber-700 dark:text-amber-400 flex items-center gap-1.5 cursor-pointer"
+            >
+              <Icons.Printer className="w-4.5 h-4.5" />
+              <span className="hidden sm:inline">Çap Versiyası</span>
+            </button>
+
+
+            <button
               onClick={handleLogout}
               className="px-3.5 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-rose-500/20 rounded-xl text-xs font-bold transition-all text-rose-700 dark:text-rose-400 flex items-center gap-1.5 cursor-pointer"
             >

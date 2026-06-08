@@ -109,6 +109,11 @@ export default function PrintPage() {
   };
 
   const getCategoryWatermark = (catId) => {
+    const cat = categories.find(c => c.id === catId);
+    if (cat && cat.watermark_url) {
+      return cat.watermark_url;
+    }
+
     switch (catId) {
       case 'alkoqolsuzikilr-1595':
       case 'drinks':

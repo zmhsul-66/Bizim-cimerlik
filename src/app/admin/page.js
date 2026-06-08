@@ -37,6 +37,11 @@ export default function AdminPanel() {
   const [catFormName, setCatFormName] = useState("");
   const [catFormIcon, setCatFormIcon] = useState("Utensils");
   const [catFormDescription, setCatFormDescription] = useState("");
+  const [catFormWatermark, setCatFormWatermark] = useState("");
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isUploadingWatermark, setIsUploadingWatermark] = useState(false);
+  const watermarkFileInputRef = useRef(null);
 
   // Modallar və Forma Vəziyyətləri (CRUD Modals)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -197,7 +202,8 @@ export default function AdminPanel() {
         body: JSON.stringify({
           name: catFormName,
           icon: catFormIcon,
-          description: catFormDescription
+          description: catFormDescription,
+          watermark_url: catFormWatermark
         })
       });
 
@@ -207,6 +213,7 @@ export default function AdminPanel() {
         setCatFormName("");
         setCatFormDescription("");
         setCatFormIcon("Utensils");
+        setCatFormWatermark("");
         await loadCategories();
       } else {
         const errData = await res.json();
@@ -238,6 +245,98 @@ export default function AdminPanel() {
       }
     } catch (err) {
       showToast("Şəbəkə xətası", "error");
+    }
+  };
+
+  // Kateqoriya arxa fon watermark şəklini yükləmə
+  const handleWatermarkUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingWatermark(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "x-admin-password": password
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setCatFormWatermark(data.url);
+        showToast("Arxa fon şəkli uğurla yükləndi!", "success");
+      } else {
+        showToast(data.error || "Şəkil yüklənərkən xəta baş verdi", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Şəbəkə əlaqəsi xətası", "error");
+    } finally {
+      setIsUploadingWatermark(false);
+    }
+  };
+
+  // Kateqoriya redaktə modalını aç
+  const openEditCategoryModal = (cat) => {
+    setSelectedCategory(cat);
+    setCatFormName(cat.name || "");
+    setCatFormIcon(cat.icon || "Utensils");
+    setCatFormDescription(cat.description || "");
+    setCatFormWatermark(cat.watermark_url || "");
+    setIsEditCategoryModalOpen(true);
+  };
+
+  // Kateqoriya redaktə et (Update Category)
+  const handleEditCategory = async (e) => {
+    e.preventDefault();
+    if (!catFormName.trim()) {
+      showToast("Kateqoriya adı boş ola bilməz!", "error");
+      return;
+    }
+
+    setIsSavingCategory(true);
+    try {
+      const res = await fetch("/api/categories", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-password": password
+        },
+        body: JSON.stringify({
+          id: selectedCategory.id,
+          name: catFormName,
+          icon: catFormIcon,
+          description: catFormDescription,
+          watermark_url: catFormWatermark
+        })
+      });
+
+      if (res.ok) {
+        showToast("Kateqoriya uğurla yeniləndi!", "success");
+        setIsEditCategoryModalOpen(false);
+        setCatFormName("");
+        setCatFormDescription("");
+        setCatFormIcon("Utensils");
+        setCatFormWatermark("");
+        setSelectedCategory(null);
+        await loadCategories();
+      } else {
+        const errData = await res.json();
+        showToast(errData.error || "Xəta yarandı", "error");
+        if (errData.needsWatermarkMigration) {
+          alert(`Arxa fon şəklini yadda saxlamaq üçün verilənlər bazasında watermark_url sütunu yaradılmalıdır.\n\nZəhmət olmasa Supabase Dashboard-da SQL Editor bölməsinə daxil olub aşağıdakı kodu 'Run' edin:\n\nALTER TABLE menu_categories ADD COLUMN IF NOT EXISTS watermark_url TEXT;`);
+        }
+      }
+    } catch (err) {
+      showToast("Şəbəkə xətası", "error");
+    } finally {
+      setIsSavingCategory(false);
     }
   };
 
@@ -1229,6 +1328,13 @@ export default function AdminPanel() {
                         </div>
 
                         <button
+                          onClick={() => openEditCategoryModal(cat)}
+                          className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 dark:bg-teal-500/10 dark:hover:bg-teal-500/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          <Icons.Edit3 className="w-3.5 h-3.5" />
+                          <span>Redaktə</span>
+                        </button>
+                        <button
                           onClick={() => handleDeleteCategory(cat.id, cat.name)}
                           className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-transparent rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer"
                         >
@@ -1304,6 +1410,13 @@ export default function AdminPanel() {
                           </td>
                           <td className="py-4 px-5 text-right">
                             <div className="flex items-center justify-end">
+                              <button
+                                onClick={() => openEditCategoryModal(cat)}
+                                className="p-2 bg-teal-50 hover:bg-teal-100 dark:bg-teal-500/5 dark:hover:bg-teal-500/20 border border-teal-200 dark:border-transparent rounded-xl text-teal-600 dark:text-teal-400 transition-all cursor-pointer mr-1.5"
+                                title="Redaktə et"
+                              >
+                                <Icons.Edit3 className="w-4 h-4" />
+                              </button>
                               <button
                                 onClick={() => handleDeleteCategory(cat.id, cat.name)}
                                 className="p-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/5 dark:hover:bg-rose-500/20 border border-rose-200 dark:border-transparent rounded-xl text-rose-600 dark:text-rose-400 transition-all cursor-pointer"
@@ -1733,6 +1846,64 @@ export default function AdminPanel() {
                 />
               </div>
 
+              {/* Arxa Fon Şəkli (Watermark) */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Çap üçün Arxa Fon Şəkli (Watermark)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={watermarkFileInputRef}
+                  onChange={handleWatermarkUpload}
+                  className="hidden"
+                />
+                
+                {catFormWatermark ? (
+                  <div className="relative h-28 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 group shadow-xs">
+                    <img
+                      src={catFormWatermark}
+                      alt="Watermark"
+                      className="w-full h-full object-contain bg-slate-100/50 dark:bg-slate-900/50 p-2"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => watermarkFileInputRef.current?.click()}
+                        className="px-3 py-1.5 bg-white text-slate-800 text-xs font-bold rounded-lg shadow-md transition-all hover:scale-105"
+                      >
+                        Dəyiş
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCatFormWatermark("")}
+                        className="px-3 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow-md transition-all hover:scale-105 hover:bg-rose-700"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => watermarkFileInputRef.current?.click()}
+                    disabled={isUploadingWatermark}
+                    className="w-full h-24 rounded-xl border-2 border-dashed border-slate-300 hover:border-teal-500 dark:border-sky-400/20 dark:hover:border-teal-500 bg-slate-50 hover:bg-slate-100/50 dark:bg-[#0c2447]/40 dark:hover:bg-[#0c2447]/60 transition-all flex flex-col items-center justify-center space-y-1 cursor-pointer shadow-2xs"
+                  >
+                    {isUploadingWatermark ? (
+                      <>
+                        <Icons.Sparkles className="w-6 h-6 text-teal-600 dark:text-orange-500 animate-spin" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/70">Yüklənir...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icons.UploadCloud className="w-6 h-6 text-slate-400 dark:text-sky-300/60" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/80">Arxa fon şəkli yüklə</span>
+                        <span className="text-[9px] text-slate-400 dark:text-sky-200/40">Çap vərəqində görünəcək loqo/şəkil</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
               <footer className="pt-5 flex gap-3 border-t border-slate-100 dark:border-white/10 mt-6">
                 <button
                   type="button"
@@ -1753,6 +1924,184 @@ export default function AdminPanel() {
                     </>
                   ) : (
                     <span>Kateqoriya Əlavə Et</span>
+                  )}
+                </button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------------------------------------
+      KATEQORİYA REDAKTƏ MODALI (EDIT CATEGORY MODAL)
+      ---------------------------------------------------- */}
+      {isEditCategoryModalOpen && selectedCategory && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 dark:bg-slate-950/80 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-[#0c2447] rounded-2xl border border-slate-200 dark:border-white/20 overflow-hidden flex flex-col shadow-2xl max-h-[90vh]">
+            <header className="p-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between bg-slate-50/50 dark:bg-[#0b1d38]/85">
+              <h3 className="font-playfair text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                <Icons.FolderEdit className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                <span>Kateqoriyanı Redaktə Et</span>
+              </h3>
+              <button 
+                onClick={() => {
+                  setIsEditCategoryModalOpen(false);
+                  setSelectedCategory(null);
+                  setCatFormName("");
+                  setCatFormDescription("");
+                  setCatFormIcon("Utensils");
+                  setCatFormWatermark("");
+                }} 
+                className="text-slate-400 hover:text-slate-600 dark:hover:white p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+              >
+                <Icons.X className="w-5 h-5" />
+              </button>
+            </header>
+
+            <form onSubmit={handleEditCategory} className="p-6 overflow-y-auto space-y-4 text-sm text-slate-700 dark:text-slate-300">
+              {/* Kateqoriya Adı */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Kateqoriya Adı *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Məsələn: Fast Food, Salatlar"
+                  value={catFormName}
+                  onChange={(e) => setCatFormName(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                />
+              </div>
+
+              {/* İkon Seçimi */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Uyğun İkon *</label>
+                <div className="relative">
+                  <select
+                    value={catFormIcon}
+                    onChange={(e) => setCatFormIcon(e.target.value)}
+                    className="w-full p-3 pl-12 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 font-medium"
+                  >
+                    <option value="Utensils">Utensils (Çəngəl-Bıçaq - Yeməklər)</option>
+                    <option value="Flame">Flame (Alov - Manqal/Kabablar)</option>
+                    <option value="Salad">Salad (Salat - Soyuq Qəlyanaltılar)</option>
+                    <option value="Soup">Soup (Şorba - Şorbalar)</option>
+                    <option value="Coffee">Coffee (Qəhvə - İsti İçkilər/Çay)</option>
+                    <option value="Cake">Cake (Tort - Şirniyyatlar)</option>
+                    <option value="Pizza">Pizza (Pizza - Fast Food)</option>
+                    <option value="Fish">Fish (Balıq - Balıq Yeməkləri)</option>
+                    <option value="IceCream">IceCream (Dondurma - Sərin Desertlər)</option>
+                    <option value="Cookie">Cookie (Çərəz / Desertlər)</option>
+                    <option value="GlassWater">GlassWater (Stəkan - Soyuq İçkilər/Limonadlar)</option>
+                    <option value="Wine">Wine (Şərab stəkanı - Bar)</option>
+                    <option value="Apple">Apple (Alma - Sağlam qidalar)</option>
+                    <option value="CookingPot">CookingPot (Qazan - Qazan Yeməkləri)</option>
+                    <option value="Disc">Disc (Sac / Dairə - Sac Yeməkləri)</option>
+                    <option value="ChefHat">ChefHat (Şef papağı - Tava Yeməkləri)</option>
+                    <option value="Candy">Candy (Konfet - Şirniyyat / Çərəz)</option>
+                  </select>
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 pointer-events-none">
+                    {renderIcon(catFormIcon, "w-5 h-5")}
+                  </div>
+                </div>
+              </div>
+
+              {/* Təsviri */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qısa Təsviri (Description)</label>
+                <textarea
+                  rows="3"
+                  placeholder="Müştərilərin kateqoriya altında görəcəyi qısa açıqlama..."
+                  value={catFormDescription}
+                  onChange={(e) => setCatFormDescription(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 resize-none font-medium"
+                />
+              </div>
+
+              {/* Arxa Fon Şəkli (Watermark) */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Çap üçün Arxa Fon Şəkli (Watermark)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={watermarkFileInputRef}
+                  onChange={handleWatermarkUpload}
+                  className="hidden"
+                />
+                
+                {catFormWatermark ? (
+                  <div className="relative h-28 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 group shadow-xs">
+                    <img
+                      src={catFormWatermark}
+                      alt="Watermark"
+                      className="w-full h-full object-contain bg-slate-100/50 dark:bg-slate-900/50 p-2"
+                    />
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => watermarkFileInputRef.current?.click()}
+                        className="px-3 py-1.5 bg-white text-slate-800 text-xs font-bold rounded-lg shadow-md transition-all hover:scale-105"
+                      >
+                        Dəyiş
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCatFormWatermark("")}
+                        className="px-3 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow-md transition-all hover:scale-105 hover:bg-rose-700"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => watermarkFileInputRef.current?.click()}
+                    disabled={isUploadingWatermark}
+                    className="w-full h-24 rounded-xl border-2 border-dashed border-slate-300 hover:border-teal-500 dark:border-sky-400/20 dark:hover:border-teal-500 bg-slate-50 hover:bg-slate-100/50 dark:bg-[#0c2447]/40 dark:hover:bg-[#0c2447]/60 transition-all flex flex-col items-center justify-center space-y-1 cursor-pointer shadow-2xs"
+                  >
+                    {isUploadingWatermark ? (
+                      <>
+                        <Icons.Sparkles className="w-6 h-6 text-teal-600 dark:text-orange-500 animate-spin" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/70">Yüklənir...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icons.UploadCloud className="w-6 h-6 text-slate-400 dark:text-sky-300/60" />
+                        <span className="text-xs font-bold text-slate-500 dark:text-sky-200/80">Arxa fon şəkli yüklə</span>
+                        <span className="text-[9px] text-slate-400 dark:text-sky-200/40">Çap vərəqində görünəcək loqo/şəkil</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              <footer className="pt-5 flex gap-3 border-t border-slate-100 dark:border-white/10 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditCategoryModalOpen(false);
+                    setSelectedCategory(null);
+                    setCatFormName("");
+                    setCatFormDescription("");
+                    setCatFormIcon("Utensils");
+                    setCatFormWatermark("");
+                  }}
+                  className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+                >
+                  İmtina
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingCategory}
+                  className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  {isSavingCategory ? (
+                    <>
+                      <Icons.Sparkles className="w-4 h-4 animate-spin" />
+                      <span>Saxlanılır...</span>
+                    </>
+                  ) : (
+                    <span>Yadda Saxla</span>
                   )}
                 </button>
               </footer>

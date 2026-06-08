@@ -94,7 +94,7 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const { name, icon, description } = body;
+    const { name, icon, description, watermark_url } = body;
 
     if (!name) {
       return NextResponse.json({ error: "Kateqoriya adı mütləq daxil edilməlidir." }, { status: 400 });
@@ -116,7 +116,8 @@ export async function POST(request) {
       id: generatedId,
       name,
       icon: icon || "Utensils",
-      description: description || ""
+      description: description || "",
+      watermark_url: watermark_url || ""
     };
 
     const { data, error } = await supabase
@@ -193,33 +194,54 @@ export async function PUT(request) {
 
   try {
     const body = await request.json();
-    const { orders } = body;
+    
+    // Case 1: Reordering categories
+    if (body.orders && Array.isArray(body.orders)) {
+      for (const item of body.orders) {
+        const { error } = await supabase
+          .from("menu_categories")
+          .update({ sort_order: item.sort_order })
+          .eq("id", item.id);
 
-    if (!orders || !Array.isArray(orders)) {
-      return NextResponse.json({ error: "Sıralama məlumatları düzgün daxil edilməyib." }, { status: 400 });
-    }
-
-    // Hər bir kateqoriyanın sort_order sütununu yeniləyirik
-    for (const item of orders) {
-      const { error } = await supabase
-        .from("menu_categories")
-        .update({ sort_order: item.sort_order })
-        .eq("id", item.id);
-
-      if (error) {
-        if (error.message?.includes("sort_order") || error.code === "PGRST116" || error.message?.includes("column") && error.message?.includes("does not exist")) {
-          return NextResponse.json({ 
-            error: "Supabase-də 'menu_categories' cədvəlində 'sort_order' sütunu tapılmadı! Sıralamanın yadda qalması üçün SQL Editor-da müvafiq sütunu yaratmalısınız.",
-            needsMigration: true
-          }, { status: 400 });
+        if (error) {
+          if (error.message?.includes("sort_order") || error.code === "PGRST116" || error.message?.includes("column") && error.message?.includes("does not exist")) {
+            return NextResponse.json({ 
+              error: "Supabase-də 'menu_categories' cədvəlində 'sort_order' sütunu tapılmadı! Sıralamanın yadda qalması üçün SQL Editor-da müvafiq sütunu yaratmalısınız.",
+              needsMigration: true
+            }, { status: 400 });
+          }
+          throw error;
         }
-        throw error;
       }
+      return NextResponse.json({ success: true, message: "Sıralama uğurla yeniləndi!" });
     }
 
-    return NextResponse.json({ success: true, message: "Sıralama uğurla yeniləndi!" });
+    // Case 2: Update single category details
+    const { id, name, icon, description, watermark_url } = body;
+    if (!id || !name) {
+      return NextResponse.json({ error: "Kateqoriya ID-si və adı təqdim edilməlidir." }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from("menu_categories")
+      .update({ name, icon, description, watermark_url })
+      .eq("id", id)
+      .select();
+
+    if (error) {
+      if (error.message?.includes("watermark_url") || error.code === "PGRST116" || error.message?.includes("column") && error.message?.includes("does not exist")) {
+        return NextResponse.json({ 
+          error: "Supabase-də 'menu_categories' cədvəlində 'watermark_url' sütunu tapılmadı! Zəhmət olmasa SQL Editor-da bu skripti işə salın:\n\nALTER TABLE menu_categories ADD COLUMN IF NOT EXISTS watermark_url TEXT;",
+          needsWatermarkMigration: true
+        }, { status: 400 });
+      }
+      throw error;
+    }
+
+    return NextResponse.json({ success: true, category: data[0] });
+
   } catch (error) {
-    console.error("Kateqoriyalar sıralanarkən xəta:", error);
+    console.error("Kateqoriyalar yenilənərkən xəta:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

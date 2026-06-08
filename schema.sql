@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS menu_categories (
   icon TEXT DEFAULT 'Utensils',
   description TEXT,
   sort_order INTEGER DEFAULT 0,
+  watermark_url TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

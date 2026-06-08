@@ -71,7 +71,8 @@ export async function POST(request) {
         name: cat.name,
         icon: cat.icon || "Utensils",
         description: cat.description || "",
-        sort_order: cat.sort_order !== undefined ? cat.sort_order : idx
+        sort_order: cat.sort_order !== undefined ? cat.sort_order : idx,
+        watermark_url: cat.watermark_url || ""
       }));
 
       const { error: catsError } = await supabase

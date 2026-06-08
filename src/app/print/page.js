@@ -26,6 +26,7 @@ export default function PrintPage() {
   const [marginSize, setMarginSize] = useState("1.5cm"); // 1cm, 1.5cm, 2cm
   const [theme, setTheme] = useState("gold"); // "minimalist", "gold", "classic"
   const [showContactInfo, setShowContactInfo] = useState(true);
+  const [showWatermark, setShowWatermark] = useState(true);
 
   // Səhifə yüklənəndə mövzunu və real məlumatları çəkirik
   useEffect(() => {
@@ -104,6 +105,29 @@ export default function PrintPage() {
     const IconComponent = Icons[iconName];
     if (!IconComponent) return <Icons.HelpCircle className={className} />;
     return <IconComponent className={className} />;
+  };
+
+  const getCategoryWatermark = (catId) => {
+    switch (catId) {
+      case 'alkoqolsuzikilr-1595':
+        return 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=1000&auto=format&fit=crop&q=40';
+      case 'alkoqolluikilr-0561':
+        return 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1000&auto=format&fit=crop&q=40';
+      case 'rzlr-6753':
+        return 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=1000&auto=format&fit=crop&q=40';
+      case 'kabablar-3265':
+        return 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1000&auto=format&fit=crop&q=40';
+      case 'tavayemklri-1427':
+        return 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=1000&auto=format&fit=crop&q=40';
+      case 'sac-3032':
+        return 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=1000&auto=format&fit=crop&q=40';
+      case 'qazanyemklri-3951':
+        return 'https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=1000&auto=format&fit=crop&q=40';
+      case 'suplar-2026':
+        return 'https://images.unsplash.com/photo-1547592165-e1d17fed6006?w=1000&auto=format&fit=crop&q=40';
+      default:
+        return 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=1000&auto=format&fit=crop&q=40';
+    }
   };
 
   if (isLoading) {
@@ -364,6 +388,17 @@ export default function PrintPage() {
                 <span className="text-xs font-bold text-slate-600 dark:text-sky-100">Yemək şəkillərini göstər</span>
               </label>
 
+              {/* Arxa Fon Şəklini Göstər */}
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={showWatermark}
+                  onChange={(e) => setShowWatermark(e.target.checked)}
+                  className="rounded border-slate-300 text-amber-500 focus:ring-amber-500 h-4 w-4"
+                />
+                <span className="text-xs font-bold text-slate-600 dark:text-sky-100">Arxa fon şəkli (Watermark) göstər</span>
+              </label>
+
               {/* Tərkibləri Göstər */}
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
@@ -407,12 +442,19 @@ export default function PrintPage() {
               return (
                 <div 
                   key={cat.id} 
-                  className={`preview-sheet ${isPageBreak ? "page-break-before" : ""}`}
+                  className={`preview-sheet overflow-hidden ${isPageBreak ? "page-break-before" : ""}`}
                 >
-                  <div className={
+                  {showWatermark && (
+                    <img 
+                      src={getCategoryWatermark(cat.id)} 
+                      alt="" 
+                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-[0.07] dark:opacity-[0.04] z-0 mix-blend-multiply" 
+                    />
+                  )}
+                  <div className={`relative z-10 ${
                     theme === "gold" ? "gold-double-border" : 
                     theme === "classic" ? "classic-border" : ""
-                  }>
+                  }`}>
                     {/* RESTORAN HEADER (Hər vərəqin və ya seçilmiş kateqoriyanın başında) */}
                     {(catIdx === 0 || selectedCategory !== "all") && (
                       <div className="text-center pb-6 border-b-2 print-border-gold border-amber-600/30 max-w-xl mx-auto space-y-2 mb-8">

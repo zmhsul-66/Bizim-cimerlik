@@ -19,7 +19,7 @@ export default function PrintPage() {
 
   // Çap Parametrləri (Print Settings)
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [columns, setColumns] = useState("2"); // "1" və ya "2"
+  const columns = "1"; // Həmişə 1 sütunlu (alt-alta) düzən
   const [showImages, setShowImages] = useState(false);
   const [showIngredients, setShowIngredients] = useState(true);
   const [fontSize, setFontSize] = useState("14px"); // 12px, 14px, 16px, 18px
@@ -261,32 +261,7 @@ export default function PrintPage() {
               </select>
             </div>
 
-            {/* Sütun Sayı */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 dark:text-sky-200">Sütun Sayı (Layout)</label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setColumns("1")}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    columns === "1"
-                      ? "bg-amber-500/10 border-amber-500 text-amber-600 dark:text-amber-400"
-                      : "border-slate-200 dark:border-sky-400/15 text-slate-600 dark:text-sky-200 bg-transparent"
-                  }`}
-                >
-                  1 Sütunlu (Klassik)
-                </button>
-                <button
-                  onClick={() => setColumns("2")}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    columns === "2"
-                      ? "bg-amber-500/10 border-amber-500 text-amber-600 dark:text-amber-400"
-                      : "border-slate-200 dark:border-sky-400/15 text-slate-600 dark:text-sky-200 bg-transparent"
-                  }`}
-                >
-                  2 Sütunlu (Yığcam)
-                </button>
-              </div>
-            </div>
+
 
             {/* Menyu Mövzusu (Theme) */}
             <div className="space-y-1.5">
@@ -486,83 +461,42 @@ export default function PrintPage() {
 
                     {/* YEMƏKLƏR SİYAHISI */}
                     <div className="mt-8">
-                      {columns === "1" ? (
-                        /* BİR SÜTUNLU GÖRÜNÜŞ */
-                        <div className="space-y-6">
-                          {categoryItems.map(item => (
-                            <div key={item.id} className="print-item-card space-y-1">
-                              <div className="flex items-baseline justify-between">
-                                <div className="flex items-center gap-3 min-w-0">
-                                  {showImages && item.image && (
-                                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
-                                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                    </div>
-                                  )}
-                                  <span 
-                                    className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
-                                    style={{ fontSize }}
-                                  >
-                                    {item.name}
-                                    {item.isChefSpecial && (
-                                      <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
-                                    )}
-                                  </span>
-                                </div>
-                                <div className="leader-dots print-leader-line border-slate-300"></div>
+                      <div className="space-y-6">
+                        {categoryItems.map(item => (
+                          <div key={item.id} className="print-item-card space-y-1">
+                            <div className="flex items-baseline justify-between">
+                              <div className="flex items-center gap-3 min-w-0">
+                                {showImages && item.image && (
+                                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                  </div>
+                                )}
                                 <span 
-                                  className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                  className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
                                   style={{ fontSize }}
                                 >
-                                  {Number(item.price).toFixed(2)} {settings.currency}
+                                  {item.name}
+                                  {item.isChefSpecial && (
+                                    <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
+                                  )}
                                 </span>
                               </div>
-                              {showIngredients && item.ingredients && (
-                                <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
-                                  {item.ingredients}
-                                </p>
-                              )}
+                              <div className="leader-dots print-leader-line border-slate-300"></div>
+                              <span 
+                                className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                style={{ fontSize }}
+                              >
+                                {Number(item.price).toFixed(2)} {settings.currency}
+                              </span>
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        /* İKİ SÜTUNLU GÖRÜNÜŞ */
-                        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                          {categoryItems.map(item => (
-                            <div key={item.id} className="print-item-card space-y-1 flex flex-col justify-between">
-                              <div>
-                                <div className="flex items-baseline justify-between">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    {showImages && item.image && (
-                                      <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
-                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                      </div>
-                                    )}
-                                    <span 
-                                      className="font-playfair font-bold text-slate-900 print-text-dark leading-tight truncate" 
-                                      style={{ fontSize }}
-                                      title={item.name}
-                                    >
-                                      {item.name}
-                                    </span>
-                                  </div>
-                                  <div className="leader-dots print-leader-line border-slate-300"></div>
-                                  <span 
-                                    className="font-bold text-slate-900 print-text-dark shrink-0" 
-                                    style={{ fontSize }}
-                                  >
-                                    {Number(item.price).toFixed(2)} {settings.currency}
-                                  </span>
-                                </div>
-                                {showIngredients && item.ingredients && (
-                                  <p className="text-[11px] text-gray-500 italic pl-1 print-text-muted leading-tight mt-0.5 truncate" title={item.ingredients}>
-                                    {item.ingredients}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                            {showIngredients && item.ingredients && (
+                              <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
+                                {item.ingredients}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>

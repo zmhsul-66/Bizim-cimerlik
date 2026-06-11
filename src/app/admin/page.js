@@ -512,7 +512,7 @@ export default function AdminPanel() {
   const openEditModal = (item) => {
     setSelectedItem(item);
     setFormName(item.name);
-    setFormPrice(item.price.toString());
+    setFormPrice(item.price !== null && item.price !== undefined ? item.price.toString() : "");
     const hasCategory = categories.some(c => c.id === item.categoryId);
     setFormCategory(hasCategory ? item.categoryId : (categories[0]?.id || ""));
     setFormIngredients(item.ingredients);
@@ -574,7 +574,7 @@ export default function AdminPanel() {
         body: JSON.stringify({
           categoryId: formCategory,
           name: formName,
-          price: parseFloat(formPrice),
+          price: formPrice.trim(),
           ingredients: formIngredients || "",
           image: formImage,
           tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
@@ -614,7 +614,7 @@ export default function AdminPanel() {
           id: selectedItem.id,
           categoryId: formCategory,
           name: formName,
-          price: parseFloat(formPrice),
+          price: formPrice.trim(),
           ingredients: formIngredients || "",
           image: formImage,
           tags: formTags.split(",").map(t => t.trim()).filter(t => t !== ""),
@@ -662,6 +662,39 @@ export default function AdminPanel() {
     const IconComponent = Icons[iconName];
     if (!IconComponent) return <Icons.HelpCircle className={className} />;
     return <IconComponent className={className} />;
+  };
+
+  // Qiymətin formatlanması (çoxlu qiymətlərə sləş və ya defis ilə dəstək)
+  const formatPrice = (price, currency, currencyClass = "text-[10px]") => {
+    if (price === undefined || price === null) return "";
+    const priceStr = String(price).trim();
+    if (!isNaN(priceStr) && priceStr !== "") {
+      return (
+        <>
+          {Number(priceStr).toFixed(2)} <span className={`${currencyClass} font-bold opacity-80 ml-0.5`}>{currency}</span>
+        </>
+      );
+    }
+    const hasLetters = /[a-zA-Z₼]/.test(priceStr);
+    
+    // Rəqəmləri formatlayan köməkçi funksiya (məsələn: 15 -> 15.00)
+    const formatPart = (part) => {
+      const trimmed = part.trim();
+      return (!isNaN(trimmed) && trimmed !== "") ? Number(trimmed).toFixed(2) : trimmed;
+    };
+
+    let formatted = priceStr;
+    if (priceStr.includes("/")) {
+      formatted = priceStr.split("/").map(formatPart).join(" / ");
+    } else if (priceStr.includes("-")) {
+      formatted = priceStr.split("-").map(formatPart).join(" - ");
+    }
+
+    return (
+      <>
+        {formatted} {!hasLetters && <span className={`${currencyClass} font-bold opacity-80 ml-0.5`}>{currency}</span>}
+      </>
+    );
   };
 
   // ----------------------------------------------------
@@ -985,7 +1018,7 @@ export default function AdminPanel() {
                               {categories.find(c => c.id === item.categoryId)?.name || item.categoryId}
                             </span>
                             <span className="price-text-premium text-orange-600 dark:text-amber-400 text-sm">
-                              {Number(item.price).toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settingsCurrency}</span>
+                              {formatPrice(item.price, settingsCurrency, "text-[10px]")}
                             </span>
                           </div>
                         </div>
@@ -1076,7 +1109,7 @@ export default function AdminPanel() {
                           </td>
 
                           <td className="py-4 px-5 price-text-premium text-orange-600 dark:text-amber-400 text-base">
-                            {Number(item.price).toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settingsCurrency}</span>
+                            {formatPrice(item.price, settingsCurrency, "text-[10px]")}
                           </td>
 
                           <td className="py-4 px-5 font-light">
@@ -1469,10 +1502,9 @@ export default function AdminPanel() {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qiyməti ({settingsCurrency}) *</label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     required
-                    placeholder="Məsələn: 24.50"
+                    placeholder="Məsələn: 24.50 və ya 15 / 20"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"
@@ -1636,10 +1668,9 @@ export default function AdminPanel() {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-500 dark:text-sky-200 block">Qiyməti ({settingsCurrency}) *</label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
                     required
-                    placeholder="24.50"
+                    placeholder="Məsələn: 24.50 və ya 15 / 20"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
                     className="w-full p-3 rounded-xl border border-slate-200 dark:border-sky-400/20 bg-slate-50 dark:bg-[#0c2447]/60 text-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500"

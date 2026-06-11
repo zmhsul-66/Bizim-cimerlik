@@ -16,6 +16,7 @@ export default function PrintPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Çap Parametrləri (Print Settings)
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -92,6 +93,69 @@ export default function PrintPage() {
     return categories.filter(cat => cat.id === selectedCategory);
   };
 
+  // Səhifələri qruplaşdırmaq üçün funksiya (Helper to get print sheets)
+  const getPrintSheets = () => {
+    const activeCategories = categories.filter(cat => items.some(item => item.categoryId === cat.id));
+    
+    if (selectedCategory !== "all") {
+      const cat = activeCategories.find(c => c.id === selectedCategory);
+      return cat ? [{ id: cat.id, categories: [cat] }] : [];
+    }
+
+    const sheets = [];
+    const processedCatIds = new Set();
+
+    activeCategories.forEach(cat => {
+      if (processedCatIds.has(cat.id)) return;
+
+      if (cat.id === 'qazanyemklri-3951' || cat.id === 'suplar-2026') {
+        const qazanCat = activeCategories.find(c => c.id === 'qazanyemklri-3951');
+        const suplarCat = activeCategories.find(c => c.id === 'suplar-2026');
+        const sheetCats = [];
+        if (qazanCat) {
+          sheetCats.push(qazanCat);
+          processedCatIds.add('qazanyemklri-3951');
+        }
+        if (suplarCat) {
+          sheetCats.push(suplarCat);
+          processedCatIds.add('suplar-2026');
+        }
+        if (sheetCats.length > 0) {
+          sheets.push({
+            id: 'qazan-suplar',
+            categories: sheetCats
+          });
+        }
+      } else if (cat.id === 'sac-3032' || cat.id === 'pizza') {
+        const sacCat = activeCategories.find(c => c.id === 'sac-3032');
+        const pizzaCat = activeCategories.find(c => c.id === 'pizza');
+        const sheetCats = [];
+        if (sacCat) {
+          sheetCats.push(sacCat);
+          processedCatIds.add('sac-3032');
+        }
+        if (pizzaCat) {
+          sheetCats.push(pizzaCat);
+          processedCatIds.add('pizza');
+        }
+        if (sheetCats.length > 0) {
+          sheets.push({
+            id: 'sac-pizza',
+            categories: sheetCats
+          });
+        }
+      } else {
+        processedCatIds.add(cat.id);
+        sheets.push({
+          id: cat.id,
+          categories: [cat]
+        });
+      }
+    });
+
+    return sheets;
+  };
+
   const getCategoryItems = (catId) => {
     return items.filter(item => item.categoryId === catId);
   };
@@ -101,11 +165,95 @@ export default function PrintPage() {
     window.print();
   };
 
+  // PDF kimi yadda saxlayır (Birbaşa fayla ixrac edir)
+  const handleSavePDF = async () => {
+    setIsGenerating(true);
+    try {
+      // Dinamik importlar (SSR zamanı build/window xətalarının qarşısını almaq üçün)
+      const html2canvas = (await import("html2canvas-pro")).default;
+      const { jsPDF } = await import("jspdf");
+
+      const container = document.getElementById("print-content");
+      if (!container) return;
+
+      // PDF üçün xüsusi sinfi əlavə edirik (kənarlıqları/kölgələri təmizləmək üçün)
+      container.classList.add("generating-pdf");
+
+      const sheets = container.querySelectorAll(".preview-sheet");
+      if (sheets.length === 0) {
+        container.classList.remove("generating-pdf");
+        setIsGenerating(false);
+        return;
+      }
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      for (let i = 0; i < sheets.length; i++) {
+        const sheet = sheets[i];
+        
+        // Hər bir vərəqi ayrılıqda şəkilə çeviririk (CORS aktivdir ki, 4K arxa fonlar düşsün)
+        const canvas = await html2canvas(sheet, {
+          scale: 2.5,
+          useCORS: true,
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        if (i > 0) {
+          pdf.addPage();
+        }
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+      }
+
+      pdf.save('deniz_qiragi_menyu.pdf');
+    } catch (err) {
+      console.error("PDF yaradılarkən xəta baş verdi:", err);
+      alert("PDF faylı yaradıla bilmədi. Zəhmət olmasa yenidən cəhd edin.");
+    } finally {
+      const container = document.getElementById("print-content");
+      if (container) {
+        container.classList.remove("generating-pdf");
+      }
+      setIsGenerating(false);
+    }
+  };
+
   // İkonu render etmək
   const renderIcon = (iconName, className = "w-5 h-5") => {
     const IconComponent = Icons[iconName];
     if (!IconComponent) return <Icons.HelpCircle className={className} />;
     return <IconComponent className={className} />;
+  };
+
+  // Qiymətin formatlanması (çoxlu qiymətlərə sləş və ya defis ilə dəstək)
+  const formatPrice = (price, currency) => {
+    if (price === undefined || price === null) return "";
+    const priceStr = String(price).trim();
+    if (!isNaN(priceStr) && priceStr !== "") {
+      return `${Number(priceStr).toFixed(2)} ${currency}`;
+    }
+    const hasLetters = /[a-zA-Z₼]/.test(priceStr);
+    
+    // Rəqəmləri formatlayan köməkçi funksiya (məsələn: 15 -> 15.00)
+    const formatPart = (part) => {
+      const trimmed = part.trim();
+      return (!isNaN(trimmed) && trimmed !== "") ? Number(trimmed).toFixed(2) : trimmed;
+    };
+
+    let formatted = priceStr;
+    if (priceStr.includes("/")) {
+      formatted = priceStr.split("/").map(formatPart).join(" / ");
+    } else if (priceStr.includes("-")) {
+      formatted = priceStr.split("-").map(formatPart).join(" - ");
+    }
+
+    return `${formatted}${!hasLetters ? ` ${currency}` : ""}`;
   };
 
   const getCategoryWatermark = (catId) => {
@@ -243,6 +391,29 @@ export default function PrintPage() {
           padding: 1.5rem;
           height: 100%;
         }
+
+        /* PDF Generation Styles */
+        .generating-pdf {
+          background: transparent !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          width: 210mm !important;
+        }
+        .generating-pdf .preview-sheet {
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          margin: 0 !important;
+          padding: ${marginSize} !important;
+          width: 210mm !important;
+          height: 297mm !important;
+          position: relative !important;
+          page-break-after: always !important;
+          break-after: page !important;
+        }
+        .generating-pdf .gold-double-border,
+        .generating-pdf .classic-border {
+          height: 100% !important;
+        }
       `}</style>
 
       {/* ÜST İDARƏETMƏ PANELİ (NO-PRINT) */}
@@ -267,8 +438,32 @@ export default function PrintPage() {
 
           <div className="flex items-center gap-2">
             <button
+              onClick={handleSavePDF}
+              disabled={isGenerating}
+              className={`px-5 py-2.5 text-white rounded-xl text-sm font-bold shadow-md active:scale-98 transition-all flex items-center gap-2 cursor-pointer ${
+                isGenerating 
+                  ? "bg-slate-700 shadow-slate-700/20 cursor-not-allowed" 
+                  : "bg-sky-600 hover:bg-sky-700 shadow-sky-600/20"
+              }`}
+            >
+              {isGenerating ? (
+                <>
+                  <Icons.Loader2 className="w-4.5 h-4.5 animate-spin" />
+                  <span>PDF Hazırlanır...</span>
+                </>
+              ) : (
+                <>
+                  <Icons.Download className="w-4.5 h-4.5" />
+                  <span>PDF Yadda Saxla</span>
+                </>
+              )}
+            </button>
+            <button
               onClick={handlePrint}
-              className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-sm font-bold shadow-md shadow-amber-500/20 active:scale-98 transition-all flex items-center gap-2 cursor-pointer"
+              disabled={isGenerating}
+              className={`px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-sm font-bold shadow-md shadow-amber-500/20 active:scale-98 transition-all flex items-center gap-2 cursor-pointer ${
+                isGenerating ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <Icons.Printer className="w-4.5 h-4.5" />
               <span>Çap Et (Ctrl + P)</span>
@@ -470,33 +665,51 @@ export default function PrintPage() {
             Kağız Görünüşü (Preview)
           </p>
 
-          <div className="print-page-container w-full space-y-8">
-            {getFilteredCategories().map((cat, catIdx) => {
-              const categoryItems = getCategoryItems(cat.id);
-              if (categoryItems.length === 0) return null;
-
-              // Birinci kateqoriyadan sonrakılar üçün və əgər 'all' seçilibsə, çapda səhifə qırılması (page break) veririk
-              const isPageBreak = selectedCategory === "all" && catIdx > 0;
+          <div id="print-content" className="print-page-container w-full space-y-8">
+            {getPrintSheets().map((sheet, sheetIdx) => {
+              const isPageBreak = selectedCategory === "all" && sheetIdx > 0;
+              const firstCat = sheet.categories[0];
 
               return (
                 <div 
-                  key={cat.id} 
+                  key={sheet.id} 
                   className={`preview-sheet overflow-hidden ${isPageBreak ? "page-break-before" : ""}`}
                 >
                   {showWatermark && (
-                    <img 
-                      src={getCategoryWatermark(cat.id)} 
-                      alt="" 
-                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none z-0" 
-                      style={{ opacity: watermarkOpacity }}
-                    />
+                    <div className="absolute inset-0 z-0 pointer-events-none select-none flex">
+                      {sheet.categories.map((cat, catIdx) => {
+                        // Qazan + Suplar vərəqində yalnız birinci kateqoriyanın arxa fonunu göstəririk
+                        if (sheet.id === 'qazan-suplar' && catIdx > 0) return null;
+                        
+                        const watermarkUrl = getCategoryWatermark(cat.id);
+                        if (!watermarkUrl) return null;
+                        
+                        // Əgər qazan-suplar vərəqindəyiksə və ya yalnız 1 kateqoriya varsa 100% enində olmalıdır
+                        const widthPct = (sheet.id === 'qazan-suplar' || sheet.categories.length === 1) 
+                          ? 100 
+                          : (100 / sheet.categories.length);
+                        
+                        return (
+                          <img 
+                            key={cat.id}
+                            src={watermarkUrl} 
+                            alt="" 
+                            className="h-full object-cover" 
+                            style={{ 
+                              width: `${widthPct}%`,
+                              opacity: watermarkOpacity 
+                            }}
+                          />
+                        );
+                      })}
+                    </div>
                   )}
                   <div className={`relative z-10 ${
                     theme === "gold" ? "gold-double-border" : 
                     theme === "classic" ? "classic-border" : ""
                   }`}>
                     {/* RESTORAN HEADER (Hər vərəqin və ya seçilmiş kateqoriyanın başında) */}
-                    {(catIdx === 0 || selectedCategory !== "all") && (
+                    {(sheetIdx === 0 || selectedCategory !== "all") && (
                       <div className="text-center pb-6 border-b-2 print-border-gold border-amber-600/30 max-w-xl mx-auto space-y-2 mb-8">
                         <div className="flex justify-center text-amber-600">
                           <Icons.UtensilsCrossed className="w-8 h-8" />
@@ -529,57 +742,61 @@ export default function PrintPage() {
                       </div>
                     )}
 
-                    {/* KATEQORİYA ADI */}
-                    <div className="text-center my-6">
-                      <h3 className="font-playfair text-xl md:text-2xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1.5 px-4 mb-2 print-text-dark">
-                        {cat.name}
-                      </h3>
-                      {cat.description && (
-                        <p className="text-[11px] text-gray-500 italic max-w-md mx-auto print-text-muted">
-                          {cat.description}
-                        </p>
-                      )}
-                    </div>
+                    {sheet.categories.map((cat, catIdx) => {
+                      const categoryItems = getCategoryItems(cat.id);
+                      if (categoryItems.length === 0) return null;
 
-                    {/* YEMƏKLƏR SİYAHISI */}
-                    <div className="mt-8">
-                      <div className="space-y-6">
-                        {categoryItems.map(item => (
-                          <div key={item.id} className="print-item-card space-y-1">
-                            <div className="flex items-baseline justify-between">
-                              <div className="flex items-center gap-3 min-w-0">
-                                {showImages && item.image && (
-                                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
-                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                  </div>
-                                )}
-                                <span 
-                                  className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
-                                  style={{ fontSize }}
-                                >
-                                  {item.name}
-                                  {item.isChefSpecial && (
-                                    <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
-                                  )}
-                                </span>
-                              </div>
-                              <div className="leader-dots print-leader-line border-slate-300"></div>
-                              <span 
-                                className="font-bold text-slate-900 print-text-dark shrink-0" 
-                                style={{ fontSize }}
-                              >
-                                {Number(item.price).toFixed(2)} {settings.currency}
-                              </span>
-                            </div>
-                            {showIngredients && item.ingredients && (
-                              <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
-                                {item.ingredients}
-                              </p>
-                            )}
+                      return (
+                        <div key={cat.id} className={catIdx > 0 ? "mt-10 pt-6 border-t border-dashed border-amber-600/30" : ""}>
+                          {/* KATEQORİYA ADI */}
+                          <div className="text-center my-6">
+                            <h3 className="font-playfair text-xl md:text-2xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1.5 px-4 mb-2 print-text-dark">
+                              {cat.name}
+                            </h3>
                           </div>
-                        ))}
-                      </div>
-                    </div>
+
+                          {/* YEMƏKLƏR SİYAHISI */}
+                          <div className="mt-8">
+                            <div className="space-y-6">
+                              {categoryItems.map(item => (
+                                <div key={item.id} className="print-item-card space-y-1">
+                                  <div className="flex items-baseline justify-between">
+                                    <div className="flex items-center gap-3 min-w-0">
+                                      {showImages && item.image && (
+                                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
+                                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                        </div>
+                                      )}
+                                      <span 
+                                        className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
+                                        style={{ fontSize }}
+                                      >
+                                        {item.name}
+                                        {item.isChefSpecial && (
+                                          <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
+                                        )}
+                                      </span>
+                                    </div>
+                                    <div className="leader-dots print-leader-line border-slate-300"></div>
+                                    <span 
+                                      className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                      style={{ fontSize }}
+                                    >
+                                      {formatPrice(item.price, settings.currency)}
+                                    </span>
+                                  </div>
+                                  {showIngredients && item.ingredients && (
+                                    <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
+                                      {item.ingredients}
+                                    </p>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );

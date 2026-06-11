@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS menu_items (
   id TEXT PRIMARY KEY,
   category_id TEXT NOT NULL,
   name TEXT NOT NULL,
-  price NUMERIC(10, 2) NOT NULL,
+  price TEXT NOT NULL,
   ingredients TEXT NOT NULL,
   image TEXT NOT NULL,
   tags TEXT[] DEFAULT '{}',

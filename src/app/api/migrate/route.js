@@ -37,7 +37,7 @@ export async function POST(request) {
         id: item.id,
         category_id: item.categoryId,
         name: item.name,
-        price: Number(item.price),
+        price: String(item.price),
         ingredients: item.ingredients,
         image: item.image,
         tags: item.tags || [],

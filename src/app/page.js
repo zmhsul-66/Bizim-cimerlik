@@ -29,7 +29,7 @@ export default function Home() {
     try {
       const savedTheme = localStorage.getItem("deniz_theme");
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      
+
       if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
         document.documentElement.classList.add("dark");
         setIsDarkMode(true);
@@ -43,7 +43,7 @@ export default function Home() {
       document.documentElement.classList.remove("dark");
       setIsDarkMode(false);
     }
-    
+
     // Ödəniş xəbərdarlığı modalının yoxlanılması
     try {
       const paymentAlertDismissed = localStorage.getItem("deniz_payment_alert_dismissed");
@@ -68,7 +68,7 @@ export default function Home() {
         console.warn("Dinamik yeməklər yüklənmədi, lokal JSON istifadə olunur:", err);
       }
     };
-    
+
     // Restoran tənzimləmələrini çəkirik (Live Database Settings)
     const fetchSettings = async () => {
       try {
@@ -141,19 +141,51 @@ export default function Home() {
     }
   };
 
+  // Qiymətin formatlanması (çoxlu qiymətlərə sləş və ya defis ilə dəstək)
+  const formatPrice = (price, currency, currencyClass = "text-[10px]") => {
+    if (price === undefined || price === null) return "";
+    const priceStr = String(price).trim();
+    if (!isNaN(priceStr) && priceStr !== "") {
+      return (
+        <>
+          {Number(priceStr).toFixed(2)} <span className={`${currencyClass} font-bold opacity-80 ml-0.5`}>{currency}</span>
+        </>
+      );
+    }
+    const hasLetters = /[a-zA-Z₼]/.test(priceStr);
+
+    // Rəqəmləri formatlayan köməkçi funksiya (məsələn: 15 -> 15.00)
+    const formatPart = (part) => {
+      const trimmed = part.trim();
+      return (!isNaN(trimmed) && trimmed !== "") ? Number(trimmed).toFixed(2) : trimmed;
+    };
+
+    let formatted = priceStr;
+    if (priceStr.includes("/")) {
+      formatted = priceStr.split("/").map(formatPart).join(" / ");
+    } else if (priceStr.includes("-")) {
+      formatted = priceStr.split("-").map(formatPart).join(" - ");
+    }
+
+    return (
+      <>
+        {formatted} {!hasLetters && <span className={`${currencyClass} font-bold opacity-80 ml-0.5`}>{currency}</span>}
+      </>
+    );
+  };
 
   // Filterlənmiş menyu elementləri (Filtered menu items)
   const filteredItems = useMemo(() => {
     return items.filter(item => {
       // Kateqoriya filteri (Category filter)
-      const matchesCategory = selectedCategory === "all" || 
-                              item.categoryId === selectedCategory;
-      
+      const matchesCategory = selectedCategory === "all" ||
+        item.categoryId === selectedCategory;
+
       // Axtarış sorğusu filteri (Search query filter)
-      const matchesSearch = searchQuery === "" || 
-                            item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            item.ingredients.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            (item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
+      const matchesSearch = searchQuery === "" ||
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.ingredients.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.tags && item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
 
       return matchesCategory && matchesSearch;
     });
@@ -177,7 +209,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-x-clip pb-24 transition-colors duration-500 bg-gradient-to-b from-amber-50/60 via-orange-50/40 to-emerald-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white">
-      
+
       {/* ARXA FONDAKI DEKORATİV İSTİ İŞIQLAR */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-[-10]">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-orange-400/10 rounded-full blur-3xl dark:bg-orange-500/5"></div>
@@ -199,7 +231,7 @@ export default function Home() {
 
           <div className="flex items-center gap-2">
             {/* Görünüş Rejimi Dəyişdiricisi (Şəbəkə və ya Siyahı) */}
-            <button 
+            <button
               onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
               className="p-2.5 rounded-full hover:bg-orange-100/50 dark:hover:bg-slate-800/50 text-slate-500 dark:text-slate-300 transition-colors"
               title="Görünüşü dəyiş"
@@ -243,9 +275,9 @@ export default function Home() {
                   const cleanedNum = num.trim();
                   if (!cleanedNum) return null;
                   return (
-                    <a 
-                      key={idx} 
-                      href={`tel:${cleanedNum.replace(/[^+\d]/g, "")}`} 
+                    <a
+                      key={idx}
+                      href={`tel:${cleanedNum.replace(/[^+\d]/g, "")}`}
                       className="flex items-center gap-1.5 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
                     >
                       <Icons.Phone className="w-4 h-4 text-orange-500" />
@@ -254,7 +286,7 @@ export default function Home() {
                   );
                 })
               ) : null}
-              <button 
+              <button
                 onClick={() => setShowWifiAlert(!showWifiAlert)}
                 className="flex items-center gap-1.5 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
               >
@@ -263,7 +295,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-          
+
           <div className="absolute right-0 bottom-0 opacity-12 dark:opacity-5 pointer-events-none translate-y-1/6 translate-x-1/6">
             <Icons.UtensilsCrossed className="w-64 h-64 text-orange-500" />
           </div>
@@ -320,15 +352,14 @@ export default function Home() {
           <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-amber-50 to-transparent dark:from-[#06152d] pointer-events-none z-10"></div>
 
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 px-4 scroll-smooth">
-            
+
             {/* "Hamısı" düyməsi */}
             <button
               onClick={() => setSelectedCategory("all")}
-              className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${
-                selectedCategory === "all"
+              className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${selectedCategory === "all"
                   ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
                   : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
-              }`}
+                }`}
             >
               <Icons.LayoutGrid className="w-4 h-4 shrink-0" />
               <span>Hamısı</span>
@@ -340,11 +371,10 @@ export default function Home() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${
-                  selectedCategory === cat.id
+                className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${selectedCategory === cat.id
                     ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
                     : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
-                }`}
+                  }`}
               >
                 {renderIcon(cat.icon, "w-4 h-4 shrink-0")}
                 <span>{cat.name}</span>
@@ -355,7 +385,7 @@ export default function Home() {
       </section>
 
       <main className="max-w-6xl mx-auto px-4 py-6">
-        
+
         {filteredItems.length === 0 ? (
           /* Boş Siyahı Paneli */
           <div className="glass-card py-16 px-6 text-center rounded-2xl border border-orange-200/20 flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto">
@@ -369,7 +399,7 @@ export default function Home() {
               </p>
             </div>
             {searchQuery && (
-              <button 
+              <button
                 onClick={() => setSearchQuery("")}
                 className="px-4 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
               >
@@ -384,8 +414,8 @@ export default function Home() {
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <h3 className="text-sm md:text-base font-bold tracking-[0.15em] uppercase text-teal-700 dark:text-teal-400 font-playfair border-b-2 border-orange-400 pb-1 inline-block">
-                  {selectedCategory === "all" ? "Bütün Menyu" : 
-                   categories.find(c => c.id === selectedCategory)?.name}
+                  {selectedCategory === "all" ? "Bütün Menyu" :
+                    categories.find(c => c.id === selectedCategory)?.name}
                 </h3>
                 <p className="text-[11px] text-slate-400 mt-1.5 font-medium">
                   {filteredItems.length} məhsul təqdim olunur
@@ -423,11 +453,10 @@ export default function Home() {
                           {item.tags.map((tag) => (
                             <span
                               key={tag}
-                              className={`tag-badge-premium text-[8px] px-2.5 py-0.5 rounded-full text-white shadow-xs backdrop-blur-md ${
-                                tag.toLowerCase().includes("şef") || tag.toLowerCase().includes("chef") || tag.toLowerCase().includes("seçimi")
+                              className={`tag-badge-premium text-[8px] px-2.5 py-0.5 rounded-full text-white shadow-xs backdrop-blur-md ${tag.toLowerCase().includes("şef") || tag.toLowerCase().includes("chef") || tag.toLowerCase().includes("seçimi")
                                   ? "bg-gradient-to-r from-amber-500 to-orange-500 chef-badge"
                                   : "bg-teal-600/80"
-                              }`}
+                                }`}
                             >
                               {tag}
                             </span>
@@ -444,7 +473,7 @@ export default function Home() {
                             {item.name}
                           </h4>
                           <span className="price-text-premium text-base text-orange-600 dark:text-amber-400 whitespace-nowrap bg-orange-50/70 dark:bg-amber-400/5 px-2.5 py-0.5 rounded-lg border border-orange-200/50 dark:border-amber-400/10 shrink-0">
-                            {item.price.toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settings.currency}</span>
+                            {formatPrice(item.price, settings.currency, "text-[10px]")}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 dark:text-sky-200/95 line-clamp-3 leading-relaxed font-light">
@@ -491,13 +520,13 @@ export default function Home() {
                           {item.name}
                         </h4>
                         <span className="price-text-premium text-sm md:text-base text-orange-600 dark:text-amber-400 whitespace-nowrap shrink-0">
-                          {item.price.toFixed(2)} <span className="text-[10px] font-bold opacity-80 ml-0.5">{settings.currency}</span>
+                          {formatPrice(item.price, settings.currency, "text-[10px]")}
                         </span>
                       </div>
                       <p className="text-[11px] md:text-xs text-slate-500 dark:text-sky-200/90 truncate mt-0.5 leading-relaxed font-light">
                         {item.ingredients}
                       </p>
-                      
+
                       <div className="flex items-center gap-1.5 mt-1.5">
                         {item.tags && item.tags.slice(0, 1).map(tag => (
                           <span key={tag} className="tag-badge-premium text-[7px] px-2 py-0.5 bg-orange-500/10 text-orange-600 dark:bg-amber-400/10 dark:text-amber-400 border border-orange-500/10 dark:border-amber-400/10 rounded">
@@ -516,7 +545,7 @@ export default function Home() {
 
       {/* İNTERAKTİV ƏTRAFLI MƏLUMAT MODAL PƏNCƏRƏSİ */}
       {selectedItem && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in"
           onClick={() => setSelectedItem(null)}
         >
@@ -534,7 +563,7 @@ export default function Home() {
                   e.currentTarget.src = "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600&auto=format&fit=crop&q=80";
                 }}
               />
-              
+
               {/* Bağla Düyməsi */}
               <button
                 onClick={() => setSelectedItem(null)}
@@ -551,10 +580,10 @@ export default function Home() {
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-playfair text-2xl font-bold text-slate-900 dark:text-white leading-tight">{selectedItem.name}</h3>
                   <span className="price-text-premium text-xl text-orange-600 dark:text-amber-400 bg-orange-50/70 dark:bg-amber-400/5 px-3.5 py-1 rounded-xl border border-orange-200/50 dark:border-amber-400/10 shrink-0">
-                    {selectedItem.price.toFixed(2)} <span className="text-xs font-bold opacity-80 ml-0.5">{settings.currency}</span>
+                    {formatPrice(selectedItem.price, settings.currency, "text-xs")}
                   </span>
                 </div>
-                
+
                 {/* Modaldakı etiketlər */}
                 {selectedItem.tags && (
                   <div className="flex flex-wrap gap-1.5 pt-1">

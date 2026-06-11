@@ -2269,7 +2269,7 @@ export default function AdminPanel() {
               {/* Toplu Çap Keçidi */}
               {qrLinkType === "menu" && (
                 <div className="w-full pt-4 border-t border-dashed border-slate-200 dark:border-white/10 text-center">
-                  <p className="text-[10px] text-slate-500 dark:text-sky-200/60 mb-2 font-medium">Masaların üstünə qoymaq üçün toplu (məsələn, 1-200 masa) QR kod çap etmək istəyirsiniz?</p>
+                  <p className="text-[10px] text-slate-500 dark:text-sky-200/60 mb-2 font-medium">Masaların üstünə qoymaq üçün A4 vərəqdə toplu QR kod çap etmək istəyirsiniz?</p>
                   <button
                     onClick={() => {
                       setIsQrModalOpen(false);
@@ -2278,7 +2278,7 @@ export default function AdminPanel() {
                     className="w-full py-2.5 bg-teal-600/10 hover:bg-teal-600/20 border border-teal-200/40 dark:border-teal-500/20 rounded-xl text-xs font-bold text-teal-700 dark:text-teal-300 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Icons.Layers className="w-4 h-4 text-orange-500" />
-                    <span>Toplu Masa QR Çap Paneli</span>
+                    <span>A4 Ölçülü QR Çap Paneli</span>
                   </button>
                 </div>
               )}

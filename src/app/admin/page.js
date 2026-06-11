@@ -780,7 +780,7 @@ export default function AdminPanel() {
   // İDARƏETMƏ PANELI (MAIN PANEL)
   // ----------------------------------------------------
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50/60 via-slate-50 to-orange-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white pb-24 relative overflow-x-clip transition-colors duration-500">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50/60 via-slate-50 to-orange-50/20 dark:from-[#06152d] dark:via-[#0c254e] dark:to-[#081a38] text-slate-800 dark:text-white pb-24 relative overflow-x-clip transition-colors duration-500 no-print-admin">
       
       {/* Toast Bildiriş */}
       {toast && (
@@ -2155,7 +2155,7 @@ export default function AdminPanel() {
       {/* QR MODAL */}
       {isQrModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in no-print-admin"
           onClick={() => setIsQrModalOpen(false)}
         >
           <div
@@ -2234,12 +2234,19 @@ export default function AdminPanel() {
             </div>
 
             {/* Modal Actions */}
-            <div className="pt-4 border-t border-slate-100 dark:border-white/10 flex gap-3">
+            <div className="pt-4 border-t border-slate-100 dark:border-white/10 flex flex-wrap gap-2.5">
               <button
                 onClick={() => setIsQrModalOpen(false)}
-                className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+                className="flex-1 min-w-[80px] py-3 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
               >
                 İmtina
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="flex-1 min-w-[110px] py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-amber-500/10 cursor-pointer flex items-center justify-center gap-1"
+              >
+                <Icons.Printer className="w-4 h-4" />
+                <span>Çap Et (4x4 sm)</span>
               </button>
               <a
                 href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(
@@ -2249,7 +2256,7 @@ export default function AdminPanel() {
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer text-center flex items-center justify-center gap-1.5"
+                className="flex-1 min-w-[90px] py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer text-center flex items-center justify-center gap-1"
               >
                 <Icons.Download className="w-4.5 h-4.5" />
                 <span>Yüklə</span>
@@ -2263,6 +2270,50 @@ export default function AdminPanel() {
       <footer className="mt-16 text-center text-xs text-slate-400 dark:text-slate-500 py-6 border-t border-slate-200/80 dark:border-white/5">
         🔒 {settingsName || "Bizim çimərlik"} Admin Paneli. Zəmanətli şifrə sistemi.
       </footer>
+
+      {/* YALNIZ ÇAP ZAMANI GÖRÜNƏN 4x4 CM KART VƏ ÇAP STİLLƏRİ */}
+      <div className="hidden print-only-card">
+        <img
+          src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+            typeof window !== "undefined"
+              ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
+              : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`
+          )}`}
+          alt="QR Code"
+          style={{ width: '3.1cm', height: '3.1cm', display: 'block' }}
+        />
+        <span style={{ fontSize: '7px', fontWeight: 'bold', marginTop: '1.5mm', fontFamily: 'sans-serif', color: 'black', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          {settingsName} - {qrLinkType === "admin" ? "Admin" : "Menyu"}
+        </span>
+      </div>
+
+      <style>{`
+        @media print {
+          /* Bütün digər elementləri gizlət */
+          .no-print-admin {
+            display: none !important;
+          }
+          /* Çap vərəqində yalnız 4x4 cm kartı göstər */
+          .print-only-card {
+            display: flex !important;
+            width: 4cm !important;
+            height: 4cm !important;
+            border: 1px dashed #d97706 !important; /* Qızılı kəsik xətti */
+            padding: 2mm !important;
+            margin: 0 !important;
+            background: white !important;
+            color: black !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            position: absolute !important;
+            top: 1cm !important;
+            left: 1cm !important;
+            box-sizing: border-box !important;
+            page-break-inside: avoid !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

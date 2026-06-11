@@ -12,6 +12,7 @@ export default function BulkQRPage() {
   const [stickerSize, setStickerSize] = useState("4x4"); // "4x4", "5x5", "6x6"
   const [baseUrl, setBaseUrl] = useState("https://bizim-cimerlik.vercel.app");
   const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     // Load restaurant name
@@ -53,7 +54,6 @@ export default function BulkQRPage() {
           height: "50mm",
           qrSize: "40mm",
           gap: "6mm",
-          padding: "8mm 12mm", // Custom spacing to make 15 stickers fit perfectly on A4 height (297mm)
           label: "5x5 sm (A4-də 15 ədəd)"
         };
       case "6x6":
@@ -64,7 +64,6 @@ export default function BulkQRPage() {
           height: "60mm",
           qrSize: "48mm",
           gap: "5mm",
-          padding: "10mm 7mm", // Custom spacing to make 12 stickers fit perfectly on A4 width/height
           label: "6x6 sm (A4-də 12 ədəd)"
         };
       case "4x4":
@@ -76,7 +75,6 @@ export default function BulkQRPage() {
           height: "40mm",
           qrSize: "32mm",
           gap: "6mm",
-          padding: "10mm 12mm", // Custom spacing to make 24 stickers fit perfectly on A4 width/height
           label: "4x4 sm (A4-də 24 ədəd)"
         };
     }
@@ -107,6 +105,61 @@ export default function BulkQRPage() {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleSavePDF = async () => {
+    setIsGenerating(true);
+    try {
+      const html2canvas = (await import("html2canvas-pro")).default;
+      const { jsPDF } = await import("jspdf");
+
+      const container = document.getElementById("print-content");
+      if (!container) return;
+
+      container.classList.add("generating-pdf");
+
+      const sheets = container.querySelectorAll(".print-page");
+      if (sheets.length === 0) {
+        container.classList.remove("generating-pdf");
+        setIsGenerating(false);
+        return;
+      }
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      for (let i = 0; i < sheets.length; i++) {
+        const sheet = sheets[i];
+        
+        const canvas = await html2canvas(sheet, {
+          scale: 2.5,
+          useCORS: true,
+          logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        
+        if (i > 0) {
+          pdf.addPage();
+        }
+        
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+      }
+
+      pdf.save(`bizim_cimerlik_qr_kodlar_${stickerSize}.pdf`);
+    } catch (err) {
+      console.error("PDF yaradılarkən xəta baş verdi:", err);
+      alert("PDF faylı yaradıla bilmədi. Zəhmət olmasa yenidən cəhd edin.");
+    } finally {
+      const container = document.getElementById("print-content");
+      if (container) {
+        container.classList.remove("generating-pdf");
+      }
+      setIsGenerating(false);
+    }
   };
 
   if (isLoading) {
@@ -161,7 +214,8 @@ export default function BulkQRPage() {
           .print-page {
             display: flex !important;
             flex-wrap: wrap !important;
-            align-content: flex-start !important;
+            justify-content: center !important;
+            align-content: center !important;
             width: 210mm !important;
             height: 296mm !important; /* 1mm shorter than 297mm to prevent any overflow page creation */
             background: white !important;
@@ -191,9 +245,32 @@ export default function BulkQRPage() {
           border: 1px solid #e2e8f0;
           display: flex;
           flex-wrap: wrap;
-          align-content: flex-start;
+          justify-content: center;
+          align-content: center;
           box-sizing: border-box;
           position: relative;
+        }
+
+        /* PDF Generation Styles */
+        .generating-pdf {
+          background: transparent !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          width: 210mm !important;
+        }
+        .generating-pdf .print-page {
+          box-shadow: none !important;
+          border: none !important;
+          margin: 0 !important;
+          width: 210mm !important;
+          height: 297mm !important;
+          position: relative !important;
+          page-break-after: always !important;
+          break-after: page !important;
+          display: flex !important;
+          flex-wrap: wrap !important;
+          justify-content: center !important;
+          align-content: center !important;
         }
 
         .qr-sticker-box {
@@ -266,9 +343,33 @@ export default function BulkQRPage() {
               />
             </div>
 
+            {/* PDF Button */}
+            <button
+              onClick={handleSavePDF}
+              disabled={isGenerating}
+              className={`px-5 py-2.5 text-white rounded-xl text-xs font-bold shadow-md active:scale-98 transition-all flex items-center gap-1.5 cursor-pointer ${
+                isGenerating 
+                  ? "bg-slate-700 shadow-slate-700/20 cursor-not-allowed" 
+                  : "bg-sky-600 hover:bg-sky-700 shadow-sky-600/20"
+              }`}
+            >
+              {isGenerating ? (
+                <>
+                  <Icons.Loader2 className="w-4 h-4 animate-spin" />
+                  <span>PDF Hazırlanır...</span>
+                </>
+              ) : (
+                <>
+                  <Icons.Download className="w-4 h-4" />
+                  <span>PDF Yadda Saxla</span>
+                </>
+              )}
+            </button>
+
             {/* Print Button */}
             <button
               onClick={handlePrint}
+              disabled={isGenerating}
               className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 active:scale-98 transition-all flex items-center gap-1.5 cursor-pointer ml-auto md:ml-0"
             >
               <Icons.Printer className="w-4 h-4" />
@@ -286,9 +387,9 @@ export default function BulkQRPage() {
           <span>Aşağıda A4 vərəqi üzrə çap önizləməsi göstərilir. Seçilən ölçüyə görə {config.perPage} ədəd QR kod yerləşdirilib.</span>
         </div>
 
-        <div className="flex flex-col items-center">
+        <div id="print-content" className="flex flex-col items-center">
           {pages.map((pageItems, pageIdx) => (
-            <div key={pageIdx} className="print-page" style={{ gap: config.gap, padding: config.padding }}>
+            <div key={pageIdx} className="print-page" style={{ gap: config.gap }}>
               
               {pageItems.map((item, itemIdx) => {
                 // Using clean 250x250 vector-crisp QR resolution
@@ -322,6 +423,7 @@ export default function BulkQRPage() {
                     <img 
                       src={qrUrl} 
                       alt="QR Code" 
+                      crossOrigin="anonymous"
                       style={{ 
                         width: config.qrSize, 
                         height: config.qrSize,

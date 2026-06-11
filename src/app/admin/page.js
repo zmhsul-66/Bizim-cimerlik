@@ -64,6 +64,10 @@ export default function AdminPanel() {
   // Bildirişlər (Notification Toast)
   const [toast, setToast] = useState(null);
 
+  // QR modal states
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [qrLinkType, setQrLinkType] = useState("menu");
+
   // Mövzunu yoxla və tətbiq et (Initialize theme)
   useEffect(() => {
     try {
@@ -828,6 +832,13 @@ export default function AdminPanel() {
               <span className="hidden sm:inline">Çap Versiyası</span>
             </button>
 
+            <button
+              onClick={() => setIsQrModalOpen(true)}
+              className="px-3.5 py-2.5 bg-teal-500/10 hover:bg-teal-500/20 dark:bg-teal-500/10 dark:hover:bg-teal-500/20 border border-teal-200 dark:border-teal-500/20 rounded-xl text-xs font-bold transition-all text-teal-700 dark:text-teal-400 flex items-center gap-1.5 cursor-pointer"
+            >
+              <Icons.QrCode className="w-4.5 h-4.5" />
+              <span className="hidden sm:inline">QR Kodlar</span>
+            </button>
 
             <button
               onClick={handleLogout}
@@ -2137,6 +2148,113 @@ export default function AdminPanel() {
                 </button>
               </footer>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* QR MODAL */}
+      {isQrModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
+          onClick={() => setIsQrModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-[#0e2245] border border-slate-200 dark:border-white/10 shadow-2xl rounded-3xl p-6 relative animate-fade-in text-slate-800 dark:text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10">
+              <h3 className="font-playfair text-xl font-bold text-teal-600 dark:text-teal-400 flex items-center gap-2">
+                <Icons.QrCode className="w-5 h-5 text-orange-500 animate-pulse" />
+                <span>QR Kod Generatoru</span>
+              </h3>
+              <button
+                onClick={() => setIsQrModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+              >
+                <Icons.X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="py-6 flex flex-col items-center space-y-6">
+              {/* Tabs */}
+              <div className="w-full grid grid-cols-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200/50 dark:border-slate-800">
+                <button
+                  onClick={() => setQrLinkType("menu")}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    qrLinkType === "menu"
+                      ? "bg-white dark:bg-[#0c2447] text-teal-600 dark:text-teal-400 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:text-sky-200/60 dark:hover:text-sky-200"
+                  }`}
+                >
+                  Menyu QR
+                </button>
+                <button
+                  onClick={() => setQrLinkType("admin")}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    qrLinkType === "admin"
+                      ? "bg-white dark:bg-[#0c2447] text-teal-600 dark:text-teal-400 shadow-sm"
+                      : "text-slate-500 hover:text-slate-700 dark:text-sky-200/60 dark:hover:text-sky-200"
+                  }`}
+                >
+                  Admin Panel QR
+                </button>
+              </div>
+
+              {/* Description */}
+              <p className="text-center text-xs text-slate-500 dark:text-sky-200/70 max-w-sm px-2 font-medium">
+                {qrLinkType === "menu"
+                  ? "Müştərilərin telefonla skan edib rəqəmsal menyuya birbaşa daxil olması üçün QR Kod."
+                  : "İdarəçilərin (adminlərin) mobil telefondan birbaşa admin panelə keçid etməsi üçün QR Kodu."}
+              </p>
+
+              {/* QR Image Frame */}
+              <div className="p-4 bg-white border border-slate-200 dark:border-white/10 rounded-2xl shadow-inner flex items-center justify-center">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
+                      : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`
+                  )}`}
+                  alt="QR Code"
+                  className="w-48 h-48 object-contain"
+                />
+              </div>
+
+              {/* Target Link Info */}
+              <div className="w-full bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200/50 dark:border-white/5 text-center">
+                <span className="text-[9px] uppercase tracking-wider font-extrabold text-slate-400 dark:text-slate-500 block mb-0.5">Hədəf Keçid Linki</span>
+                <span className="text-xs font-bold font-mono text-teal-600 dark:text-teal-400 truncate block max-w-xs mx-auto">
+                  {typeof window !== "undefined"
+                    ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
+                    : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`}
+                </span>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="pt-4 border-t border-slate-100 dark:border-white/10 flex gap-3">
+              <button
+                onClick={() => setIsQrModalOpen(false)}
+                className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 rounded-xl font-bold text-xs transition-all text-slate-600 dark:text-slate-300 cursor-pointer"
+              >
+                İmtina
+              </button>
+              <a
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(
+                  typeof window !== "undefined"
+                    ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
+                    : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-teal-500/10 cursor-pointer text-center flex items-center justify-center gap-1.5"
+              >
+                <Icons.Download className="w-4.5 h-4.5" />
+                <span>Yüklə</span>
+              </a>
+            </div>
           </div>
         </div>
       )}

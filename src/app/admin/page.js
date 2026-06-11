@@ -494,7 +494,7 @@ export default function AdminPanel() {
       ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
       : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`;
       
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(targetUrl)}`;
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${encodeURIComponent(targetUrl)}`;
     
     const shareTitle = qrLinkType === "admin" ? `${settingsName} - Admin Panel` : `${settingsName} - Rəqəmsal Menyu`;
     const shareText = qrLinkType === "admin"
@@ -2246,7 +2246,7 @@ export default function AdminPanel() {
               {/* QR Image Frame */}
               <div className="p-4 bg-white border border-slate-200 dark:border-white/10 rounded-2xl shadow-inner flex items-center justify-center">
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${encodeURIComponent(
                     typeof window !== "undefined"
                       ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
                       : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`
@@ -2290,7 +2290,7 @@ export default function AdminPanel() {
                 <span>Paylaş</span>
               </button>
               <a
-                href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${encodeURIComponent(
                   typeof window !== "undefined"
                     ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
                     : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`
@@ -2315,7 +2315,7 @@ export default function AdminPanel() {
       {/* YALNIZ ÇAP ZAMANI GÖRÜNƏN 4x4 CM KART VƏ ÇAP STİLLƏRİ */}
       <div className="hidden print-only-card">
         <img
-          src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
+          src={`https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=${encodeURIComponent(
             typeof window !== "undefined"
               ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
               : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`

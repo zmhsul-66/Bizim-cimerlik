@@ -8,8 +8,13 @@ export default function BulkQRPage() {
   const [settings, setSettings] = useState({
     restaurantName: menuData.restaurantName
   });
+  const [qrType, setQrType] = useState("single"); // "single" or "tables"
+  const [quantity, setQuantity] = useState(200); // 200 copies for single QR
+  const [footerText, setFooterText] = useState("RƏQƏMSAL MENYU"); // label under single QR
+  
   const [startTable, setStartTable] = useState(1);
   const [endTable, setEndTable] = useState(200);
+  
   const [stickerSize, setStickerSize] = useState("4x4"); // "4x4", "5x5", "6x6"
   const [baseUrl, setBaseUrl] = useState("https://bizim-cimerlik.vercel.app");
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +31,7 @@ export default function BulkQRPage() {
           }
         }
       } catch (err) {
-        console.warn("API settings error, using fallback:", err);
+        console.warn("API settings error, fallback used:", err);
       } finally {
         setIsLoading(false);
       }
@@ -82,19 +87,34 @@ export default function BulkQRPage() {
 
   const config = getSizeConfig();
 
-  // Create table range chunks for A4 paging
+  // Create table range or copy list chunks for A4 paging
   const getPages = () => {
-    const start = Math.max(1, parseInt(startTable) || 1);
-    const end = Math.max(start, parseInt(endTable) || 1);
-    const tables = [];
-    
-    for (let i = start; i <= end; i++) {
-      tables.push(i);
+    const items = [];
+
+    if (qrType === "single") {
+      const count = Math.max(1, parseInt(quantity) || 1);
+      for (let i = 0; i < count; i++) {
+        items.push({
+          id: `single-${i}`,
+          label: footerText,
+          url: baseUrl
+        });
+      }
+    } else {
+      const start = Math.max(1, parseInt(startTable) || 1);
+      const end = Math.max(start, parseInt(endTable) || 1);
+      for (let i = start; i <= end; i++) {
+        items.push({
+          id: `table-${i}`,
+          label: `MASA ${i}`,
+          url: `${baseUrl}?table=${i}`
+        });
+      }
     }
 
     const pages = [];
-    for (let i = 0; i < tables.length; i += config.perPage) {
-      pages.push(tables.slice(i, i + config.perPage));
+    for (let i = 0; i < items.length; i += config.perPage) {
+      pages.push(items.slice(i, i + config.perPage));
     }
     return pages;
   };
@@ -191,32 +211,70 @@ export default function BulkQRPage() {
             <div>
               <h1 className="font-playfair text-lg font-bold text-amber-400 flex items-center gap-1.5">
                 <Icons.Layers className="w-5 h-5 text-orange-500 animate-pulse" />
-                <span>Masa QR Toplu Çap Paneli</span>
+                <span>QR Toplu Çap Paneli</span>
               </h1>
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider">Masa etiketlərinin (stikerlərinin) A4-də toplu çapı</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider">QR stikerlərin A4-də toplu çapı</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            {/* Range */}
+            
+            {/* QR Type selection */}
             <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-              <span className="text-xs text-slate-400 font-bold">Masa aralığı:</span>
-              <input 
-                type="number" 
-                min="1" 
-                value={startTable} 
-                onChange={(e) => setStartTable(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-14 bg-slate-950 border border-slate-700 text-white text-center text-xs font-bold py-1 rounded" 
-              />
-              <span className="text-xs text-slate-400">-</span>
-              <input 
-                type="number" 
-                min="1" 
-                value={endTable} 
-                onChange={(e) => setEndTable(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-14 bg-slate-950 border border-slate-700 text-white text-center text-xs font-bold py-1 rounded" 
-              />
+              <span className="text-xs text-slate-400 font-bold">Tip:</span>
+              <select
+                value={qrType}
+                onChange={(e) => setQrType(e.target.value)}
+                className="bg-slate-950 border border-slate-700 text-white text-xs font-bold py-1 px-2 rounded outline-none"
+              >
+                <option value="single">Eyni QR (Hamısı eyni link)</option>
+                <option value="tables">Masa QR (Hər masaya fərqli)</option>
+              </select>
             </div>
+
+            {/* Dynamic Controls based on QR Type */}
+            {qrType === "single" ? (
+              <>
+                <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
+                  <span className="text-xs text-slate-400 font-bold">Adəd sayı:</span>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    value={quantity} 
+                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-16 bg-slate-950 border border-slate-700 text-white text-center text-xs font-bold py-1 rounded outline-none" 
+                  />
+                </div>
+                <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
+                  <span className="text-xs text-slate-400 font-bold">Alt mətn:</span>
+                  <input 
+                    type="text" 
+                    value={footerText} 
+                    onChange={(e) => setFooterText(e.target.value)}
+                    className="w-32 bg-slate-950 border border-slate-700 text-white text-xs font-bold py-1 px-2 rounded outline-none" 
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
+                <span className="text-xs text-slate-400 font-bold">Masa aralığı:</span>
+                <input 
+                  type="number" 
+                  min="1" 
+                  value={startTable} 
+                  onChange={(e) => setStartTable(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-14 bg-slate-950 border border-slate-700 text-white text-center text-xs font-bold py-1 rounded" 
+                />
+                <span className="text-xs text-slate-400">-</span>
+                <input 
+                  type="number" 
+                  min="1" 
+                  value={endTable} 
+                  onChange={(e) => setEndTable(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-14 bg-slate-950 border border-slate-700 text-white text-center text-xs font-bold py-1 rounded" 
+                />
+              </div>
+            )}
 
             {/* Sticker Size */}
             <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
@@ -232,14 +290,14 @@ export default function BulkQRPage() {
               </select>
             </div>
 
-            {/* URL */}
+            {/* Base URL */}
             <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-              <span className="text-xs text-slate-400 font-bold">Base URL:</span>
+              <span className="text-xs text-slate-400 font-bold">Link:</span>
               <input 
                 type="text" 
                 value={baseUrl} 
                 onChange={(e) => setBaseUrl(e.target.value)}
-                className="w-40 bg-slate-950 border border-slate-700 text-white text-xs font-medium py-1 px-2 rounded" 
+                className="w-40 bg-slate-950 border border-slate-700 text-white text-xs font-medium py-1 px-2 rounded outline-none" 
               />
             </div>
 
@@ -264,17 +322,16 @@ export default function BulkQRPage() {
         </div>
 
         <div className="flex flex-col items-center">
-          {pages.map((pageTables, pageIdx) => (
+          {pages.map((pageItems, pageIdx) => (
             <div key={pageIdx} className="print-page" style={{ gap: config.gap }}>
               
-              {pageTables.map((tableNum) => {
-                const url = `${baseUrl}?table=${tableNum}`;
-                // Using resolution 200x200 for extremely clean print-ready vector-like QR
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(url)}`;
+              {pageItems.map((item, itemIdx) => {
+                // Using clean 250x250 vector-crisp QR resolution
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(item.url)}`;
                 
                 return (
                   <div 
-                    key={tableNum} 
+                    key={item.id || itemIdx} 
                     className="qr-sticker-box"
                     style={{ 
                       width: config.width, 
@@ -299,7 +356,7 @@ export default function BulkQRPage() {
                     {/* QR Code */}
                     <img 
                       src={qrUrl} 
-                      alt={`QR Masa ${tableNum}`} 
+                      alt="QR Code" 
                       style={{ 
                         width: config.qrSize, 
                         height: config.qrSize,
@@ -307,17 +364,18 @@ export default function BulkQRPage() {
                       }}
                     />
 
-                    {/* Footer: Table label */}
+                    {/* Footer: Label */}
                     <span style={{ 
-                      fontSize: "8px", 
+                      fontSize: "7px", 
                       fontWeight: "900", 
                       fontFamily: "sans-serif",
                       letterSpacing: "0.05em",
                       color: "black",
                       marginTop: "1mm",
-                      textAlign: "center"
+                      textAlign: "center",
+                      textTransform: "uppercase"
                     }}>
-                      MASA {tableNum}
+                      {item.label}
                     </span>
                   </div>
                 );

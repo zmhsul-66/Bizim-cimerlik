@@ -357,8 +357,8 @@ export default function Home() {
             <button
               onClick={() => setSelectedCategory("all")}
               className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${selectedCategory === "all"
-                  ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
-                  : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
+                ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
+                : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
                 }`}
             >
               <Icons.LayoutGrid className="w-4 h-4 shrink-0" />
@@ -372,8 +372,8 @@ export default function Home() {
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${selectedCategory === cat.id
-                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
-                    : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
+                  ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
+                  : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
                   }`}
               >
                 {renderIcon(cat.icon, "w-4 h-4 shrink-0")}
@@ -454,8 +454,8 @@ export default function Home() {
                             <span
                               key={tag}
                               className={`tag-badge-premium text-[8px] px-2.5 py-0.5 rounded-full text-white shadow-xs backdrop-blur-md ${tag.toLowerCase().includes("şef") || tag.toLowerCase().includes("chef") || tag.toLowerCase().includes("seçimi")
-                                  ? "bg-gradient-to-r from-amber-500 to-orange-500 chef-badge"
-                                  : "bg-teal-600/80"
+                                ? "bg-gradient-to-r from-amber-500 to-orange-500 chef-badge"
+                                : "bg-teal-600/80"
                                 }`}
                             >
                               {tag}
@@ -635,7 +635,7 @@ export default function Home() {
               <div className="space-y-2">
                 <h3 className="font-playfair text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Diqqət!</h3>
                 <p className="text-sm md:text-base leading-relaxed text-slate-700 dark:text-sky-100 font-medium">
-                  Zəhmət olmasa, çeksiz ödəniş etməyin. Çeksiz olunan ödənişlərə müdiriyyət cavabdehlik daşımır.
+                  Ödəniş etdikdən sonra qəbzinizi almağı unutmayın. Qəbzsiz ödənişlərlə bağlı yaranan problemlərə görə məsuliyyət daşımırıq.
                 </p>
               </div>
             </div>

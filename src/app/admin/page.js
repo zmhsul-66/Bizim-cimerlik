@@ -488,6 +488,40 @@ export default function AdminPanel() {
     }
   };
 
+  // QR kod və linkləri paylaşma funksiyası
+  const handleShareQR = async () => {
+    const targetUrl = typeof window !== "undefined"
+      ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
+      : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`;
+      
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(targetUrl)}`;
+    
+    const shareTitle = qrLinkType === "admin" ? `${settingsName} - Admin Panel` : `${settingsName} - Rəqəmsal Menyu`;
+    const shareText = qrLinkType === "admin"
+      ? `Salam! Bizim çimərlik Admin Panel Girişi:\nKeçid linki: ${targetUrl}\nQR Kod şəkli: ${qrImageUrl}`
+      : `Salam! Bizim çimərlik Rəqəmsal Onlayn Menyumuz:\nMenyunu açın: ${targetUrl}\nQR Kod şəkli: ${qrImageUrl}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: targetUrl
+        });
+        showToast("QR Kod uğurla paylaşıldı!", "success");
+      } catch (err) {
+        console.warn("Paylaşım ləğv edildi:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        showToast("Menyu linki və QR kod linki kopyalandı! İstədiyiniz yerdə (WhatsApp, Telegram, SMS) paylaşa bilərsiniz.", "success");
+      } catch (err) {
+        showToast("Kopyalama zamanı xəta baş verdis.", "error");
+      }
+    }
+  };
+
   // Çıxış etmək (Logout)
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -2247,6 +2281,13 @@ export default function AdminPanel() {
               >
                 <Icons.Printer className="w-4 h-4" />
                 <span>Çap Et (4x4 sm)</span>
+              </button>
+              <button
+                onClick={handleShareQR}
+                className="flex-1 min-w-[100px] py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-blue-500/10 cursor-pointer flex items-center justify-center gap-1"
+              >
+                <Icons.Share2 className="w-4 h-4" />
+                <span>Paylaş</span>
               </button>
               <a
                 href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(

@@ -494,7 +494,7 @@ export default function AdminPanel() {
       ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
       : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`;
       
-    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(targetUrl)}`;
+    const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(targetUrl)}`;
     
     const shareTitle = qrLinkType === "admin" ? `${settingsName} - Admin Panel` : `${settingsName} - Rəqəmsal Menyu`;
     const shareText = qrLinkType === "admin"
@@ -2290,7 +2290,7 @@ export default function AdminPanel() {
                 <span>Paylaş</span>
               </button>
               <a
-                href={`https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${encodeURIComponent(
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(
                   typeof window !== "undefined"
                     ? `${window.location.origin}${qrLinkType === "admin" ? "/admin" : ""}`
                     : `https://bizim-cimerlik.vercel.app${qrLinkType === "admin" ? "/admin" : ""}`

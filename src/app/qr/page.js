@@ -52,8 +52,8 @@ export default function BulkQRPage() {
           width: "50mm",
           height: "50mm",
           qrSize: "40mm",
-          gap: "8mm",
-          padding: "8mm 10mm", // Custom margin to make 15 stickers fit perfectly on A4 height (297mm)
+          gap: "6mm",
+          padding: "8mm 12mm", // Custom spacing to make 15 stickers fit perfectly on A4 height (297mm)
           label: "5x5 sm (A4-də 15 ədəd)"
         };
       case "6x6":
@@ -63,8 +63,8 @@ export default function BulkQRPage() {
           width: "60mm",
           height: "60mm",
           qrSize: "48mm",
-          gap: "8mm",
-          padding: "10mm",
+          gap: "5mm",
+          padding: "10mm 7mm", // Custom spacing to make 12 stickers fit perfectly on A4 width/height
           label: "6x6 sm (A4-də 12 ədəd)"
         };
       case "4x4":
@@ -76,7 +76,7 @@ export default function BulkQRPage() {
           height: "40mm",
           qrSize: "32mm",
           gap: "6mm",
-          padding: "10mm",
+          padding: "10mm 12mm", // Custom spacing to make 24 stickers fit perfectly on A4 width/height
           label: "4x4 sm (A4-də 24 ədəd)"
         };
     }
@@ -128,28 +128,57 @@ export default function BulkQRPage() {
             size: A4 portrait;
             margin: 0 !important;
           }
-          body {
-            background: white !important;
-            color: black !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
+          
+          /* Hide non-print elements */
           .no-print {
             display: none !important;
           }
-          .print-page {
+
+          /* Reset html, body, and all direct containers to take full screen without any spacing */
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            color: black !important;
             width: 210mm !important;
             height: 297mm !important;
+            overflow: hidden !important;
+          }
+
+          /* Reset all parent div elements to prevent pushing the content */
+          div {
             margin: 0 !important;
+            padding: 0 !important;
+            max-width: none !important;
             box-shadow: none !important;
             border: none !important;
-            page-break-after: always !important;
-            break-after: page !important;
+            min-height: 0 !important;
+            height: auto !important;
+            display: block !important;
+          }
+
+          /* Restore flex layout ONLY for the print page container and sticker boxes */
+          .print-page {
             display: flex !important;
             flex-wrap: wrap !important;
             align-content: flex-start !important;
+            width: 210mm !important;
+            height: 296mm !important; /* 1mm shorter than 297mm to prevent any overflow page creation */
             background: white !important;
             box-sizing: border-box !important;
+            page-break-after: avoid !important;
+            page-break-inside: avoid !important;
+            break-after: avoid !important;
+            break-inside: avoid !important;
+          }
+
+          .qr-sticker-box {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+            background: white !important;
           }
         }
 

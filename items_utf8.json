@@ -1,0 +1,1121 @@
+﻿{
+    "items":  [
+                  {
+                      "id":  "seher-1",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "SÉhÉr yemÉyi (2 nÉfÉr) / ÐÐ°Ð²ÑÑÐ°Ðº (2 ÑÐµÐ»Ð¾Ð²ÐµÐºÐ°)",
+                      "price":  "30.00",
+                      "ingredients":  "yaÄ, pendir, assorti zeytun turÅusu, Åor, cem, soyutma yumurta, Ã§Ã¶rÉk, bal / Ð¼Ð°ÑÐ»Ð¾, ÑÑÑ, Ð°ÑÑÐ¾ÑÑÐ¸ Ð¾Ð»Ð¸Ð²ÐºÐ¸, ÑÐ²Ð¾ÑÐ¾Ð³ (ÑÐ¾Ð»ÐµÐ½ÑÐ¹), Ð´Ð¶ÐµÐ¼, Ð²Ð°ÑÐµÐ½ÑÐ¹ ÑÐ¹ÑÐ°, Ñ\u0085Ð»ÐµÐ±, Ð¼ÐµÐ´",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080233454-seher_yemeyleri.jpg",
+                      "tags":  [
+                                   "2 nÉfÉrlik"
+                               ],
+                      "isChefSpecial":  true
+                  },
+                  {
+                      "id":  "seher-2",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Omlet (1 ÉdÉd) / ÐÐ¼Ð»ÐµÑ (1 ÑÑ.)",
+                      "price":  "2.00",
+                      "ingredients":  "Yumurta / ÑÐ¹ÑÐ¾",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080315551-imagesomlet.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seher-3",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Pomidor â yumurta (sacda) / ÐÐ¾Ð¼Ð¸Ð´Ð¾ÑÑ ÑÑÑÐµÐ½ÑÐµ Ñ ÑÐ¹ÑÐ¾Ð¼ (Ð² ÑÐ°Ð´Ð¶Ðµ)",
+                      "price":  "7.00",
+                      "ingredients":  "Pomidor, yumurta / Ð¯Ð¹ÑÐ¾, Ð¿Ð¾Ð¼Ð¸Ð´Ð¾Ñ",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080300693-images_pomidor_yumurta.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seher-4",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Pomidor â yumurta (tavada) / ÐÐ¾Ð¼Ð¸Ð´Ð¾ÑÑ ÑÑÑÐµÐ½ÑÐµ Ñ ÑÐ¹ÑÐ¾Ð¼ (Ð½Ð° ÑÐºÐ¾Ð²Ð¾ÑÐ¾Ð´Ðµ)",
+                      "price":  "5.00",
+                      "ingredients":  "Pomidor, yumurta / Ð¯Ð¹ÑÐ¾, Ð¿Ð¾Ð¼Ð¸Ð´Ð¾Ñ",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080366875-images_pomidor_yumurta.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seher-5",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Pomidor â yumurta (kÉrÉ yaÄÄ±nda) / ÐÐ¾Ð¼Ð¸Ð´Ð¾ÑÑ ÑÑÑÐµÐ½ÑÐµ Ñ ÑÐ¹ÑÐ¾Ð¼ (Ð² ÑÐ»Ð¸Ð²Ð¾ÑÐ½Ð¾Ð¼ Ð¼Ð°ÑÐ»Ðµ)",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1590412200988-a436bb705300?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seher-6",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "GÃ¶z yumurta (kÉrÉ yaÄÄ±nda) - 2 ÉdÉd ÐÐ»Ð°Ð·ÑÐ½ÑÑ (Ð½Ð° ÑÐ»Ð¸Ð²Ð¾ÑÐ½Ð¾Ð¼ Ð¼Ð°ÑÐ»Ðµ) - 2 ÑÑÑÐºÐ¸",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080503399-g_z_yumurta.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seher-7",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Sucuqlu yumurta / Ð¯Ð¹ÑÐ° Ñ ÐºÐ¾Ð»Ð±Ð°ÑÐ¾Ð¹",
+                      "price":  "9.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080518553-sucuklu_yumurta.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-1",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Tabaka / Ð¢Ð°Ð±Ð°ÐºÐ°",
+                      "price":  "30.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080563572-tabaka.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-2",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Toyuq Ã§Ä±ÄÄ±rtma / ÐÑÑÐ¸ÑÐ° Ð¶Ð°ÑÐµÐ½ÑÐ¹",
+                      "price":  "30.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081335101-toyuq_____rtma.avif",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-3",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Toyuq langet / ÐÑÑÐ¸Ð½ÑÐ¹ Ð»Ð°Ð½Ð³ÐµÑ",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080634194-langet.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-4",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "GÃ¶bÉlÉk qÄ±zartmasÄ± / ÐÐ°ÑÐµÐ½Ð½ÑÐµ Ð³ÑÐ¸Ð±Ñ",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080795452-g_b_l_r.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-5",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "QaymaqlÄ± gÃ¶bÉlÉk / ÐÑÐ¸Ð±Ñ ÑÐ¾ ÑÐ»Ð¸Ð²ÐºÐ°Ð¼Ð¸",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080704954-qaymaql__gobelek.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-6",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "BadÄ±mcan qÄ±zartmasÄ± / ÐÐ°ÑÐµÐ½ÑÐµ Ð±Ð°ÐºÐ»Ð°Ð¶Ð°Ð½Ñ",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080720196-badimcan_q_zartma.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-7",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Kartof fri / ÐÐ°ÑÑÐ¾ÑÐºÐ° ÑÑÐ¸",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-8",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Ev sayaÄÄ± kartof / ÐÐ°ÑÑÐ¾ÑÐµÐ»Ñ Ð´Ð¾Ð¼Ð°ÑÐ½Ð¸Ð¹",
+                      "price":  "6.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781080778055-evsayaqi_kartof.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-9",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Farel qÄ±zartma / ÐÐ°ÑÐºÐ° ÑÐ°ÑÐµÐ»Ñ",
+                      "price":  "30 / 40 / 50",
+                      "ingredients":  "\n",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-10",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Kefal qÄ±zartma / ÐÐ°ÑÐµÐ½Ð°Ñ ÐºÐµÑÐ°Ð»Ñ",
+                      "price":  "15 / 20",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-11",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "KÃ¼tÃ¼m qÄ±zartma / ÐÐ°ÑÐµÐ½ÑÐ¹ ÐºÑÑÑÐ¼",
+                      "price":  "15 / 20",
+                      "ingredients":  "\n",
+                      "image":  "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "tava-12",
+                      "categoryId":  "tavayemklri-1427",
+                      "name":  "Naggets / ÐÐ°Ð³ÐµÑÑÑ",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1562967914-608f82629a7a?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "sac-1",
+                      "categoryId":  "sac-3032",
+                      "name":  "Quzu sac / Ð¡Ð°Ð´Ð¶ Ð±Ð°ÑÐ°Ð½Ð¸Ð½Ð°",
+                      "price":  "30.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081228056-quzu_sac.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  true
+                  },
+                  {
+                      "id":  "sac-2",
+                      "categoryId":  "sac-3032",
+                      "name":  "Toyuq sac / Ð¡Ð°Ð´Ð¶ ÐºÑÑÐ¸ÑÐ°",
+                      "price":  "20.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081414008-toyuq_sac.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "qazan-1",
+                      "categoryId":  "qazanyemklri-3951",
+                      "name":  "Dolma (yarpaq) / ÐÐ¾Ð»Ð¼Ð° Ð¸Ð· Ð²Ð¸Ð½Ð¾Ð³ÑÐ°Ð´Ð½ÑÑ\u0085 Ð»Ð¸ÑÑÐµÐ²",
+                      "price":  "18.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081431541-dolma.jpg",
+                      "tags":  [
+                                   "Milli tÉam"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "sup-1",
+                      "categoryId":  "suplar-2026",
+                      "name":  "DÃ¼ÅbÉrÉ / ÐÑÑÐ±Ð°ÑÐ°",
+                      "price":  "10.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081462792-d__b_r_.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "sup-2",
+                      "categoryId":  "suplar-2026",
+                      "name":  "Toyuq (Ã§olpa) supu / ÐÑÑÐ¸Ð½ÑÐ¹ ÑÑÐ¿ (ÑÐ¾Ð»Ð¿Ð°)",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781156621948-toyuq_supu.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "sup-3",
+                      "categoryId":  "suplar-2026",
+                      "name":  "DovÄa / ÐÐ¾Ð²Ð³Ð°",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081477255-dov_a.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "pizza-1",
+                      "categoryId":  "pizza",
+                      "name":  "Pizza kolbasalÄ± / ÐÐ¸ÑÑÐ° Ñ ÐºÐ¾Ð»Ð±Ð°ÑÐ¾Ð¹",
+                      "price":  "17.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081505070-kolbasal_.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "pizza-2",
+                      "categoryId":  "pizza",
+                      "name":  "Pizza pendirli / ÐÐ¸ÑÑÐ° Ñ ÑÑÑÐ¾Ð¼",
+                      "price":  "17.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081530663-pendirli.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "pizza-3",
+                      "categoryId":  "pizza",
+                      "name":  "Pizza tÉrÉvÉzli / ÐÐ¸ÑÑÐ° Ñ Ð¾Ð²Ð¾ÑÐ°Ð¼Ð¸",
+                      "price":  "17.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081549198-t_r_v_zli.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-1",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "ÃÉrÉz / ÐÑÐµÑ\u0085Ð¸",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081561331-__r_zl_rrr.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-2",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Araxis / ÐÑÐ°Ñ\u0085Ð¸Ñ",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081602609-araxis.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-3",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Suxari (bÃ¶yÃ¼k) / Ð¡ÑÑ\u0085Ð°ÑÐ¸ (Ð±Ð¾Ð»ÑÑÐ¸Ðµ)",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081616193-Suhariki_500_350.jpg_1000x662.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-4",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Suxari (balaca) / Ð¡ÑÑ\u0085Ð°ÑÐ¸ (Ð¼Ð°Ð»ÐµÐ½ÑÐºÐ¸Ðµ)",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081631313-Suhariki_500_350.jpg_1000x662.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-5",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Ãipsi (bÃ¶yÃ¼k) / Ð§Ð¸Ð¿ÑÑ (Ð±Ð¾Ð»ÑÑÐ¸Ðµ)",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081647038-iX4VxfPmwcf7iahDFq82CA.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-6",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Ãipsi (orta) / Ð§Ð¸Ð¿ÑÑ (ÑÑÐµÐ´Ð½Ð¸Ðµ)",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081656025-iX4VxfPmwcf7iahDFq82CA.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-7",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Ãipsi (balaca) / Ð§Ð¸Ð¿ÑÑ (Ð¼Ð°Ð»ÐµÐ½ÑÐºÐ¸Ðµ)",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081701496-iX4VxfPmwcf7iahDFq82CA.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-8",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "SaÃ§aq pendir/qÄ±zardÄ±lmÄ±Å / Ð¡ÑÑ ÐºÐ¾ÑÐ¸ÑÐºÐ°/Ð¶Ð°ÑÐµÐ½ÑÐ¹",
+                      "price":  "6/ 7",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081689355-pendir_sacaq.jpg",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-9",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Noxud / ÐÐ¾ÑÐ¾Ñ\u0085",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081718491-noxud.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-10",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "GÃ¶bÉlÉk Ã§ipsi / ÐÑÐ¸Ð±Ð½ÑÐµ ÑÐ¸Ð¿ÑÑ",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081734702-g_b_l_k__ips.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-11",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "Dondurma / ÐÐ¾ÑÐ¾Ð¶ÐµÐ½Ð¾Ðµ",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "cerez-12",
+                      "categoryId":  "rzlr-6753",
+                      "name":  "MÃ¼rÉbbÉ / ÐÐ°ÑÐµÐ½Ð¸Ðµ",
+                      "price":  "6.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081754468-m_r_bb_.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-1",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "UludaÄ madÉn suyu / Ð£Ð»ÑÐ´Ð°Ð³ ÐÐ¸Ð½ÐµÑÐ°Ð»ÑÐ½Ð°Ñ Ð²Ð¾Ð´Ð°",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081773508-uludag_dogal_maden_suyu_250_ml_8_ef17.webp",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-2",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Nektarin meyvÉ ÅirÉlÉri / Ð¤ÑÑÐºÑÐ¾Ð²ÑÐ¹ ÑÐ¾Ðº",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-5",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Fanta, Cola / Ð¤Ð°Ð½ÑÐ°, ÐÐ¾Ð»Ð°",
+                      "price":  "2 / 3",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-6",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Sirab / Ð¡Ð¸ÑÐ°Ð±",
+                      "price":  "2 / 3",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081801637-qazliweb_s.webp",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-7",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Borjomi / ÐÐ¾ÑÐ¶Ð¾Ð¼Ð¸",
+                      "price":  "2 / 3",
+                      "ingredients":  "\n",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081814394-e369472da5dba11d1db7831c5aaf9bad.png",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-8",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "KÉhriz / ÐÐµÑ\u0085ÑÐ¸Ð·",
+                      "price":  "1/2 / 3",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081830359-1596541715.jpg",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-9",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "DÃ¼Åes, TÉrxun / ÐÐ¸Ð¼Ð¾Ð½Ð°Ð´",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alk-10",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Kompot / ÐÐ¾Ð¼Ð¿Ð¾Ñ",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081851043-kampot.webp",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "isti-1",
+                      "categoryId":  "isti-ickiler",
+                      "name":  "Ãay / Ð§Ð°Ð¹",
+                      "price":  "1/3/4 / 5",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "isti-2",
+                      "categoryId":  "isti-ickiler",
+                      "name":  "Adi qÉhvÉ / ÐÐ±ÑÑÐ½ÑÐ¹ ÐºÐ¾ÑÐµ",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081936089-kofe.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "isti-3",
+                      "categoryId":  "isti-ickiler",
+                      "name":  "TÃ¼rk qÉhvÉsi / Ð¢ÑÑÐµÑÐºÐ¸Ð¹ ÐºÐ¾ÑÐµ",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081876095-t_rk_q_hv_si.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-1",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Piva (bakal) / ÐÐ¸Ð²Ð¾",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-2",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Piva / ÐÐ¸Ð²Ð¾ (Salyan,Jiqulevski)",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-3",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Araq (Ãarskaya Ã§eÅidlÉri) / ÐÐ¾Ð´ÐºÐ° (Ð¦Ð°ÑÑÐºÐ°Ñ)",
+                      "price":  "25 / 30",
+                      "ingredients":  " 0,5 / 0,75 lt.",
+                      "image":  "https://images.unsplash.com/photo-1569586111361-9c294155b9e0?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-4",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Araq (Ãetkaya, Ruskiy Dar, Delikat) / ÐÐ¾Ð´ÐºÐ° (Ð§ÐµÑÐºÐ°Ñ, Ð ÑÑÑÐºÐ¸Ð¹ ÐÐ°Ñ, ÐÐµÐ»Ð¸ÐºÐ°Ñ)",
+                      "price":  "15 / 20",
+                      "ingredients":  " 0,5 / 0,75 lt.",
+                      "image":  "https://images.unsplash.com/photo-1569586111361-9c294155b9e0?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-5",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "ÃaxÄ±r (Merlot, MÉdrÉsÉ, Chardonnay, Cabernet Sauvignon) / ÐÐ¸Ð½Ð¾ (ÐÐµÑÐ»Ð¾, ÐÐ°Ð´ÑÐ°ÑÐ°, Ð¨Ð°ÑÐ´Ð¾Ð½Ðµ, ÐÐ°Ð±ÐµÑÐ½Ðµ Ð¡Ð¾Ð²Ð¸Ð½ÑÐ¾Ð½)",
+                      "price":  "15.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-6",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Viski (Richman) / ÐÐ¸ÑÐºÐ¸ (Richman)",
+                      "price":  "15 / 20",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781081995321-richman.jpg",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "alko-7",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Viski (Highgarden) / ÐÐ¸ÑÐºÐ¸ (Highgarden)",
+                      "price":  "30.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082012658-highgarden.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-1",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Kabab assorti / ÐÑÑÐ¾ÑÑÐ¸ ÑÐ°ÑÐ»ÑÐºÐ¾Ð²",
+                      "price":  "50.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781083705434-kabab_asarti.jpg",
+                      "tags":  [
+                                   "Åef SeÃ§imi"
+                               ],
+                      "isChefSpecial":  true
+                  },
+                  {
+                      "id":  "kabab-2",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Antrikot / Ð¨Ð°ÑÐ»ÑÐº Ð¸Ð· Ð±Ð°ÑÐ°Ð½ÑÐ¸Ñ\u0085 ÑÐµÐ±ÑÑÑÐµÐº",
+                      "price":  "17.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082195477-antrikod.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-3",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "TikÉ / Ð¨Ð°ÑÐ»ÑÐº Ð¸Ð· Ð¼ÑÐºÐ¾ÑÐ¸",
+                      "price":  "15.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781083667052-tik_.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-4",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "LÃ¼lÉ / ÐÑÐ»Ñ",
+                      "price":  "14.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082237794-l_l_.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-5",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Toyuq / Ð¨Ð°ÑÐ»ÑÐº Ð¸Ð· ÐºÑÑÐ¸ÑÑ",
+                      "price":  "9.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-6",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Ä°Ã§alat (quzu) / Ð¨Ð°ÑÐ»ÑÐº Ð»Ð¸Ð²ÐµÑ",
+                      "price":  "10.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082257981-icalat_kabab.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-7",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Kartof lÃ¼lÉ / ÐÑÐ»Ñ Ð¸Ð· ÐºÐ°ÑÑÐ¾ÑÐµÐ»Ñ",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082270926-kartof_lule.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-8",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "KÃ¶zlÉmÉ kartof / ÐÐ°ÑÑÐ¾ÑÐºÐ° Ð½Ð° ÑÐ³Ð»ÑÑ\u0085",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1585109649139-366815a0d713?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-9",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "TÉrÉvÉz / ÐÐ²Ð¾ÑÐ¸",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-10",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Farel (setka) / Ð¤Ð°ÑÐµÐ»Ñ Ð½Ð° ÑÐµÑÐµÑÐºÐµ",
+                      "price":  "20 / 30 / 40 / 50",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-11",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Kefal (setka) / ÐÐµÑÐ°Ð»Ñ Ð½Ð° ÑÐµÑÐµÑÐºÐµ",
+                      "price":  "15 / 20",
+                      "ingredients":  "\n",
+                      "image":  "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabab-12",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "KÃ¼tÃ¼m (setka) / ÐÑÑÑÐ¼ Ð½Ð° ÑÐµÑÐµÑÐºÐµ",
+                      "price":  "15 / 20",
+                      "ingredients":  "\n",
+                      "image":  "https://images.unsplash.com/photo-1534604973900-c43ab4c2e0ab?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+                                   "Range qiymÉt"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-1",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Pomidor, xiyar / ÐÐ¾Ð¼Ð¸Ð´Ð¾Ñ, Ð¾Ð³ÑÑÐµÑ",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082345819-pomidor_xiyar.avif",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-2",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "TÉzÉ gÃ¶yÉrti / Ð¡Ð²ÐµÐ¶Ð°Ñ Ð·ÐµÐ»ÐµÐ½Ñ",
+                      "price":  "3.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-3",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "GÃ¶bÉlÉk turÅusu / ÐÐ°ÑÐ¸Ð½Ð¾Ð²Ð°Ð½Ð½ÑÐµ Ð³ÑÐ¸Ð±Ñ",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082401721-Gemini_Generated_Image_aguin0aguin0agui__1_.png",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-4",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Zeytun (yaÅÄ±l) turÅusu / ÐÐ»Ð¸Ð²ÐºÐ¾Ð²ÑÐ¹ (Ð·ÐµÐ»ÐµÐ½ÑÐµ) Ð¼Ð°ÑÐ¸Ð½Ð°Ð´",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082424423-CIOTOLA_DI_OLIVE_tur_u.png",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-5",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Zeytun (qara) turÅusu / ÐÐ»Ð¸Ð²ÐºÐ¾Ð²ÑÐ¹ (ÑÐµÑÐ½ÑÐµ) Ð¼Ð°ÑÐ¸Ð½Ð°Ð´",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082436126-qara_zeytun.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-6",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Acika / ÐÑÐ¸ÐºÐ°",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082452548-acika.jpeg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-7",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "XÄ±rt-xÄ±rt badÄ±mcan / Ð¥ÑÑÑÑÑÑÐ¸Ðµ Ð±Ð°ÐºÐ»Ð°Ð¶Ð°Ð½Ñ",
+                      "price":  "8.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082475745-x_rt_x_rt.jpg",
+                      "tags":  [
+                                   "Populyar"
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-8",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Ãoban salatÄ± / Ð§Ð¾Ð±Ð°Ð½ ÑÐ°Ð»Ð°Ñ",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082489237-salad_from_tomatoes_cucumber_red_onions_lettuce_leaves_healthy_summer_vitamin_menu_vegan_vegetable_food_vegetarian_dinner_table_top_view_flat_lay_2829_6482.avif",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-9",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "GÃ¶bÉlÉkli bilinÃ§ik (2 ÉdÉd) / ÐÐ»Ð¸Ð½ÑÐ¸Ðº Ñ Ð³ÑÐ¸Ð±Ð°Ð¼Ð¸ (2 ÑÑ.)",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082516133-hot_pancake_with_chicken_mushrooms_and_cheese.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-10",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Pendir / Ð¡ÑÑ",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082533752-pendir.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-11",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "PeraÅki (gÃ¶bÉlÉk, kartof) / ÐÐµÑÐ°ÑÐºÐ¸ (Ñ Ð³ÑÐ¸Ð±Ð°Ð¼Ð¸, ÐºÐ°ÑÑÐ¾ÑÐµÐ»ÐµÐ¼)",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082558610-pera_ki.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-12",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Mangal salatÄ± / Ð¡Ð°Ð»Ð°Ñ ÐÐ°Ð½Ð³Ð°Ð»",
+                      "price":  "7.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082630135-manqal_salti.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-13",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "ViÅnÉli pomidor salatÄ± / Ð¡Ð°Ð»Ð°Ñ Ñ Ð²Ð¸ÑÐ½ÐµÐ¹ Ð¸ Ð¿Ð¾Ð¼Ð¸Ð´Ð¾ÑÐ°Ð¼Ð¸",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082659439-vi_nli_pomidor.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-14",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "QarpÄ±z / ÐÑÐ±ÑÐ·",
+                      "price":  "4.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781082676618-arbuz_tarelka_dolki.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salat-15",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "MeyvÉ assorti / Ð¤ÑÑÐºÑÑ Ð°ÑÑÐ¾ÑÑÐ¸",
+                      "price":  "10.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781083467462-meyv__asarti.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seheryemeyi-1781336541007",
+                      "categoryId":  "alkoqolsuzikilr-1595",
+                      "name":  "Heineken (alkolsuz 0,33)",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781336537722-richman.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seheryemeyi-1781336566898",
+                      "categoryId":  "alkoqolluikilr-0561",
+                      "name":  "Heineken original 0.33",
+                      "price":  "6.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781336564049-e369472da5dba11d1db7831c5aaf9bad.png",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabablar3265-1781338568590",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Kartof quyruqla (spiral) / ÐÐ°ÑÑÐ¾ÑÐµÐ»Ñ Ñ ÐºÑÑÐ´ÑÐºÐ¾Ð¼ (ÑÐ¿Ð¸ÑÐ°Ð»Ñ)",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "kabablar3265-1781339382497",
+                      "categoryId":  "kabablar-3265",
+                      "name":  "Kartof quyruqla (spiral) / ÐÐ°ÑÑÐ¾ÑÐµÐ»Ñ Ñ ÐºÑÑÐ´ÑÐºÐ¾Ð¼ (ÑÐ¿Ð¸ÑÐ°Ð»Ñ)",
+                      "price":  "5.00",
+                      "ingredients":  "",
+                      "image":  "https://lsowklxrtwsflibbqric.supabase.co/storage/v1/object/public/menu-images/1781339379348-kartof_sipral.jpg",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salatlar3209-1781339793204",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "QatÄ±q (200 q) / ÐÐ°ÑÐ¾Ð½Ð¸ (200 Ð³)",
+                      "price":  "1.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "salatlar3209-1781339823983",
+                      "categoryId":  "salatlar-3209",
+                      "name":  "Limon (1 ÉdÉd) / ÐÐ¸Ð¼Ð¾Ð½ (1 ÑÑ.)",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seheryemeyi-1781340743219",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Qutab (gÃ¶yÉrti, gÃ¶bÉlÉk, iÃ§alat) / ÐÑÑÐ°Ð± (Ñ Ð·ÐµÐ»ÐµÐ½ÑÑ, Ñ Ð³ÑÐ¸Ð±Ð°Ð¼Ð¸, Ñ Ð¿Ð¾ÑÑÑÑÐºÐ¸)",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  },
+                  {
+                      "id":  "seheryemeyi-1781340744643",
+                      "categoryId":  "seheryemeyi",
+                      "name":  "Qutab (gÃ¶yÉrti, gÃ¶bÉlÉk, iÃ§alat) / ÐÑÑÐ°Ð± (Ñ Ð·ÐµÐ»ÐµÐ½ÑÑ, Ñ Ð³ÑÐ¸Ð±Ð°Ð¼Ð¸, Ñ Ð¿Ð¾ÑÑÑÑÐºÐ¸)",
+                      "price":  "2.00",
+                      "ingredients":  "",
+                      "image":  "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=600\u0026auto=format\u0026fit=crop\u0026q=80",
+                      "tags":  [
+
+                               ],
+                      "isChefSpecial":  false
+                  }
+              ],
+    "isDatabase":  true
+}

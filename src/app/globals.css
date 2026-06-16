@@ -273,3 +273,18 @@
 .dark footer span {
   color: #cbd5e1 !important;
 }
+
+/* Çap (Print) üçün xüsusi tənzimləmələr - Arxa fon və rənglərin çapda görünməsini təmin edir */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+}

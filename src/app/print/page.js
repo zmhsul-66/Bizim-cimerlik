@@ -315,12 +315,18 @@ export default function PrintPage() {
       <style>{`
         @media print {
           @page {
-            size: A4;
-            margin: ${marginSize} !important;
+            size: A4 portrait;
+            margin: 0 !important;
           }
-          body {
+          html, body {
+            width: 100% !important;
+            height: 100% !important;
             background: white !important;
             color: black !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .no-print {
             display: none !important;
@@ -328,11 +334,25 @@ export default function PrintPage() {
           .print-page-container {
             padding: 0 !important;
             margin: 0 !important;
-            background: white !important;
-            color: black !important;
+            background: transparent !important;
             box-shadow: none !important;
             width: 100% !important;
-            max-width: 100% !important;
+            max-width: none !important;
+          }
+          .preview-sheet {
+            box-sizing: border-box !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+            padding: ${marginSize} !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            min-height: 100vh !important;
+            page-break-after: always !important;
+            break-after: page !important;
+            overflow: hidden !important;
           }
           .page-break-before {
             page-break-before: always !important;
@@ -365,10 +385,13 @@ export default function PrintPage() {
           width: 100%;
           max-width: 210mm;
           min-height: 297mm;
+          height: 297mm;
           padding: ${marginSize};
           margin: 0 auto;
           position: relative;
           border-radius: 8px;
+          display: flex;
+          flex-direction: column;
         }
 
         .leader-dots {
@@ -409,6 +432,8 @@ export default function PrintPage() {
           position: relative !important;
           page-break-after: always !important;
           break-after: page !important;
+          display: flex !important;
+          flex-direction: column !important;
         }
         .generating-pdf .gold-double-border,
         .generating-pdf .classic-border {
@@ -669,6 +694,7 @@ export default function PrintPage() {
             {getPrintSheets().map((sheet, sheetIdx) => {
               const isPageBreak = selectedCategory === "all" && sheetIdx > 0;
               const firstCat = sheet.categories[0];
+              const isSacPizzaSplit = sheet.id === 'sac-pizza' && sheet.categories.length > 1;
 
               return (
                 <div 
@@ -676,7 +702,7 @@ export default function PrintPage() {
                   className={`preview-sheet overflow-hidden ${isPageBreak ? "page-break-before" : ""}`}
                 >
                   {showWatermark && (
-                    <div className="absolute inset-0 z-0 pointer-events-none select-none flex">
+                    <div className={`absolute inset-0 z-0 pointer-events-none select-none flex ${isSacPizzaSplit ? 'flex-col' : 'flex-row'}`}>
                       {sheet.categories.map((cat, catIdx) => {
                         // Qazan + Suplar vərəqində yalnız birinci kateqoriyanın arxa fonunu göstəririk
                         if (sheet.id === 'qazan-suplar' && catIdx > 0) return null;
@@ -684,8 +710,8 @@ export default function PrintPage() {
                         const watermarkUrl = getCategoryWatermark(cat.id);
                         if (!watermarkUrl) return null;
                         
-                        // Əgər qazan-suplar vərəqindəyiksə və ya yalnız 1 kateqoriya varsa 100% enində olmalıdır
-                        const widthPct = (sheet.id === 'qazan-suplar' || sheet.categories.length === 1) 
+                        // Əgər qazan-suplar vərəqindəyiksə və ya yalnız 1 kateqoriya varsa 100% enində/hündürlüyündə olmalıdır
+                        const sizePct = (sheet.id === 'qazan-suplar' || sheet.categories.length === 1) 
                           ? 100 
                           : (100 / sheet.categories.length);
                         
@@ -694,9 +720,10 @@ export default function PrintPage() {
                             key={cat.id}
                             src={watermarkUrl} 
                             alt="" 
-                            className="h-full object-cover" 
+                            className="w-full h-full object-cover" 
                             style={{ 
-                              width: `${widthPct}%`,
+                              width: isSacPizzaSplit ? '100%' : `${sizePct}%`,
+                              height: isSacPizzaSplit ? `${sizePct}%` : '100%',
                               opacity: watermarkOpacity 
                             }}
                           />
@@ -704,99 +731,248 @@ export default function PrintPage() {
                       })}
                     </div>
                   )}
-                  <div className={`relative z-10 ${
+                  <div className={`relative z-10 flex-1 flex flex-col ${
                     theme === "gold" ? "gold-double-border" : 
                     theme === "classic" ? "classic-border" : ""
-                  }`}>
-                    {/* RESTORAN HEADER (Hər vərəqin və ya seçilmiş kateqoriyanın başında) */}
-                    {(sheetIdx === 0 || selectedCategory !== "all") && (
-                      <div className="text-center pb-6 border-b-2 print-border-gold border-amber-600/30 max-w-xl mx-auto space-y-2 mb-8">
-                        <div className="flex justify-center text-amber-600">
-                          <Icons.UtensilsCrossed className="w-8 h-8" />
-                        </div>
-                        <h2 className="font-playfair text-3xl font-extrabold tracking-wide print-text-dark text-slate-900 uppercase">
-                          {settings.restaurantName}
-                        </h2>
-                        {settings.restaurantSubtitle && (
-                          <p className="text-xs uppercase tracking-[0.25em] text-amber-700 font-extrabold print-text-muted">
-                            {settings.restaurantSubtitle}
-                          </p>
-                        )}
-                        
-                        {showContactInfo && (
-                          <div className="pt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-gray-500 font-medium print-text-muted">
-                            {settings.contact?.phone && (
-                              <span className="flex items-center gap-1">
-                                <Icons.Phone className="w-3 h-3 text-amber-600" />
-                                <span>{settings.contact.phone}</span>
-                              </span>
-                            )}
-                            {settings.contact?.address && (
-                              <span className="flex items-center gap-1">
-                                <Icons.MapPin className="w-3 h-3 text-amber-600" />
-                                <span>{settings.contact.address}</span>
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {sheet.categories.map((cat, catIdx) => {
-                      const categoryItems = getCategoryItems(cat.id);
-                      if (categoryItems.length === 0) return null;
-
-                      return (
-                        <div key={cat.id} className={catIdx > 0 ? "mt-10 pt-6 border-t border-dashed border-amber-600/30" : ""}>
-                          {/* KATEQORİYA ADI */}
-                          <div className="text-center my-6">
-                            <h3 className="font-playfair text-xl md:text-2xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1.5 px-4 mb-2 print-text-dark">
-                              {cat.name}
-                            </h3>
-                          </div>
-
-                          {/* YEMƏKLƏR SİYAHISI */}
-                          <div className="mt-8">
-                            <div className="space-y-6">
-                              {categoryItems.map(item => (
-                                <div key={item.id} className="print-item-card space-y-1">
-                                  <div className="flex items-baseline justify-between">
-                                    <div className="flex items-center gap-3 min-w-0">
-                                      {showImages && item.image && (
-                                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
-                                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                        </div>
-                                      )}
-                                      <span 
-                                        className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
-                                        style={{ fontSize }}
-                                      >
-                                        {item.name}
-                                        {item.isChefSpecial && (
-                                          <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
-                                        )}
-                                      </span>
-                                    </div>
-                                    <div className="leader-dots print-leader-line border-slate-300"></div>
-                                    <span 
-                                      className="font-bold text-slate-900 print-text-dark shrink-0" 
-                                      style={{ fontSize }}
-                                    >
-                                      {formatPrice(item.price, settings.currency)}
+                  }`} style={{ height: '100%' }}>
+                    {isSacPizzaSplit ? (
+                      <>
+                        {/* ÜST HİSSƏ: Sac Yeməkləri */}
+                        <div className="h-1/2 flex flex-col justify-between pb-4 border-b border-dashed border-amber-600/30">
+                          {/* RESTORAN HEADER (Hər vərəqin və ya seçilmiş kateqoriyanın başında) */}
+                          {(sheetIdx === 0 || selectedCategory !== "all") && (
+                            <div className="text-center pb-3 border-b-2 print-border-gold border-amber-600/30 max-w-xl mx-auto space-y-1 mb-3 shrink-0">
+                              <div className="flex justify-center text-amber-600">
+                                <Icons.UtensilsCrossed className="w-6 h-6" />
+                              </div>
+                              <h2 className="font-playfair text-2xl font-extrabold tracking-wide print-text-dark text-slate-900 uppercase">
+                                {settings.restaurantName}
+                              </h2>
+                              {settings.restaurantSubtitle && (
+                                <p className="text-[10px] uppercase tracking-[0.25em] text-amber-700 font-extrabold print-text-muted">
+                                  {settings.restaurantSubtitle}
+                                </p>
+                              )}
+                              {showContactInfo && (
+                                <div className="pt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5 text-[10px] text-gray-500 font-medium print-text-muted">
+                                  {settings.contact?.phone && (
+                                    <span className="flex items-center gap-1">
+                                      <Icons.Phone className="w-2.5 h-2.5 text-amber-600" />
+                                      <span>{settings.contact.phone}</span>
                                     </span>
-                                  </div>
-                                  {showIngredients && item.ingredients && (
-                                    <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
-                                      {item.ingredients}
-                                    </p>
+                                  )}
+                                  {settings.contact?.address && (
+                                    <span className="flex items-center gap-1">
+                                      <Icons.MapPin className="w-2.5 h-2.5 text-amber-600" />
+                                      <span>{settings.contact.address}</span>
+                                    </span>
                                   )}
                                 </div>
-                              ))}
+                              )}
                             </div>
-                          </div>
+                          )}
+
+                          {/* Sac Kateqoriyası və Yeməkləri */}
+                          {sheet.categories.filter(cat => cat.id === 'sac-3032').map(cat => {
+                            const categoryItems = getCategoryItems(cat.id);
+                            return (
+                              <div key={cat.id} className="flex-1 flex flex-col justify-center min-h-0">
+                                <div className="text-center my-2 shrink-0">
+                                  <h3 className="font-playfair text-lg md:text-xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1 px-4 print-text-dark">
+                                    {cat.name}
+                                  </h3>
+                                </div>
+                                <div className="flex-1 flex flex-col justify-center overflow-hidden">
+                                  <div className="space-y-4">
+                                    {categoryItems.map(item => (
+                                      <div key={item.id} className="print-item-card space-y-1">
+                                        <div className="flex items-baseline justify-between">
+                                          <div className="flex items-center gap-3 min-w-0">
+                                            {showImages && item.image && (
+                                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
+                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                              </div>
+                                            )}
+                                            <span 
+                                              className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
+                                              style={{ fontSize }}
+                                            >
+                                              {item.name}
+                                              {item.isChefSpecial && (
+                                                <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
+                                              )}
+                                            </span>
+                                          </div>
+                                          <div className="leader-dots print-leader-line border-slate-300"></div>
+                                          <span 
+                                            className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                            style={{ fontSize }}
+                                          >
+                                            {formatPrice(item.price, settings.currency)}
+                                          </span>
+                                        </div>
+                                        {showIngredients && item.ingredients && (
+                                          <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
+                                            {item.ingredients}
+                                          </p>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                      );
-                    })}
+
+                        {/* ALT HİSSƏ: Pizza Yeməkləri */}
+                        <div className="h-1/2 flex flex-col justify-center pt-4">
+                          {sheet.categories.filter(cat => cat.id === 'pizza').map(cat => {
+                            const categoryItems = getCategoryItems(cat.id);
+                            return (
+                              <div key={cat.id} className="flex-1 flex flex-col justify-center min-h-0">
+                                <div className="text-center my-2 shrink-0">
+                                  <h3 className="font-playfair text-lg md:text-xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1 px-4 print-text-dark">
+                                    {cat.name}
+                                  </h3>
+                                </div>
+                                <div className="flex-1 flex flex-col justify-center overflow-hidden">
+                                  <div className="space-y-4">
+                                    {categoryItems.map(item => (
+                                      <div key={item.id} className="print-item-card space-y-1">
+                                        <div className="flex items-baseline justify-between">
+                                          <div className="flex items-center gap-3 min-w-0">
+                                            {showImages && item.image && (
+                                              <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
+                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                              </div>
+                                            )}
+                                            <span 
+                                              className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
+                                              style={{ fontSize }}
+                                            >
+                                              {item.name}
+                                              {item.isChefSpecial && (
+                                                <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
+                                              )}
+                                            </span>
+                                          </div>
+                                          <div className="leader-dots print-leader-line border-slate-300"></div>
+                                          <span 
+                                            className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                            style={{ fontSize }}
+                                          >
+                                            {formatPrice(item.price, settings.currency)}
+                                          </span>
+                                        </div>
+                                        {showIngredients && item.ingredients && (
+                                          <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
+                                            {item.ingredients}
+                                          </p>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    ) : (
+                      // Digər standart vərəqlər üçün mövcud düzən
+                      <>
+                        {/* RESTORAN HEADER (Hər vərəqin və ya seçilmiş kateqoriyanın başında) */}
+                        {(sheetIdx === 0 || selectedCategory !== "all") && (
+                          <div className="text-center pb-6 border-b-2 print-border-gold border-amber-600/30 max-w-xl mx-auto space-y-2 mb-8">
+                            <div className="flex justify-center text-amber-600">
+                              <Icons.UtensilsCrossed className="w-8 h-8" />
+                            </div>
+                            <h2 className="font-playfair text-3xl font-extrabold tracking-wide print-text-dark text-slate-900 uppercase">
+                              {settings.restaurantName}
+                            </h2>
+                            {settings.restaurantSubtitle && (
+                              <p className="text-xs uppercase tracking-[0.25em] text-amber-700 font-extrabold print-text-muted">
+                                {settings.restaurantSubtitle}
+                              </p>
+                            )}
+                            
+                            {showContactInfo && (
+                              <div className="pt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-gray-500 font-medium print-text-muted">
+                                {settings.contact?.phone && (
+                                  <span className="flex items-center gap-1">
+                                    <Icons.Phone className="w-3 h-3 text-amber-600" />
+                                    <span>{settings.contact.phone}</span>
+                                  </span>
+                                )}
+                                {settings.contact?.address && (
+                                  <span className="flex items-center gap-1">
+                                    <Icons.MapPin className="w-3 h-3 text-amber-600" />
+                                    <span>{settings.contact.address}</span>
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {sheet.categories.map((cat, catIdx) => {
+                          const categoryItems = getCategoryItems(cat.id);
+                          if (categoryItems.length === 0) return null;
+
+                          return (
+                            <div key={cat.id} className={catIdx > 0 ? "mt-10 pt-6 border-t border-dashed border-amber-600/30" : ""}>
+                              {/* KATEQORİYA ADI */}
+                              <div className="text-center my-6">
+                                <h3 className="font-playfair text-xl md:text-2xl font-bold tracking-[0.1em] text-amber-800 uppercase inline-block border-b border-amber-600 pb-1.5 px-4 mb-2 print-text-dark">
+                                  {cat.name}
+                                </h3>
+                              </div>
+
+                              {/* YEMƏKLƏR SİYAHISI */}
+                              <div className="mt-8">
+                                <div className="space-y-6">
+                                  {categoryItems.map(item => (
+                                    <div key={item.id} className="print-item-card space-y-1">
+                                      <div className="flex items-baseline justify-between">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                          {showImages && item.image && (
+                                            <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200/80 shrink-0 bg-slate-100">
+                                              <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                            </div>
+                                          )}
+                                          <span 
+                                            className="font-playfair font-bold text-slate-900 print-text-dark leading-tight" 
+                                            style={{ fontSize }}
+                                          >
+                                            {item.name}
+                                            {item.isChefSpecial && (
+                                              <span className="ml-2 text-[8px] tracking-wider font-extrabold uppercase px-1.5 py-0.5 bg-amber-600 text-white rounded shrink-0">Şef</span>
+                                            )}
+                                          </span>
+                                        </div>
+                                        <div className="leader-dots print-leader-line border-slate-300"></div>
+                                        <span 
+                                          className="font-bold text-slate-900 print-text-dark shrink-0" 
+                                          style={{ fontSize }}
+                                        >
+                                          {formatPrice(item.price, settings.currency)}
+                                        </span>
+                                      </div>
+                                      {showIngredients && item.ingredients && (
+                                        <p className="text-xs text-gray-500 italic pl-1 print-text-muted leading-relaxed max-w-2xl">
+                                          {item.ingredients}
+                                        </p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
                   </div>
                 </div>
               );

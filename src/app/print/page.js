@@ -977,6 +977,32 @@ export default function PrintPage() {
                 </div>
               );
             })}
+
+            {/* ÖDƏNİŞ XƏBƏRDARLIĞI VƏRƏQİ (ƏLAVƏ SƏHİFƏ) */}
+            <div className={`preview-sheet overflow-hidden page-break-before`}>
+              <div className={`relative z-10 flex-1 flex flex-col items-center justify-center text-center p-12 ${
+                theme === "gold" ? "gold-double-border" : 
+                theme === "classic" ? "classic-border" : ""
+              }`} style={{ height: '100%' }}>
+                
+                <div className="flex flex-col items-center justify-center space-y-10 max-w-3xl mx-auto">
+                  <div className="w-32 h-32 rounded-full border-4 border-amber-600/30 flex items-center justify-center text-amber-600 mb-6 print-border-gold">
+                    <Icons.AlertTriangle className="w-20 h-20" />
+                  </div>
+                  
+                  <h3 className="font-playfair text-5xl font-extrabold tracking-wide print-text-dark text-slate-900 uppercase">
+                    Diqqət!
+                  </h3>
+                  
+                  <div className="w-48 h-1.5 bg-amber-600/50 mx-auto rounded-full"></div>
+                  
+                  <p className="text-3xl leading-relaxed text-slate-700 print-text-dark font-medium mt-10">
+                    Ödəniş etdikdən sonra qəbzinizi almağı unutmayın. Qəbzsiz ödənişlərlə bağlı yaranan problemlərə görə məsuliyyət daşımırıq.
+                  </p>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
 

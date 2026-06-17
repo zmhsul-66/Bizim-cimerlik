@@ -44,15 +44,8 @@ export default function Home() {
       setIsDarkMode(false);
     }
 
-    // Ödəniş xəbərdarlığı modalının yoxlanılması
-    try {
-      const paymentAlertDismissed = localStorage.getItem("deniz_payment_alert_dismissed");
-      if (!paymentAlertDismissed) {
-        setShowPaymentAlert(true);
-      }
-    } catch (e) {
-      console.error("Ödəniş xəbərdarlığı yoxlanılarkən xəta baş verdi:", e);
-    }
+    // Ödəniş xəbərdarlığı modalının hər dəfə göstərilməsi
+    setShowPaymentAlert(true);
 
     // Verilənlər bazasından dinamik yeməkləri çəkirik (Live Database Fetch)
     const fetchLiveItems = async () => {
@@ -176,7 +169,7 @@ export default function Home() {
 
   // Filterlənmiş menyu elementləri (Filtered menu items)
   const filteredItems = useMemo(() => {
-    return items.filter(item => {
+    let filtered = items.filter(item => {
       // Kateqoriya filteri (Category filter)
       const matchesCategory = selectedCategory === "all" ||
         item.categoryId === selectedCategory;
@@ -189,7 +182,23 @@ export default function Home() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [items, selectedCategory, searchQuery]);
+
+    // Əgər "Hamısı" seçilibsə, yeməkləri kateqoriyaların sırasına görə düzək
+    if (selectedCategory === "all") {
+      const categoryOrder = new Map(categories.map((cat, index) => [
+        cat.id, 
+        cat.sort_order !== undefined ? cat.sort_order : index
+      ]));
+
+      filtered.sort((a, b) => {
+        const orderA = categoryOrder.has(a.categoryId) ? categoryOrder.get(a.categoryId) : 999;
+        const orderB = categoryOrder.has(b.categoryId) ? categoryOrder.get(b.categoryId) : 999;
+        return orderA - orderB;
+      });
+    }
+
+    return filtered;
+  }, [items, selectedCategory, searchQuery, categories]);
 
   // Dinamik Lucide İkonlarının Render Edilməsi (Dynamic Lucide Icon Renderer)
   const renderIcon = (iconName, className = "w-5 h-5") => {
@@ -640,14 +649,7 @@ export default function Home() {
               </div>
             </div>
             <button
-              onClick={() => {
-                setShowPaymentAlert(false);
-                try {
-                  localStorage.setItem("deniz_payment_alert_dismissed", "true");
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
+              onClick={() => setShowPaymentAlert(false)}
               className="w-full py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-red-500/20 active:scale-98 cursor-pointer flex items-center justify-center gap-2"
             >
               <Icons.CheckCircle2 className="w-4 h-4" />

@@ -4,10 +4,60 @@
   "currency": "₼",
   "contact": {
     "phone": "+994 (50) 123-45-67",
-    "address": "Bakı bulvarı, Dənizkənarı Milli Park, No: 12",
-    "wifi": "DenizGiragi_Guest",
-    "wifiPassword": "welcome_to_deniz"
+    "address": "Bakı bulvarı, Dənizkənarı Milli Park, No: 12"
   },
+  "services": [
+    {
+      "id": "cottages",
+      "title": "Koteclər",
+      "icon": "Home",
+      "description": "Koteclərimiz 3 nəfər üçün nəzərdə tutulub. 4-cü şəxsin yaşı 14-dən yuxarı olarsa əlavə 50 AZN ödəniş tələb olunur.",
+      "items": [
+        { "name": "Günlük Kirayə", "price": "150 ₼", "details": "Kotec müştəriləri üçün hovuzdan istifadə və terasda səhər yeməyi ödənişsizdir." }
+      ]
+    },
+    {
+      "id": "gazebos",
+      "title": "Besetkalar",
+      "icon": "Tent",
+      "description": "Ad günü, banket və digər xüsusi günləriniz üçün 8, 10, 12, 20 və 30 nəfərlik besetkalarımız mövcuddur.",
+      "items": [
+        { "name": "Ən ön cərgə", "price": "100 ₼", "details": "Dənizə ən yaxın besetkalar" },
+        { "name": "Sonrakı cərgələr", "price": "50-80 ₼", "details": "Mövcud qiymətlər: 80 AZN, 60 AZN, 50 AZN" },
+        { "name": "Ən arxa cərgələr", "price": "40 ₼", "details": "Sakit və kölgəli sahələr" }
+      ]
+    },
+    {
+      "id": "pool",
+      "title": "Hovuz",
+      "icon": "Waves",
+      "description": "Uşaqların əyləncəli vaxt keçirməsi üçün hovuzda sürüşkənlər mövcuddur.",
+      "items": [
+        { "name": "Böyüklər üçün", "price": "15 ₼", "details": "Günlük giriş" },
+        { "name": "Uşaqlar (12 yaşadək)", "price": "10 ₼", "details": "Günlük giriş" },
+        { "name": "Uşaqlar (5 yaşadək)", "price": "Ödənişsiz", "details": "Valideynləri hovuzdan istifadə etdiyi halda pulsuzdur." }
+      ]
+    },
+    {
+      "id": "sports",
+      "title": "İdman və Əyləncə",
+      "icon": "Trophy",
+      "description": "Ərazidə qum üzərində futbol və voleybol meydançaları fəaliyyət göstərir.",
+      "items": []
+    },
+    {
+      "id": "contact",
+      "title": "Əlaqə Nömrələri",
+      "icon": "PhoneCall",
+      "description": "Əlavə məlumat və rezervasiya üçün bizimlə əlaqə saxlaya bilərsiniz. Sizi qonaq görməkdən məmnun olarıq! 🌴☀️",
+      "contacts": [
+        { "name": "Rezervasiya", "phone": "050 960 47 27" },
+        { "name": "Rezervasiya", "phone": "077 387 77 88" },
+        { "name": "Hovuz üzrə məlumat", "phone": "070 690 47 27" },
+        { "name": "Şikayət və təkliflər", "phone": "070 290 47 27" }
+      ]
+    }
+  ],
   "categories": [
     {
       "id": "mains",

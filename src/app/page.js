@@ -14,6 +14,7 @@ export default function Home() {
     contact: menuData.contact
   }); // Standart olaraq JSON konfiqurasiyası
   const [categories, setCategories] = useState(menuData.categories);
+  const [servicesData, setServicesData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
@@ -77,7 +78,7 @@ export default function Home() {
       }
     };
 
-    // Dinamik kateqoriyaları çəkirik (Live Database Categories)
+    // Dinamik kateqoriyaları çəkirik
     const fetchCategories = async () => {
       try {
         const res = await fetch("/api/categories");
@@ -88,7 +89,22 @@ export default function Home() {
           }
         }
       } catch (err) {
-        console.warn("Kateqoriyalar yüklənmədi, lokal şablon istifadə olunur:", err);
+        console.warn("Kateqoriyalar yüklənmədi:", err);
+      }
+    };
+
+    // Dinamik xidmətləri çəkirik
+    const fetchServices = async () => {
+      try {
+        const res = await fetch("/api/services");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.services && data.services.length > 0) {
+            setServicesData(data.services);
+          }
+        }
+      } catch (err) {
+        console.warn("Xidmətlər yüklənmədi:", err);
       }
     };
 
@@ -97,7 +113,8 @@ export default function Home() {
         await Promise.all([
           fetchLiveItems(),
           fetchSettings(),
-          fetchCategories()
+          fetchCategories(),
+          fetchServices()
         ]);
       } catch (err) {
         console.error("Məlumatlar yüklənərkən xəta:", err);
@@ -186,7 +203,7 @@ export default function Home() {
     // Əgər "Hamısı" seçilibsə, yeməkləri kateqoriyaların sırasına görə düzək
     if (selectedCategory === "all") {
       const categoryOrder = new Map(categories.map((cat, index) => [
-        cat.id, 
+        cat.id,
         cat.sort_order !== undefined ? cat.sort_order : index
       ]));
 
@@ -374,6 +391,18 @@ export default function Home() {
               <span>Hamısı</span>
             </button>
 
+            {/* Xidmətlər düyməsi */}
+            <button
+              onClick={() => setSelectedCategory("services")}
+              className={`flex items-center gap-1.5 px-5 py-3 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all duration-300 shadow-xs cursor-pointer ${selectedCategory === "services"
+                ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-500/20 scale-105"
+                : "bg-white/90 dark:bg-[#0c2447]/90 text-slate-600 dark:text-sky-100 border border-slate-200/60 dark:border-sky-400/20 hover:bg-orange-50 dark:hover:bg-[#12315c]/90"
+                }`}
+            >
+              <Icons.ConciergeBell className="w-4 h-4 shrink-0" />
+              <span>Xidmətlər</span>
+            </button>
+
 
             {/* Dinamik kateqoriya düymələri */}
             {categories.map((cat) => (
@@ -395,7 +424,56 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-4 py-6">
 
-        {filteredItems.length === 0 ? (
+        {selectedCategory === "services" ? (
+          <div className="space-y-8 animate-fade-in max-w-4xl mx-auto">
+            <div className="text-center mb-10 space-y-3">
+              <h2 className="text-3xl font-playfair font-bold text-slate-900 dark:text-white inline-block border-b-2 border-orange-400 pb-2">Bizim Xidmətlər</h2>
+              <p className="text-sm text-slate-500 dark:text-sky-200 font-light">İstirahətinizi daha yaddaqalan etmək üçün təklif etdiyimiz xidmətlər.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {servicesData.map((service, idx) => (
+                <div key={service.id} className="glass-card p-6 rounded-2xl border border-slate-200/50 dark:border-sky-400/25 flex flex-col hover:border-orange-500/30 transition-all duration-300 relative overflow-hidden group">
+                  <div className="absolute right-0 top-0 opacity-5 dark:opacity-10 pointer-events-none translate-x-1/4 -translate-y-1/4 group-hover:scale-110 transition-transform duration-500">
+                    {renderIcon(service.icon, "w-48 h-48 text-teal-600 dark:text-teal-400")}
+                  </div>
+                  
+                  <div className="flex items-center gap-3 mb-4 z-10">
+                    <div className="p-3 bg-gradient-to-br from-teal-500/20 to-emerald-500/10 rounded-xl text-teal-600 dark:text-teal-400">
+                      {renderIcon(service.icon, "w-6 h-6")}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold font-playfair text-slate-800 dark:text-white">{service.title}</h3>
+                      <p className="text-xs text-slate-500 dark:text-sky-200 mt-0.5">{service.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 flex-1 z-10">
+                    {service.items && service.items.map((item, i) => (
+                      <div key={i} className="flex flex-col p-3 rounded-xl bg-slate-50/50 dark:bg-[#0a1e3f]/50 border border-slate-100 dark:border-slate-800/50 hover:bg-orange-50/50 dark:hover:bg-[#12315c]/50 transition-colors">
+                        <div className="flex justify-between items-start gap-2 mb-1">
+                          <span className="font-bold text-sm text-slate-700 dark:text-slate-200">{item.name}</span>
+                          <span className="font-bold text-sm text-orange-600 dark:text-amber-400 whitespace-nowrap bg-orange-100/50 dark:bg-amber-400/10 px-2 py-0.5 rounded-md">{item.price}</span>
+                        </div>
+                        <span className="text-[11px] text-slate-500 dark:text-sky-200/70 font-light">{item.details}</span>
+                      </div>
+                    ))}
+
+                    {service.contacts && service.contacts.map((contact, i) => (
+                      <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-orange-50/50 dark:bg-amber-400/5 border border-orange-100 dark:border-amber-400/10 gap-3">
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{contact.name}</span>
+                        <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-sm font-bold rounded-lg transition-all shadow-sm shadow-orange-500/20 w-full sm:w-auto shrink-0">
+                          <Icons.Phone className="w-4 h-4" />
+                          <span>Zəng et</span>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : filteredItems.length === 0 ? (
           /* Boş Siyahı Paneli */
           <div className="glass-card py-16 px-6 text-center rounded-2xl border border-orange-200/20 flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto">
             <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-slate-800 flex items-center justify-center text-orange-500 dark:text-slate-400">

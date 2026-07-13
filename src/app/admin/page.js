@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import * as Icons from "lucide-react";
 import menuData from "../../../public/menuData.json";
+import ServicesAdmin from "../../components/ServicesAdmin";
 
 export default function AdminPanel() {
   // Giriş Vəziyyətləri (Auth States)
@@ -978,7 +979,28 @@ export default function AdminPanel() {
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
               )}
             </button>
+            <button
+              onClick={() => setActiveTab("services")}
+              className={`pb-3 text-sm font-bold transition-all relative cursor-pointer flex items-center gap-1.5 ${
+                activeTab === "services"
+                  ? "text-teal-600 dark:text-teal-400"
+                  : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+              }`}
+            >
+              <Icons.ConciergeBell className="w-4.5 h-4.5" />
+              <span>Xidmətlər</span>
+              {activeTab === "services" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-400 rounded"></div>
+              )}
+            </button>
           </div>
+        )}
+
+        {/* ----------------------------------------------------
+        TAB 4: XİDMƏTLƏRİN İDARƏ EDİLMƏSİ
+        ---------------------------------------------------- */}
+        {activeTab === "services" && (
+          <ServicesAdmin password={password} showToast={showToast} />
         )}
 
         {/* ----------------------------------------------------
